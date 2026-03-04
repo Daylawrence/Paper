@@ -1,0 +1,116 @@
+"""UI text translations."""
+
+from __future__ import annotations
+
+from typing import Literal
+
+Language = Literal["zh", "en"]
+
+
+TRANSLATIONS: dict[Language, dict[str, str]] = {
+    "zh": {
+        "window_title": "工厂搬运演示",
+        "hint_edit_grid": "左键编辑网格。运行时地图会锁定。",
+        "label_mode": "模式",
+        "label_robot": "机器人",
+        "label_carrying": "携带物品",
+        "label_phase": "阶段",
+        "label_speed": "速度",
+        "mode_edit": "编辑",
+        "mode_run": "运行",
+        "yes": "是",
+        "no": "否",
+        "tool_obstacle": "障碍",
+        "tool_start": "起点",
+        "tool_pickup": "取货点",
+        "tool_dropoff": "终点",
+        "tool_erase": "擦除",
+        "action_new": "新建",
+        "action_load": "加载",
+        "action_save": "保存",
+        "action_start": "开始",
+        "action_reset": "重置",
+        "action_speed": "速度: {speed}x",
+        "action_language": "语言 / EN",
+        "phase_idle": "空闲",
+        "phase_moving_to_pickup": "前往取货点",
+        "phase_loading": "正在取货",
+        "phase_moving_to_dropoff": "前往终点",
+        "phase_unloading": "正在放货",
+        "phase_done": "任务完成",
+        "message_setup": "请设置起点、取货点、终点和障碍。",
+        "message_delivery_completed": "搬运完成。",
+        "message_updated_cell": "已在 {cell} 更新 {tool}。",
+        "message_selected_tool": "已选择工具: {tool}。",
+        "message_new_scene": "已创建空白场景。",
+        "message_loaded_scene": "已加载场景: {name}",
+        "message_saved_scene": "已保存场景: {name}",
+        "message_started": "仿真已开始。",
+        "message_reset": "场景已重置。",
+        "message_speed_set": "速度已切换到 {speed}x。",
+        "message_language_switched": "已切换为中文界面。",
+        "status_ready": "就绪。",
+        "dialog_load_title": "加载场景",
+        "dialog_save_title": "保存场景",
+        "dialog_yaml_files": "YAML 文件",
+        "error_unreachable_pickup": "起点无法到达取货点。",
+        "error_unreachable_dropoff": "取货点无法到达终点。",
+    },
+    "en": {
+        "window_title": "Factory Transport Demo",
+        "hint_edit_grid": "Left click to edit cells. Run mode locks the map.",
+        "label_mode": "Mode",
+        "label_robot": "Robot",
+        "label_carrying": "Carrying",
+        "label_phase": "Phase",
+        "label_speed": "Speed",
+        "mode_edit": "Edit",
+        "mode_run": "Run",
+        "yes": "Yes",
+        "no": "No",
+        "tool_obstacle": "Obstacle",
+        "tool_start": "Start",
+        "tool_pickup": "Pickup",
+        "tool_dropoff": "Dropoff",
+        "tool_erase": "Erase",
+        "action_new": "New",
+        "action_load": "Load",
+        "action_save": "Save",
+        "action_start": "Start",
+        "action_reset": "Reset",
+        "action_speed": "Speed: {speed}x",
+        "action_language": "Language / 中文",
+        "phase_idle": "Idle",
+        "phase_moving_to_pickup": "Moving to pickup",
+        "phase_loading": "Loading item",
+        "phase_moving_to_dropoff": "Moving to dropoff",
+        "phase_unloading": "Unloading item",
+        "phase_done": "Task complete",
+        "message_setup": "Set a start, pickup, dropoff, and obstacles.",
+        "message_delivery_completed": "Delivery completed.",
+        "message_updated_cell": "Updated {tool} at {cell}.",
+        "message_selected_tool": "Selected tool: {tool}.",
+        "message_new_scene": "Created a new empty scene.",
+        "message_loaded_scene": "Loaded scene: {name}",
+        "message_saved_scene": "Saved scene: {name}",
+        "message_started": "Simulation started.",
+        "message_reset": "Scene reset.",
+        "message_speed_set": "Speed set to {speed}x.",
+        "message_language_switched": "Switched to English UI.",
+        "status_ready": "Ready.",
+        "dialog_load_title": "Load scene",
+        "dialog_save_title": "Save scene",
+        "dialog_yaml_files": "YAML files",
+        "error_unreachable_pickup": "Pickup location is unreachable from the start point.",
+        "error_unreachable_dropoff": "Dropoff location is unreachable from the pickup point.",
+    },
+}
+
+
+def tr(language: Language, key: str, **kwargs: object) -> str:
+    template = TRANSLATIONS[language].get(key, key)
+    return template.format(**kwargs)
+
+
+def cycle_language(language: Language) -> Language:
+    return "en" if language == "zh" else "zh"

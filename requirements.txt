@@ -1,0 +1,9 @@
+# Runtime
+pygame==2.6.1
+PyYAML==6.0.3
+
+# Development and verification
+pytest==8.4.2
+
+# Packaging
+pyinstaller==6.19.0

@@ -1,0 +1,20 @@
+version: 1
+scene:
+  name: demo_scene
+  grid:
+    width: 20
+    height: 12
+    cell_size_px: 40
+  start: [1, 1]
+  pickup: [8, 4]
+  dropoff: [15, 9]
+  obstacles:
+    - [4, 2]
+    - [4, 3]
+    - [4, 4]
+    - [4, 5]
+    - [5, 5]
+    - [6, 5]
+    - [12, 7]
+    - [13, 7]
+    - [14, 7]
