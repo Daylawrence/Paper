@@ -13,7 +13,7 @@ from factory_gui import constants
 from factory_gui.fonts import load_ui_fonts
 from factory_gui.i18n import Language, cycle_language, tr
 from factory_gui.io.scene_yaml import SceneFileError, SceneYamlStore
-from factory_gui.model.scene import SceneModel
+from factory_gui.model.scene import SceneModel, SceneValidationError
 from factory_gui.sim.controller import SimulationController, SimulationError
 from factory_gui.ui.canvas import GridCanvas
 from factory_gui.ui.dialogs import ask_open_path, ask_save_path
@@ -24,7 +24,8 @@ from factory_gui.ui.status_bar import StatusBarRenderer
 @dataclass(slots=True)
 class AppState:
     mode: Literal["edit", "run"] = "edit"
-    selected_tool: Literal["obstacle", "start", "pickup", "dropoff", "erase"] = "obstacle"
+    selected_tool: str = constants.TOOLS[0]
+    selected_algorithm: str = constants.ALGORITHMS[0]
     speed_multiplier: int = 1
     language: Language = "zh"
     message: str = tr("zh", "message_setup")
@@ -43,21 +44,21 @@ class FactoryGuiApp:
         self.screen = pygame.display.set_mode((constants.WINDOW_WIDTH, constants.WINDOW_HEIGHT))
         self.clock = pygame.time.Clock()
         self.headless = headless
+        self.dragging = False
 
         self.font, self.small_font = load_ui_fonts()
-
         self.canvas = GridCanvas(self.font, self.small_font)
         self.panel = PanelRenderer(self.font, self.small_font)
         self.status_bar = StatusBarRenderer(self.font, self.small_font)
         self.store = SceneYamlStore()
         self.controller = SimulationController()
-
-        self.scene = SceneModel.empty()
-        self.scene_before_run: SceneModel | None = None
         self.app_state = AppState()
+        self.scene = SceneModel.default_scene()
+        self.scene_before_run: SceneModel | None = None
         self.is_running = True
         self.scenarios_dir = self._resolve_scenarios_dir()
         self.scenarios_dir.mkdir(parents=True, exist_ok=True)
+        self.canvas.reset_view(self.scene)
         self._refresh_window_caption()
 
     def run(self, max_frames: int | None = None) -> int:
@@ -75,25 +76,37 @@ class FactoryGuiApp:
             if event.type == pygame.QUIT:
                 self.is_running = False
                 return
-            if event.type == pygame.MOUSEBUTTONDOWN and event.button == 1:
-                self._handle_left_click(event.pos)
+            if event.type == pygame.MOUSEBUTTONDOWN:
+                self._handle_mouse_down(event)
+            if event.type == pygame.MOUSEBUTTONUP and event.button == 3:
+                self.dragging = False
+            if event.type == pygame.MOUSEMOTION and self.dragging:
+                self.canvas.pan(event.rel[0], event.rel[1])
+            if event.type == pygame.MOUSEWHEEL:
+                self.canvas.zoom(event.y, pygame.mouse.get_pos())
 
         if self.app_state.mode == "run":
             self.controller.update(dt_ms)
-            if self.controller.robot.phase == "done" and self.app_state.error is None:
-                self.app_state.message = tr(self.app_state.language, "message_delivery_completed")
+            if self.controller.status_key() == "sim_completed" and self.app_state.error is None:
+                self.app_state.message = tr(self.app_state.language, "phase_done")
 
         self.draw()
 
     def draw(self) -> None:
         self.screen.fill(constants.BG_COLOR)
         self.canvas.draw(self.screen, self.scene, self.controller, self.app_state)
-        self.panel.draw(self.screen, self.app_state, self.controller)
+        self.panel.draw(self.screen, self.app_state, self.controller, self.scene)
         self.status_bar.draw(self.screen, self.app_state, self.controller)
         pygame.display.flip()
 
     def shutdown(self) -> None:
         pygame.quit()
+
+    def _handle_mouse_down(self, event: pygame.event.Event) -> None:
+        if event.button == 1:
+            self._handle_left_click(event.pos)
+        elif event.button == 3 and self.canvas.rect.collidepoint(event.pos):
+            self.dragging = True
 
     def _handle_left_click(self, pos: tuple[int, int]) -> None:
         action = self.panel.action_at(pos)
@@ -103,17 +116,20 @@ class FactoryGuiApp:
 
         if self.app_state.mode != "edit":
             return
-        cell = self.canvas.cell_from_pos(pos)
+        cell = self.canvas.cell_from_pos(pos, self.scene)
         if cell is None:
             return
-        self.scene.set_tool_at(self.app_state.selected_tool, cell)
-        self.app_state.error = None
-        self.app_state.message = tr(
-            self.app_state.language,
-            "message_updated_cell",
-            tool=tr(self.app_state.language, f"tool_{self.app_state.selected_tool}"),
-            cell=cell,
-        )
+        try:
+            self.scene.set_tool_at(self.app_state.selected_tool, cell)
+            self.app_state.error = None
+            self.app_state.message = tr(
+                self.app_state.language,
+                "message_updated_cell",
+                tool=tr(self.app_state.language, f"tool_{self.app_state.selected_tool}"),
+                cell=cell,
+            )
+        except SceneValidationError as exc:
+            self.app_state.error = str(exc)
 
     def _handle_action(self, action: str) -> None:
         if action.startswith("tool:"):
@@ -133,6 +149,16 @@ class FactoryGuiApp:
             self._load_scene()
         elif action == "save":
             self._save_scene()
+        elif action == "preset_agents":
+            self._preset_agents()
+        elif action == "preset_tasks":
+            self._preset_tasks()
+        elif action == "random_obstacles":
+            self._random_obstacles()
+        elif action == "clear_obstacles":
+            self._clear_obstacles()
+        elif action == "algorithm":
+            self._cycle_algorithm()
         elif action == "start":
             self._start_simulation()
         elif action == "reset":
@@ -143,7 +169,8 @@ class FactoryGuiApp:
             self._cycle_language()
 
     def _new_scene(self) -> None:
-        self.scene = SceneModel.empty()
+        self.scene = SceneModel.default_scene()
+        self.canvas.reset_view(self.scene)
         self.controller.reset()
         self.scene_before_run = None
         self.app_state.mode = "edit"
@@ -166,6 +193,7 @@ class FactoryGuiApp:
 
         self.controller.reset()
         self.scene_before_run = None
+        self.canvas.reset_view(self.scene)
         self.app_state.mode = "edit"
         self.app_state.error = None
         self.app_state.message = tr(self.app_state.language, "message_loaded_scene", name=path.name)
@@ -185,6 +213,37 @@ class FactoryGuiApp:
             return
         self.app_state.error = None
         self.app_state.message = tr(self.app_state.language, "message_saved_scene", name=path.name)
+
+    def _preset_agents(self) -> None:
+        self.scene.add_default_agents()
+        self.app_state.error = None
+        self.app_state.message = tr(self.app_state.language, "message_preset_agents")
+
+    def _preset_tasks(self) -> None:
+        self.scene.add_default_tasks()
+        self.app_state.error = None
+        self.app_state.message = tr(self.app_state.language, "message_preset_tasks")
+
+    def _random_obstacles(self) -> None:
+        success = self.scene.generate_random_obstacles()
+        if not success:
+            self.app_state.error = tr(self.app_state.language, "error_random_obstacles_failed")
+            return
+        self.app_state.error = None
+        self.app_state.message = tr(self.app_state.language, "message_random_obstacles")
+
+    def _clear_obstacles(self) -> None:
+        self.scene.clear_obstacles()
+        self.app_state.error = None
+        self.app_state.message = tr(self.app_state.language, "message_clear_obstacles")
+
+    def _cycle_algorithm(self) -> None:
+        current_index = constants.ALGORITHMS.index(self.app_state.selected_algorithm)
+        next_index = (current_index + 1) % len(constants.ALGORITHMS)
+        self.app_state.selected_algorithm = constants.ALGORITHMS[next_index]
+        self.controller = SimulationController()
+        self.controller.set_speed_multiplier(self.app_state.speed_multiplier)
+        self.app_state.error = None
 
     def _start_simulation(self) -> None:
         self.controller.set_speed_multiplier(self.app_state.speed_multiplier)

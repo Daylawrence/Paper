@@ -1,4 +1,4 @@
-"""YAML persistence for scenes."""
+"""YAML persistence for factory scenes."""
 
 from __future__ import annotations
 
@@ -7,9 +7,11 @@ from typing import Any
 
 import yaml
 
-from factory_gui.constants import CELL_SIZE_PX, GRID_HEIGHT, GRID_WIDTH
+from factory_gui import constants
+from factory_gui.model.agent import AgentSpec
 from factory_gui.model.grid import Coord
 from factory_gui.model.scene import SceneModel, SceneValidationError
+from factory_gui.model.task import TaskSpec
 
 
 class SceneFileError(ValueError):
@@ -30,8 +32,8 @@ class SceneYamlStore:
 
         if not isinstance(raw, dict):
             raise SceneFileError("Scene file must contain a mapping at the top level.")
-        if raw.get("version") != 1:
-            raise SceneFileError("Only scene format version 1 is supported.")
+        if raw.get("version") != 2:
+            raise SceneFileError("Only scene format version 2 is supported.")
         scene_data = raw.get("scene")
         if not isinstance(scene_data, dict):
             raise SceneFileError("Scene file must contain a 'scene' mapping.")
@@ -39,18 +41,25 @@ class SceneYamlStore:
         grid_data = scene_data.get("grid")
         if not isinstance(grid_data, dict):
             raise SceneFileError("Scene file must contain a 'scene.grid' mapping.")
-        if grid_data.get("width") != GRID_WIDTH or grid_data.get("height") != GRID_HEIGHT:
-            raise SceneFileError(f"Only {GRID_WIDTH}x{GRID_HEIGHT} scenes are supported.")
-        if grid_data.get("cell_size_px") != CELL_SIZE_PX:
-            raise SceneFileError(f"cell_size_px must be {CELL_SIZE_PX}.")
 
         scene = SceneModel(
-            width=GRID_WIDTH,
-            height=GRID_HEIGHT,
+            name=str(scene_data.get("name", "factory_multi_agent")),
+            width=self._read_int(grid_data.get("width"), "scene.grid.width"),
+            height=self._read_int(grid_data.get("height"), "scene.grid.height"),
+            cell_size_px=self._read_int(
+                grid_data.get("cell_size_px", constants.DEFAULT_CELL_SIZE_PX),
+                "scene.grid.cell_size_px",
+            ),
+            obstacle_seed=self._read_int(
+                scene_data.get("obstacle_generation", {}).get("seed", 42),
+                "scene.obstacle_generation.seed",
+            ),
+            obstacle_density=float(
+                scene_data.get("obstacle_generation", {}).get("density", 0.12)
+            ),
             obstacles=self._read_coords(scene_data.get("obstacles", []), "obstacles"),
-            start=self._read_optional_coord(scene_data.get("start"), "start"),
-            pickup=self._read_optional_coord(scene_data.get("pickup"), "pickup"),
-            dropoff=self._read_optional_coord(scene_data.get("dropoff"), "dropoff"),
+            agents=self._read_agents(scene_data.get("agents", [])),
+            tasks=self._read_tasks(scene_data.get("tasks", [])),
         )
         try:
             scene.validate_static()
@@ -66,39 +75,107 @@ class SceneYamlStore:
 
         file_path = Path(path)
         file_path.parent.mkdir(parents=True, exist_ok=True)
-        obstacles = [[x, y] for x, y in sorted(scene.obstacles, key=lambda cell: (cell[1], cell[0]))]
         payload = {
-            "version": 1,
+            "version": 2,
             "scene": {
-                "name": file_path.stem,
+                "name": scene.name,
                 "grid": {
-                    "width": GRID_WIDTH,
-                    "height": GRID_HEIGHT,
-                    "cell_size_px": CELL_SIZE_PX,
+                    "width": scene.width,
+                    "height": scene.height,
+                    "cell_size_px": scene.cell_size_px,
                 },
-                "start": list(scene.start) if scene.start is not None else None,
-                "pickup": list(scene.pickup) if scene.pickup is not None else None,
-                "dropoff": list(scene.dropoff) if scene.dropoff is not None else None,
-                "obstacles": obstacles,
+                "obstacle_generation": {
+                    "seed": scene.obstacle_seed,
+                    "density": scene.obstacle_density,
+                },
+                "obstacles": [
+                    [x, y]
+                    for x, y in sorted(scene.obstacles, key=lambda cell: (cell[1], cell[0]))
+                ],
+                "agents": [
+                    {
+                        "id": agent.id,
+                        "type": agent.type,
+                        "home": list(agent.home),
+                        "speed_cells_per_s": agent.speed_cells_per_s,
+                        "capabilities": sorted(agent.capabilities),
+                    }
+                    for agent in scene.agents
+                ],
+                "tasks": [
+                    {
+                        "id": task.id,
+                        "type": task.type,
+                        "location": list(task.location),
+                        "service_time_s": task.service_time_s,
+                        "release_time_s": task.release_time_s,
+                        "due_time_s": task.due_time_s,
+                        "required_capabilities": sorted(task.required_capabilities),
+                    }
+                    for task in scene.tasks
+                ],
             },
         }
         file_path.write_text(
-            yaml.safe_dump(payload, sort_keys=False, allow_unicode=False),
+            yaml.safe_dump(payload, sort_keys=False, allow_unicode=True),
             encoding="utf-8",
         )
 
     def _read_coords(self, value: Any, label: str) -> set[Coord]:
         if not isinstance(value, list):
             raise SceneFileError(f"'{label}' must be a list of [x, y] pairs.")
-        coords: set[Coord] = set()
-        for idx, raw_coord in enumerate(value):
-            coords.add(self._read_coord(raw_coord, f"{label}[{idx}]"))
-        return coords
+        return {self._read_coord(item, f"{label}[{idx}]") for idx, item in enumerate(value)}
 
-    def _read_optional_coord(self, value: Any, label: str) -> Coord | None:
-        if value is None:
-            return None
-        return self._read_coord(value, label)
+    def _read_agents(self, value: Any) -> list[AgentSpec]:
+        if not isinstance(value, list):
+            raise SceneFileError("'agents' must be a list.")
+        agents: list[AgentSpec] = []
+        for idx, item in enumerate(value):
+            if not isinstance(item, dict):
+                raise SceneFileError(f"'agents[{idx}]' must be a mapping.")
+            agents.append(
+                AgentSpec(
+                    id=str(item.get("id")),
+                    type=str(item.get("type")),
+                    home=self._read_coord(item.get("home"), f"agents[{idx}].home"),
+                    speed_cells_per_s=float(item.get("speed_cells_per_s", 1.0)),
+                    capabilities=self._read_string_set(
+                        item.get("capabilities", []),
+                        f"agents[{idx}].capabilities",
+                    ),
+                )
+            )
+        return agents
+
+    def _read_tasks(self, value: Any) -> list[TaskSpec]:
+        if not isinstance(value, list):
+            raise SceneFileError("'tasks' must be a list.")
+        tasks: list[TaskSpec] = []
+        for idx, item in enumerate(value):
+            if not isinstance(item, dict):
+                raise SceneFileError(f"'tasks[{idx}]' must be a mapping.")
+            due = item.get("due_time_s")
+            tasks.append(
+                TaskSpec(
+                    id=str(item.get("id")),
+                    type=str(item.get("type")),
+                    location=self._read_coord(item.get("location"), f"tasks[{idx}].location"),
+                    service_time_s=self._read_int(
+                        item.get("service_time_s"),
+                        f"tasks[{idx}].service_time_s",
+                    ),
+                    release_time_s=self._read_int(
+                        item.get("release_time_s", 0),
+                        f"tasks[{idx}].release_time_s",
+                    ),
+                    due_time_s=None if due is None else self._read_int(due, f"tasks[{idx}].due_time_s"),
+                    required_capabilities=self._read_string_set(
+                        item.get("required_capabilities", []),
+                        f"tasks[{idx}].required_capabilities",
+                    ),
+                )
+            )
+        return tasks
 
     def _read_coord(self, value: Any, label: str) -> Coord:
         if (
@@ -108,3 +185,13 @@ class SceneYamlStore:
         ):
             raise SceneFileError(f"'{label}' must be a two-item integer list.")
         return (value[0], value[1])
+
+    def _read_int(self, value: Any, label: str) -> int:
+        if not isinstance(value, int):
+            raise SceneFileError(f"'{label}' must be an integer.")
+        return value
+
+    def _read_string_set(self, value: Any, label: str) -> set[str]:
+        if not isinstance(value, list) or not all(isinstance(item, str) for item in value):
+            raise SceneFileError(f"'{label}' must be a list of strings.")
+        return set(value)

@@ -4,37 +4,25 @@ import pytest
 
 from factory_gui.io.scene_yaml import SceneFileError, SceneYamlStore
 from factory_gui.model.scene import SceneModel
+from factory_gui.planner.astar import AStarPlanner
 
 
 def test_scene_round_trip(tmp_path: Path):
     store = SceneYamlStore()
-    scene = SceneModel(
-        obstacles={(2, 2), (1, 3)},
-        start=(1, 1),
-        pickup=(3, 3),
-        dropoff=(5, 5),
-    )
+    scene = SceneModel.default_scene()
+    scene.generate_random_obstacles(seed=7, density=0.08)
     path = tmp_path / "scene.yaml"
     store.save(path, scene)
     loaded = store.load(path)
     assert loaded == scene
 
 
-def test_load_rejects_wrong_grid_size(tmp_path: Path):
+def test_load_rejects_old_version(tmp_path: Path):
     path = tmp_path / "bad.yaml"
     path.write_text(
         """
 version: 1
-scene:
-  name: bad
-  grid:
-    width: 10
-    height: 10
-    cell_size_px: 40
-  start: [1, 1]
-  pickup: [2, 2]
-  dropoff: [3, 3]
-  obstacles: []
+scene: {}
 """.strip(),
         encoding="utf-8",
     )
@@ -43,24 +31,13 @@ scene:
         store.load(path)
 
 
-def test_load_rejects_duplicate_markers(tmp_path: Path):
-    path = tmp_path / "bad.yaml"
-    path.write_text(
-        """
-version: 1
-scene:
-  name: bad
-  grid:
-    width: 20
-    height: 12
-    cell_size_px: 40
-  start: [1, 1]
-  pickup: [1, 1]
-  dropoff: [3, 3]
-  obstacles: []
-""".strip(),
-        encoding="utf-8",
-    )
-    store = SceneYamlStore()
-    with pytest.raises(SceneFileError):
-        store.load(path)
+def test_random_obstacles_keep_special_cells_reachable():
+    scene = SceneModel.default_scene()
+    assert scene.generate_random_obstacles(seed=3, density=0.1) is True
+    planner = AStarPlanner()
+    protected = sorted(scene.special_cells())
+    start = protected[0]
+    for goal in protected[1:]:
+        path = planner.find_path(scene.width, scene.height, scene.obstacles, start, goal)
+        assert path
+    assert not scene.obstacles.intersection(scene.special_cells())

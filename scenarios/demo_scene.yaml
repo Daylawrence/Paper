@@ -1,20 +1,73 @@
-version: 1
+version: 2
 scene:
-  name: demo_scene
+  name: factory_multi_agent
   grid:
-    width: 20
-    height: 12
-    cell_size_px: 40
-  start: [1, 1]
-  pickup: [8, 4]
-  dropoff: [15, 9]
+    width: 50
+    height: 30
+    cell_size_px: 16
+  obstacle_generation:
+    seed: 42
+    density: 0.12
   obstacles:
-    - [4, 2]
-    - [4, 3]
-    - [4, 4]
-    - [4, 5]
-    - [5, 5]
-    - [6, 5]
-    - [12, 7]
-    - [13, 7]
-    - [14, 7]
+    - [8, 4]
+    - [8, 5]
+    - [8, 6]
+    - [16, 12]
+    - [17, 12]
+    - [18, 12]
+    - [30, 20]
+    - [31, 20]
+    - [32, 20]
+  agents:
+    - id: agv_1
+      type: agv
+      home: [2, 2]
+      speed_cells_per_s: 3.0
+      capabilities: [transport]
+    - id: agv_2
+      type: agv
+      home: [2, 4]
+      speed_cells_per_s: 3.0
+      capabilities: [transport]
+    - id: forklift_1
+      type: forklift
+      home: [2, 8]
+      speed_cells_per_s: 2.0
+      capabilities: [heavy_load]
+    - id: forklift_2
+      type: forklift
+      home: [2, 10]
+      speed_cells_per_s: 2.0
+      capabilities: [heavy_load]
+    - id: picker_1
+      type: picker
+      home: [2, 14]
+      speed_cells_per_s: 2.5
+      capabilities: [precision_pick]
+    - id: picker_2
+      type: picker
+      home: [2, 16]
+      speed_cells_per_s: 2.5
+      capabilities: [precision_pick]
+  tasks:
+    - id: transport_1
+      type: transport
+      location: [20, 6]
+      service_time_s: 15
+      release_time_s: 0
+      due_time_s: 120
+      required_capabilities: [transport]
+    - id: heavy_1
+      type: heavy
+      location: [28, 10]
+      service_time_s: 24
+      release_time_s: 10
+      due_time_s: 180
+      required_capabilities: [heavy_load]
+    - id: precision_1
+      type: precision
+      location: [36, 16]
+      service_time_s: 18
+      release_time_s: 20
+      due_time_s: 180
+      required_capabilities: [precision_pick]
