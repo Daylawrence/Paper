@@ -10,7 +10,12 @@ import yaml
 from factory_gui import constants
 from factory_gui.model.agent import AgentSpec
 from factory_gui.model.grid import Coord
-from factory_gui.model.scene import SceneModel, SceneValidationError
+from factory_gui.model.scene import (
+    AGENT_PRESETS,
+    TASK_PRESETS,
+    SceneModel,
+    SceneValidationError,
+)
 from factory_gui.model.task import TaskSpec
 
 
@@ -60,6 +65,10 @@ class SceneYamlStore:
             obstacles=self._read_coords(scene_data.get("obstacles", []), "obstacles"),
             agents=self._read_agents(scene_data.get("agents", [])),
             tasks=self._read_tasks(scene_data.get("tasks", [])),
+            agent_task_conflicts=self._read_conflicts(
+                scene_data.get("agent_task_conflicts", []),
+                "scene.agent_task_conflicts",
+            ),
         )
         try:
             scene.validate_static()
@@ -98,7 +107,12 @@ class SceneYamlStore:
                         "type": agent.type,
                         "home": list(agent.home),
                         "speed_cells_per_s": agent.speed_cells_per_s,
+                        "max_tasks_total": agent.max_tasks_total,
                         "capabilities": sorted(agent.capabilities),
+                        "task_proficiency": {
+                            key: agent.task_proficiency[key]
+                            for key in sorted(agent.task_proficiency)
+                        },
                     }
                     for agent in scene.agents
                 ],
@@ -111,8 +125,15 @@ class SceneYamlStore:
                         "release_time_s": task.release_time_s,
                         "due_time_s": task.due_time_s,
                         "required_capabilities": sorted(task.required_capabilities),
+                        "required_proficiency": task.required_proficiency,
+                        "min_agents": task.min_agents,
+                        "max_agents": task.max_agents,
                     }
                     for task in scene.tasks
+                ],
+                "agent_task_conflicts": [
+                    {"agent_id": agent_id, "task_id": task_id}
+                    for agent_id, task_id in sorted(scene.agent_task_conflicts)
                 ],
             },
         }
@@ -139,9 +160,18 @@ class SceneYamlStore:
                     type=str(item.get("type")),
                     home=self._read_coord(item.get("home"), f"agents[{idx}].home"),
                     speed_cells_per_s=float(item.get("speed_cells_per_s", 1.0)),
+                    max_tasks_total=self._read_int(
+                        item.get("max_tasks_total", 3),
+                        f"agents[{idx}].max_tasks_total",
+                    ),
                     capabilities=self._read_string_set(
                         item.get("capabilities", []),
                         f"agents[{idx}].capabilities",
+                    ),
+                    task_proficiency=self._read_proficiency(
+                        item.get("task_proficiency"),
+                        str(item.get("type")),
+                        f"agents[{idx}].task_proficiency",
                     ),
                 )
             )
@@ -155,10 +185,14 @@ class SceneYamlStore:
             if not isinstance(item, dict):
                 raise SceneFileError(f"'tasks[{idx}]' must be a mapping.")
             due = item.get("due_time_s")
+            task_type = str(item.get("type"))
+            default_required = float(
+                TASK_PRESETS.get(task_type, {}).get("required_proficiency", 0.5)
+            )
             tasks.append(
                 TaskSpec(
                     id=str(item.get("id")),
-                    type=str(item.get("type")),
+                    type=task_type,
                     location=self._read_coord(item.get("location"), f"tasks[{idx}].location"),
                     service_time_s=self._read_int(
                         item.get("service_time_s"),
@@ -173,9 +207,39 @@ class SceneYamlStore:
                         item.get("required_capabilities", []),
                         f"tasks[{idx}].required_capabilities",
                     ),
+                    required_proficiency=float(
+                        item.get("required_proficiency", default_required)
+                    ),
+                    min_agents=self._read_int(
+                        item.get("min_agents", 1),
+                        f"tasks[{idx}].min_agents",
+                    ),
+                    max_agents=self._read_int(
+                        item.get("max_agents", 1),
+                        f"tasks[{idx}].max_agents",
+                    ),
                 )
             )
         return tasks
+
+    def _read_conflicts(self, value: Any, label: str) -> set[tuple[str, str]]:
+        if not isinstance(value, list):
+            raise SceneFileError(f"'{label}' must be a list.")
+        conflicts: set[tuple[str, str]] = set()
+        for idx, item in enumerate(value):
+            if isinstance(item, list) and len(item) == 2 and all(isinstance(v, str) for v in item):
+                conflicts.add((item[0], item[1]))
+                continue
+            if isinstance(item, dict):
+                agent_id = item.get("agent_id")
+                task_id = item.get("task_id")
+                if isinstance(agent_id, str) and isinstance(task_id, str):
+                    conflicts.add((agent_id, task_id))
+                    continue
+            raise SceneFileError(
+                f"'{label}[{idx}]' must be {{agent_id, task_id}} or [agent_id, task_id]."
+            )
+        return conflicts
 
     def _read_coord(self, value: Any, label: str) -> Coord:
         if (
@@ -195,3 +259,25 @@ class SceneYamlStore:
         if not isinstance(value, list) or not all(isinstance(item, str) for item in value):
             raise SceneFileError(f"'{label}' must be a list of strings.")
         return set(value)
+
+    def _read_proficiency(self, value: Any, agent_type: str, label: str) -> dict[str, float]:
+        default_profile = self._default_proficiency(agent_type)
+        if value is None:
+            return default_profile
+        if not isinstance(value, dict):
+            raise SceneFileError(f"'{label}' must be a mapping of task type to float.")
+
+        merged = dict(default_profile)
+        for key, score in value.items():
+            if not isinstance(key, str):
+                raise SceneFileError(f"'{label}' keys must be strings.")
+            if not isinstance(score, (int, float)):
+                raise SceneFileError(f"'{label}[{key}]' must be a number.")
+            merged[key] = float(score)
+        return merged
+
+    def _default_proficiency(self, agent_type: str) -> dict[str, float]:
+        profile_center = AGENT_PRESETS.get(agent_type, {}).get("profile_center")
+        if isinstance(profile_center, dict):
+            return {str(k): float(v) for k, v in profile_center.items()}
+        return {task_type: 0.5 for task_type in TASK_PRESETS}

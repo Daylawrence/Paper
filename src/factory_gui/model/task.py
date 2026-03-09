@@ -16,3 +16,6 @@ class TaskSpec:
     release_time_s: int
     due_time_s: int | None
     required_capabilities: set[str] = field(default_factory=set)
+    required_proficiency: float = 0.5
+    min_agents: int = 1
+    max_agents: int = 1

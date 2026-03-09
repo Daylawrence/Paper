@@ -5,8 +5,8 @@ from __future__ import annotations
 WINDOW_WIDTH = 1400
 WINDOW_HEIGHT = 820
 
-DEFAULT_GRID_WIDTH = 50
-DEFAULT_GRID_HEIGHT = 30
+DEFAULT_GRID_WIDTH = 60
+DEFAULT_GRID_HEIGHT = 36
 DEFAULT_CELL_SIZE_PX = 16
 MIN_GRID_WIDTH = 20
 MAX_GRID_WIDTH = 120
@@ -31,6 +31,8 @@ STATUS_HEIGHT = 70
 FPS = 60
 SPEED_MULTIPLIERS = (1, 2, 4)
 ZOOM_LEVELS = (8, 12, 16, 20, 24, 28)
+RUNTIME_INSERT_TASK_TYPES = ("transport", "heavy", "precision")
+RUNTIME_INSERT_TASK_COUNT_OPTIONS = (1, 3, 5)
 
 TOOLS = (
     "obstacle",
@@ -43,7 +45,8 @@ TOOLS = (
     "erase",
 )
 
-ALGORITHMS = ("greedy_nearest",)
+TASK_ALGORITHMS = ("genetic_assignment", "greedy_nearest", "earliest_due_date")
+PATH_ALGORITHMS = ("astar", "greedy_best_first")
 
 BG_COLOR = (242, 243, 245)
 GRID_BG_COLOR = (252, 252, 252)

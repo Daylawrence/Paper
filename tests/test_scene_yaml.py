@@ -17,6 +17,12 @@ def test_scene_round_trip(tmp_path: Path):
     assert loaded == scene
 
 
+def test_default_scene_counts():
+    scene = SceneModel.default_scene()
+    assert len(scene.agents) == 15
+    assert len(scene.tasks) == 5
+
+
 def test_load_rejects_old_version(tmp_path: Path):
     path = tmp_path / "bad.yaml"
     path.write_text(

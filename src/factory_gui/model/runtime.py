@@ -26,4 +26,7 @@ class AgentRuntimeState:
 class TaskRuntimeState:
     spec: TaskSpec
     status: str = "pending"
-    assigned_agent_id: str | None = None
+    assigned_agent_ids: list[str] = field(default_factory=list)
+    arrived_agent_ids: list[str] = field(default_factory=list)
+    active_agent_ids: list[str] = field(default_factory=list)
+    finished_agent_ids: list[str] = field(default_factory=list)

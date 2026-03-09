@@ -1,23 +1,29 @@
 version: 2
 scene:
-  name: factory_multi_agent
+  name: factory_multi_agent_15x5
   grid:
-    width: 50
-    height: 30
+    width: 60
+    height: 36
     cell_size_px: 16
   obstacle_generation:
     seed: 42
     density: 0.12
   obstacles:
-    - [8, 4]
-    - [8, 5]
-    - [8, 6]
-    - [16, 12]
-    - [17, 12]
-    - [18, 12]
-    - [30, 20]
-    - [31, 20]
-    - [32, 20]
+    - [10, 5]
+    - [10, 6]
+    - [10, 7]
+    - [18, 11]
+    - [19, 11]
+    - [20, 11]
+    - [28, 18]
+    - [29, 18]
+    - [30, 18]
+    - [36, 24]
+    - [37, 24]
+    - [38, 24]
+    - [46, 28]
+    - [47, 28]
+    - [48, 28]
   agents:
     - id: agv_1
       type: agv
@@ -29,45 +35,104 @@ scene:
       home: [2, 4]
       speed_cells_per_s: 3.0
       capabilities: [transport]
+    - id: agv_3
+      type: agv
+      home: [2, 6]
+      speed_cells_per_s: 3.0
+      capabilities: [transport]
+    - id: agv_4
+      type: agv
+      home: [2, 8]
+      speed_cells_per_s: 3.0
+      capabilities: [transport]
+    - id: agv_5
+      type: agv
+      home: [2, 10]
+      speed_cells_per_s: 3.0
+      capabilities: [transport]
     - id: forklift_1
       type: forklift
-      home: [2, 8]
+      home: [2, 14]
       speed_cells_per_s: 2.0
       capabilities: [heavy_load]
     - id: forklift_2
       type: forklift
-      home: [2, 10]
+      home: [2, 16]
+      speed_cells_per_s: 2.0
+      capabilities: [heavy_load]
+    - id: forklift_3
+      type: forklift
+      home: [2, 18]
+      speed_cells_per_s: 2.0
+      capabilities: [heavy_load]
+    - id: forklift_4
+      type: forklift
+      home: [2, 20]
+      speed_cells_per_s: 2.0
+      capabilities: [heavy_load]
+    - id: forklift_5
+      type: forklift
+      home: [2, 22]
       speed_cells_per_s: 2.0
       capabilities: [heavy_load]
     - id: picker_1
       type: picker
-      home: [2, 14]
+      home: [2, 25]
       speed_cells_per_s: 2.5
       capabilities: [precision_pick]
     - id: picker_2
       type: picker
-      home: [2, 16]
+      home: [2, 27]
+      speed_cells_per_s: 2.5
+      capabilities: [precision_pick]
+    - id: picker_3
+      type: picker
+      home: [2, 29]
+      speed_cells_per_s: 2.5
+      capabilities: [precision_pick]
+    - id: picker_4
+      type: picker
+      home: [2, 31]
+      speed_cells_per_s: 2.5
+      capabilities: [precision_pick]
+    - id: picker_5
+      type: picker
+      home: [2, 33]
       speed_cells_per_s: 2.5
       capabilities: [precision_pick]
   tasks:
     - id: transport_1
       type: transport
-      location: [20, 6]
+      location: [25, 6]
       service_time_s: 15
       release_time_s: 0
       due_time_s: 120
       required_capabilities: [transport]
     - id: heavy_1
       type: heavy
-      location: [28, 10]
+      location: [34, 10]
       service_time_s: 24
-      release_time_s: 10
-      due_time_s: 180
+      release_time_s: 12
+      due_time_s: 210
       required_capabilities: [heavy_load]
     - id: precision_1
       type: precision
-      location: [36, 16]
+      location: [41, 15]
       service_time_s: 18
       release_time_s: 20
-      due_time_s: 180
+      due_time_s: 200
       required_capabilities: [precision_pick]
+    - id: transport_2
+      type: transport
+      location: [46, 21]
+      service_time_s: 15
+      release_time_s: 30
+      due_time_s: 260
+      required_capabilities: [transport]
+    - id: heavy_2
+      type: heavy
+      location: [33, 28]
+      service_time_s: 24
+      release_time_s: 40
+      due_time_s: 320
+      required_capabilities: [heavy_load]

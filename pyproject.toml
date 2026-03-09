@@ -5,12 +5,13 @@ build-backend = "setuptools.build_meta"
 [project]
 name = "factory-gui"
 version = "0.1.0"
-description = "Desktop GUI MVP for a single-robot factory pickup and delivery demo."
+description = "Desktop GUI for multi-agent factory task assignment and path-planning experiments."
 readme = "README.md"
 requires-python = ">=3.12"
 dependencies = [
     "pygame>=2.6,<3",
     "PyYAML>=6.0,<7",
+    "matplotlib>=3.8,<4",
 ]
 
 [project.optional-dependencies]
@@ -21,6 +22,7 @@ dev = [
 
 [project.scripts]
 factory-gui = "factory_gui.main:main"
+factory-gui-train = "factory_gui.train:main"
 
 [tool.setuptools]
 package-dir = {"" = "src"}

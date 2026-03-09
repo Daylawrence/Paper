@@ -55,7 +55,14 @@ class PanelRenderer:
         info_top = constants.PANEL_TOP + 598
         lines = [
             f"{tr(language, 'label_mode')}: {tr(language, f'mode_{app_state.mode}')}",
-            f"{tr(language, 'label_algorithm')}: {tr(language, f'algorithm_{app_state.selected_algorithm}')}",
+            (
+                f"{tr(language, 'label_task_algorithm')}: "
+                f"{tr(language, f'algorithm_{app_state.selected_task_algorithm}')}"
+            ),
+            (
+                f"{tr(language, 'label_path_algorithm')}: "
+                f"{tr(language, f'path_{app_state.selected_path_algorithm}')}"
+            ),
             f"{tr(language, 'label_map')}: {scene.width} x {scene.height}",
             f"{tr(language, 'label_agents')}: {len(scene.agents)}",
             (
@@ -95,6 +102,8 @@ class PanelRenderer:
             y += height + gap
 
         y += 8
+        selected_insert = len(app_state.selected_insert_cells)
+        required_insert = app_state.selected_insert_task_count
         for action, label in (
             ("new", tr(language, "action_new")),
             ("load", tr(language, "action_load")),
@@ -103,8 +112,49 @@ class PanelRenderer:
             ("preset_tasks", tr(language, "action_preset_tasks")),
             ("random_obstacles", tr(language, "action_random_obstacles")),
             ("clear_obstacles", tr(language, "action_clear_obstacles")),
-            ("algorithm", tr(language, "action_algorithm", algorithm=tr(language, f"algorithm_{app_state.selected_algorithm}"))),
+            (
+                "task_algorithm",
+                tr(
+                    language,
+                    "action_task_algorithm",
+                    algorithm=tr(language, f"algorithm_{app_state.selected_task_algorithm}"),
+                ),
+            ),
+            (
+                "path_algorithm",
+                tr(
+                    language,
+                    "action_path_algorithm",
+                    algorithm=tr(language, f"path_{app_state.selected_path_algorithm}"),
+                ),
+            ),
             ("start", tr(language, "action_start")),
+            (
+                "pause",
+                tr(language, "action_resume")
+                if app_state.paused
+                else tr(language, "action_pause"),
+            ),
+            (
+                "insert_task_type",
+                tr(
+                    language,
+                    "action_insert_task_type",
+                    task=tr(language, f"tool_task_{app_state.selected_insert_task_type}"),
+                ),
+            ),
+            (
+                "insert_task_count",
+                tr(
+                    language,
+                    "action_insert_task_count",
+                    count=app_state.selected_insert_task_count,
+                ),
+            ),
+            (
+                "insert_task",
+                f"{tr(language, 'action_insert_task')} ({selected_insert}/{required_insert})",
+            ),
             ("reset", tr(language, "action_reset")),
             ("speed", tr(language, "action_speed", speed=app_state.speed_multiplier)),
             ("language", tr(language, "action_language")),
@@ -118,10 +168,15 @@ class PanelRenderer:
                 "preset_tasks",
                 "random_obstacles",
                 "clear_obstacles",
-                "algorithm",
+                "task_algorithm",
+                "path_algorithm",
                 "start",
             }:
                 enabled = False
+            if app_state.mode != "run" and action in {"pause", "insert_task_type", "insert_task_count", "insert_task"}:
+                enabled = False
+            if app_state.mode == "run" and action in {"insert_task_type", "insert_task_count", "insert_task"}:
+                enabled = app_state.paused and not app_state.inserted_once
             buttons.append(
                 Button(
                     action=action,

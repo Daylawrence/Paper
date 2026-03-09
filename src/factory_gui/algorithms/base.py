@@ -16,6 +16,9 @@ class AgentSnapshot:
     home: Coord
     speed_cells_per_s: float
     capabilities: set[str]
+    max_tasks_total: int
+    completed_task_count: int
+    task_proficiency: dict[str, float]
     phase: str
 
 
@@ -28,6 +31,9 @@ class TaskSnapshot:
     release_time_s: int
     due_time_s: int | None
     required_capabilities: set[str]
+    required_proficiency: float
+    min_agents: int
+    max_agents: int
     status: str
 
 
@@ -36,6 +42,7 @@ class PlannerState:
     t_now_s: float
     agents: list[AgentSnapshot]
     tasks: list[TaskSnapshot]
+    conflicts: set[tuple[str, str]]
     travel_time: Callable[[str, Coord, Coord], float]
 
 

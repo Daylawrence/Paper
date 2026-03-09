@@ -11,6 +11,8 @@ from factory_gui.model.grid import Coord, in_bounds, manhattan, neighbors
 class AStarPlanner:
     """Compute a shortest path with unit traversal costs."""
 
+    name = "astar"
+
     def find_path(
         self,
         width: int,

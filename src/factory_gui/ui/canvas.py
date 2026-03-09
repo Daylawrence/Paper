@@ -47,6 +47,7 @@ class GridCanvas:
         self._draw_grid(surface, scene)
         self._draw_obstacles(surface, scene)
         self._draw_tasks(surface, scene, controller)
+        self._draw_insert_selection(surface, app_state)
         self._draw_homes(surface, scene)
         self._draw_paths(surface, controller)
         self._draw_agents(surface, scene, controller)
@@ -57,6 +58,17 @@ class GridCanvas:
             constants.MUTED_TEXT_COLOR,
         )
         surface.blit(hint, (self.rect.x, self.rect.y - 18))
+
+    def _draw_insert_selection(self, surface: pygame.Surface, app_state) -> None:
+        if app_state.mode != "run" or not app_state.paused or app_state.inserted_once:
+            return
+        for idx, cell in enumerate(app_state.selected_insert_cells, start=1):
+            rect = self._cell_rect(cell).inflate(-4, -4)
+            if not self.rect.colliderect(rect):
+                continue
+            pygame.draw.rect(surface, (255, 198, 73), rect, width=3, border_radius=4)
+            text = self.small_font.render(str(idx), True, (88, 56, 0))
+            surface.blit(text, text.get_rect(center=rect.center))
 
     def cell_from_pos(self, pos: tuple[int, int], scene) -> Coord | None:
         if not self.rect.collidepoint(pos):
@@ -125,7 +137,8 @@ class GridCanvas:
     def _draw_tasks(self, surface: pygame.Surface, scene, controller) -> None:
         status_lookup = controller.task_states if controller.task_states else {}
         for task in scene.tasks:
-            rect = self._cell_rect(task.location).inflate(-8, -8)
+            margin = max(2, int(self.cell_size_px * 0.22))
+            rect = self._cell_rect(task.location).inflate(-2 * margin, -2 * margin)
             if not self.rect.colliderect(rect):
                 continue
             runtime = status_lookup.get(task.id)
@@ -138,9 +151,25 @@ class GridCanvas:
             else:
                 color = constants.TASK_TYPE_COLORS.get(task.type, constants.TEXT_COLOR)
             pygame.draw.rect(surface, color, rect, border_radius=4)
-            label = task.id.split("_")[-1]
-            text = self.small_font.render(label, True, (255, 255, 255))
-            surface.blit(text, text.get_rect(center=rect.center))
+            if rect.width >= 14 and rect.height >= 14:
+                task_label = task.id.split("_")[-1]
+                label_text = self.small_font.render(task_label, True, (255, 255, 255))
+                label_pos = label_text.get_rect(center=(rect.centerx, rect.centery - 4))
+                surface.blit(label_text, label_pos)
+
+                demand_text = self.small_font.render(
+                    f"{task.min_agents}/{task.max_agents}",
+                    True,
+                    (255, 255, 255),
+                )
+                badge_padding_x = 4
+                badge_height = demand_text.get_height() + 2
+                badge_width = demand_text.get_width() + badge_padding_x * 2
+                badge = pygame.Rect(0, 0, badge_width, badge_height)
+                badge.centerx = rect.centerx
+                badge.bottom = rect.bottom - 1
+                pygame.draw.rect(surface, (44, 48, 54), badge, border_radius=3)
+                surface.blit(demand_text, demand_text.get_rect(center=badge.center))
 
     def _draw_paths(self, surface: pygame.Surface, controller) -> None:
         for agent_id, path in controller.current_paths().items():

@@ -14,3 +14,5 @@ class AgentSpec:
     home: Coord
     speed_cells_per_s: float
     capabilities: set[str] = field(default_factory=set)
+    max_tasks_total: int = 3
+    task_proficiency: dict[str, float] = field(default_factory=dict)
