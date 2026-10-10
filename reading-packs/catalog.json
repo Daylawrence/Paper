@@ -1,0 +1,79 @@
+[
+  {
+    "paper": "DiffusionDrive",
+    "original_date": "2026-09-18",
+    "uploaded_date": "2026-10-10",
+    "zip_path": "reading-packs/2026-09-18_CVPR2025_DiffusionDrive/2026-09-18_CVPR2025_DiffusionDrive_阅读包.zip",
+    "pdf_path": "reading-packs/2026-09-18_CVPR2025_DiffusionDrive/2026-09-18_CVPR2025_DiffusionDrive-Truncated-Diffusion-Model.pdf",
+    "zip_bytes": 4307336,
+    "zip_sha256": "57186453edd567cb50a00b816e93ccaa64473d84e7872e4e85a7b688fa293b59",
+    "zip_git_blob_sha": "54ed38797395dded12c4991b2bc8dc443cb95d83",
+    "pdf_git_blob_sha": "9b581eacba81e454908f69261e2c69a9cc9d3d2f"
+  },
+  {
+    "paper": "PE3R",
+    "original_date": "2026-09-21",
+    "uploaded_date": "2026-10-10",
+    "zip_path": "reading-packs/2026-09-21_CVPR2026_PE3R/2026-09-21_CVPR2026_PE3R_阅读包.zip",
+    "pdf_path": "reading-packs/2026-09-21_CVPR2026_PE3R/2026-09-21_CVPR2026_PE3R-Perception-Efficient-3D-Reconstruction.pdf",
+    "zip_bytes": 3614798,
+    "zip_sha256": "81103e46f6c65da8da351013359253a406ab4ceccbf05a79730fc27d62ded5c4",
+    "zip_git_blob_sha": "4b31527fc6da7df0134e3d8ec96dad4e10947659",
+    "pdf_git_blob_sha": "7a7df1ab12c0c46c7c5ec44244d4c3308da4f1c6"
+  },
+  {
+    "paper": "ACoT-VLA",
+    "original_date": "2026-09-23",
+    "uploaded_date": "2026-10-10",
+    "zip_path": "reading-packs/2026-09-23_CVPR2026_ACoT-VLA/2026-09-23_CVPR2026_ACoT-VLA_阅读包.zip",
+    "pdf_path": "reading-packs/2026-09-23_CVPR2026_ACoT-VLA/2026-09-23_CVPR2026_ACoT-VLA-Action-Chain-of-Thought.pdf",
+    "zip_bytes": 6058731,
+    "zip_sha256": "d74368253d216b9b0ee3ee7606b26da427de7e06690a864141a7e5fc41e47cab",
+    "zip_git_blob_sha": "8624fb25fab6303872829bd66797917de4d7f13f",
+    "pdf_git_blob_sha": "d6d3a1370c0ad44836e58d640ea1877129f8d70a"
+  },
+  {
+    "paper": "VLM-3R",
+    "original_date": "2026-09-28",
+    "uploaded_date": "2026-10-10",
+    "zip_path": "reading-packs/2026-09-28_CVPR2026_VLM-3R/2026-09-28_CVPR2026_VLM-3R_阅读包.zip",
+    "pdf_path": "reading-packs/2026-09-28_CVPR2026_VLM-3R/2026-09-28_CVPR2026_VLM-3R-Vision-Language-Models-Augmented-with-3D-Reconstruction.pdf",
+    "zip_bytes": 6532687,
+    "zip_sha256": "72884a424ef0c33588adeb880a10fa35f772575ecdd9893f10967815beaa8a0c",
+    "zip_git_blob_sha": "cc888d8c7936b42d4ae27c9e554110e0330e70d8",
+    "pdf_git_blob_sha": "676f57f6ba09145a76dbbb2e6d741c556e21d6d6"
+  },
+  {
+    "paper": "VGG-T3",
+    "original_date": "2026-09-30",
+    "uploaded_date": "2026-10-10",
+    "zip_path": "reading-packs/2026-09-30_CVPR2026_VGG-T3/2026-09-30_CVPR2026_VGG-T3_阅读包.zip",
+    "pdf_path": "reading-packs/2026-09-30_CVPR2026_VGG-T3/2026-09-30_CVPR2026_VGG-T3-Offline-Feed-Forward-3D-Reconstruction-at-Scale.pdf",
+    "zip_bytes": 6332511,
+    "zip_sha256": "ee99dab978d9f4015d35523d061b5924ca3cd5eefca5a654e0b6ace81dea2b27",
+    "zip_git_blob_sha": "1ac63bf63fee055ad86b4b0d1c3d18a9893bbd23",
+    "pdf_git_blob_sha": "26c0db1b9ec6aa064716a3e42cf734f7c3fee004"
+  },
+  {
+    "paper": "SRPO",
+    "original_date": "2026-10-05",
+    "uploaded_date": "2026-10-10",
+    "zip_path": "reading-packs/2026-10-05_CVPR2026_SRPO/2026-10-05_CVPR2026_SRPO_阅读包.zip",
+    "pdf_path": "reading-packs/2026-10-05_CVPR2026_SRPO/2026-10-05_CVPR2026_SRPO-Self-Referential-Policy-Optimization.pdf",
+    "zip_bytes": 10255226,
+    "zip_sha256": "2ffe79b0914a30f8ae93d1500dcd0146e7438e03efb34c851ec411914747e821",
+    "zip_git_blob_sha": "be74822856ade299c6958af23da056d0d8c3b1ef",
+    "pdf_git_blob_sha": "daa91bafaa559e35fff839aa78c505fa923507a2"
+  },
+  {
+    "paper": "G2VLM",
+    "original_date": "2026-10-07",
+    "uploaded_date": "2026-10-10",
+    "zip_path": "reading-packs/2026-10-07_CVPR2026_G2VLM/2026-10-07_CVPR2026_G2VLM_阅读包.zip",
+    "pdf_path": "reading-packs/2026-10-07_CVPR2026_G2VLM/2026-10-07_CVPR2026_G2VLM-Geometry-Grounded-Vision-Language-Model.pdf",
+    "zip_bytes": 4279240,
+    "zip_sha256": "0f74b45e60e20414788984cc6d43d0d70458622aabf16bcbeef1fbbf1f67d3da",
+    "zip_git_blob_sha": "a51b3848477fccda5f9d6091c8859d0b23d86531",
+    "pdf_git_blob_sha": "631421d99e1e9e53ca86f92b4e6bfe27ae969753"
+  }
+]
