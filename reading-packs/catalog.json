@@ -96,5 +96,26 @@
     "zip_git_blob_sha": "0725d510e29173da904de4d24ebe714063915281",
     "pdf_git_blob_sha": "2aaad1bf58aa4cab1e11722a204533f4722684ac",
     "delivery_status": "completed"
+  },
+  {
+    "paper": "DrivePI",
+    "normalized_title": "DrivePI: Spatial-aware 4D MLLM for Unified Autonomous Driving Understanding, Perception, Prediction and Planning",
+    "arxiv": "2512.12799",
+    "doi": null,
+    "conference": "CVPR 2026",
+    "source_commit": "8eb580803444a214af390c114a4dd9136bf3de48",
+    "original_date": "2026-10-07",
+    "created_date": "2026-10-14",
+    "uploaded_date": "2026-10-14",
+    "delivery_note": "历史论文按新提示词重制版，不是新推荐",
+    "zip_path": "reading-packs/2026-10-14_CVPR2026_DrivePI/2026-10-14_CVPR2026_DrivePI_阅读包.zip",
+    "pdf_path": "reading-packs/2026-10-14_CVPR2026_DrivePI/2026-10-14_CVPR2026_DrivePI-Spatial-aware-4D-MLLM.pdf",
+    "zip_bytes": 7122691,
+    "pdf_bytes": 142103,
+    "zip_sha256": "d623fb75d953dec1fe942cbdd04d7313bf3b236d3ce6cdeaa2a4f101aa0413cf",
+    "pdf_sha256": "131b667c661e03ef5842b08681523fb858bb0f1ed9025d7aebd689ccf3df38fb",
+    "zip_git_blob_sha": "5f805661eac5ff9401b5d4ff0ac88f9798bee1c6",
+    "pdf_git_blob_sha": "21171e68b4bdbe2ccc0db177b88b502b86154cd1",
+    "delivery_status": "completed"
   }
 ]
