@@ -117,5 +117,26 @@
     "zip_git_blob_sha": "5f805661eac5ff9401b5d4ff0ac88f9798bee1c6",
     "pdf_git_blob_sha": "21171e68b4bdbe2ccc0db177b88b502b86154cd1",
     "delivery_status": "completed"
+  },
+  {
+    "paper": "UniVLA",
+    "normalized_title": "UniVLA: Unified Vision-Language-Action Model",
+    "arxiv": "2506.19850v1",
+    "doi": "10.48550/arXiv.2506.19850",
+    "conference": "ICLR 2026",
+    "source_commit": "a91ee5f269d7ad46d46635ee6481d2eb655b4af9",
+    "original_date": "2026-10-09",
+    "created_date": "2026-10-19",
+    "uploaded_date": "2026-10-19",
+    "delivery_note": "历史论文按新提示词重制版，不是新推荐",
+    "zip_path": "reading-packs/2026-10-19_ICLR2026_UniVLA/2026-10-19_ICLR2026_UniVLA_阅读包.zip",
+    "pdf_path": "reading-packs/2026-10-19_ICLR2026_UniVLA/2026-10-19_ICLR2026_UniVLA-Unified-Vision-Language-Action-Model.pdf",
+    "zip_bytes": 5099274,
+    "pdf_bytes": 168212,
+    "zip_sha256": "2fc6297ae437f6e92098b7d070bdceeb98b7118c80cc6ef6849735e89c6b5916",
+    "pdf_sha256": "4babb8d924f04b8558c9933c81b068707c160e2a0e5a19d2c91a66111514d8fe",
+    "zip_git_blob_sha": "a92ea78dc2b0409609e0c18d7577fb6302e7b7b0",
+    "pdf_git_blob_sha": "3f76559228b00f0f539f4c7f76721ea517e88158",
+    "delivery_status": "completed"
   }
 ]
