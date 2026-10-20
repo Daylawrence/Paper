@@ -138,5 +138,25 @@
     "zip_git_blob_sha": "a92ea78dc2b0409609e0c18d7577fb6302e7b7b0",
     "pdf_git_blob_sha": "3f76559228b00f0f539f4c7f76721ea517e88158",
     "delivery_status": "completed"
+  },
+  {
+    "paper": "GLUEMAP",
+    "normalized_title": "GLUEMAP: Global Structure-from-Motion Meets Feedforward Reconstruction",
+    "arxiv": "2605.26103v2",
+    "doi": "10.48550/arXiv.2605.26103",
+    "conference": "CVPR 2026",
+    "source_commit": "adc9e4bb5f41014d3f7c157a879edc278588c829",
+    "created_date": "2026-10-21",
+    "uploaded_date": "2026-10-21",
+    "delivery_note": "新论文推荐",
+    "zip_path": "reading-packs/2026-10-21_CVPR2026_GLUEMAP/2026-10-21_CVPR2026_GLUEMAP_阅读包.zip",
+    "pdf_path": "reading-packs/2026-10-21_CVPR2026_GLUEMAP/2026-10-21_CVPR2026_GLUEMAP-Global-Structure-from-Motion-Meets-Feedforward-Reconstruction.pdf",
+    "zip_bytes": 6804211,
+    "pdf_bytes": 158034,
+    "zip_sha256": "873c90a49cebbb5258bc7eca288091270b5bbfcd1a0b225c9afaf2c4f7b7375e",
+    "pdf_sha256": "284579dfd72f70650ff9a5e1f2cb58bf906eaf2229de89a50b58da7eee952140",
+    "zip_git_blob_sha": "e05cf0e509c44c8e6248e5412fe4d92f8a185e58",
+    "pdf_git_blob_sha": "6d55ba8d09ba86a0c22a8f0a84bdf4c40af6998a",
+    "delivery_status": "completed"
   }
 ]
