@@ -158,5 +158,25 @@
     "zip_git_blob_sha": "e05cf0e509c44c8e6248e5412fe4d92f8a185e58",
     "pdf_git_blob_sha": "6d55ba8d09ba86a0c22a8f0a84bdf4c40af6998a",
     "delivery_status": "completed"
+  },
+  {
+    "paper": "MoRe",
+    "normalized_title": "MoRe: Motion-aware Feed-forward 4D Reconstruction Transformer",
+    "arxiv": "2603.05078v2",
+    "doi": "10.48550/arXiv.2603.05078",
+    "conference": "CVPR 2026 Highlight",
+    "source_commit": "f330a3499dcb96e53715156c23bf32fb4d01cd92",
+    "created_date": "2026-10-23",
+    "uploaded_date": "2026-10-23",
+    "delivery_note": "新论文推荐",
+    "zip_path": "reading-packs/2026-10-23_CVPR2026_MoRe/2026-10-23_CVPR2026_MoRe_阅读包.zip",
+    "pdf_path": "reading-packs/2026-10-23_CVPR2026_MoRe/2026-10-23_CVPR2026_MoRe-Motion-aware-Feed-forward-4D-Reconstruction-Transformer.pdf",
+    "zip_bytes": 7356835,
+    "pdf_bytes": 100792,
+    "zip_sha256": "90f8b4ef2ad6c9d66d40530167a74cc179cd64c0494ecb70916d0ffc6a3abb94",
+    "pdf_sha256": "da7a4ea5a9c641fb31b1784947c0cea694f75f34a31b35d9b05ddcaa3b432f4f",
+    "zip_git_blob_sha": "b1abbbaff5ff1a6864d3fd15c9acc6b5e7313296",
+    "pdf_git_blob_sha": "be8223870ba03a01f79c0fc0c6971f9001afb13c",
+    "delivery_status": "completed"
   }
 ]
