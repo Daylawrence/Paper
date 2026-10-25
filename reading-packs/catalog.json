@@ -178,5 +178,26 @@
     "zip_git_blob_sha": "b1abbbaff5ff1a6864d3fd15c9acc6b5e7313296",
     "pdf_git_blob_sha": "be8223870ba03a01f79c0fc0c6971f9001afb13c",
     "delivery_status": "completed"
+  },
+  {
+    "paper": "VLA-World",
+    "normalized_title": "Learning Vision-Language-Action World Models for Autonomous Driving",
+    "arxiv": "2604.09059v1",
+    "doi": "10.48550/arXiv.2604.09059",
+    "conference": "CVPR 2026 Findings",
+    "source_commit": null,
+    "source_code_status": "official code not publicly available as of 2026-10-26",
+    "created_date": "2026-10-26",
+    "uploaded_date": "2026-10-26",
+    "delivery_note": "新论文推荐",
+    "zip_path": "reading-packs/2026-10-26_CVPR2026F_VLA-World/2026-10-26_CVPR2026F_VLA-World_阅读包.zip",
+    "pdf_path": "reading-packs/2026-10-26_CVPR2026F_VLA-World/2026-10-26_CVPR2026F_VLA-World-Learning-Vision-Language-Action-World-Models.pdf",
+    "zip_bytes": 6324322,
+    "pdf_bytes": 145736,
+    "zip_sha256": "a7fe862866f5dcc0e84ed633a7651b5dff6dc9fe64955096c12d2d03d60f8547",
+    "pdf_sha256": "7fe8cc8dd1f4833ee70d29bb9a0436c72033eedbfc408fd8c6c87773c71085da",
+    "zip_git_blob_sha": "6dd9888b091819a845ef5a51bd4e538f227873af",
+    "pdf_git_blob_sha": "c3e39c8d9ce363cce820051a3df7427f91136f3d",
+    "delivery_status": "completed"
   }
 ]
