@@ -199,5 +199,26 @@
     "zip_git_blob_sha": "6dd9888b091819a845ef5a51bd4e538f227873af",
     "pdf_git_blob_sha": "c3e39c8d9ce363cce820051a3df7427f91136f3d",
     "delivery_status": "completed"
+  },
+  {
+    "paper": "GaussianDWM",
+    "normalized_title": "GaussianDWM: 3D Gaussian Driving World Model for Unified Scene Understanding and Multi-Modal Generation",
+    "arxiv": "2512.23180v3",
+    "doi": "10.48550/arXiv.2512.23180",
+    "conference": "CVPR 2026",
+    "source_commit": "50e29cb7df691f58dc5c9992b7de6ec496a4e6d0",
+    "source_code_status": "official repository statically inspected; model weights/training not executed",
+    "created_date": "2026-10-28",
+    "uploaded_date": "2026-10-28",
+    "delivery_note": "新论文推荐",
+    "zip_path": "reading-packs/2026-10-28_CVPR2026_GaussianDWM/2026-10-28_CVPR2026_GaussianDWM_阅读包.zip",
+    "pdf_path": "reading-packs/2026-10-28_CVPR2026_GaussianDWM/2026-10-28_CVPR2026_GaussianDWM_中文学习简报.pdf",
+    "zip_bytes": 7048829,
+    "pdf_bytes": 132070,
+    "zip_sha256": "1aa852e5e6e66f92e959fd740e17592c01df1f4064c386a0ae028a4313aaa77e",
+    "pdf_sha256": "599a9e8be88620fbccc337f5a9a20cabcfa3ba6e2201a16ac548a67896f5d8a3",
+    "zip_git_blob_sha": "13190afb73623a19d2280b297e7ecb9d247abd10",
+    "pdf_git_blob_sha": "90dbfcddec75b2600818890dde6971963e98468b",
+    "delivery_status": "completed"
   }
 ]
