@@ -1,0 +1,80 @@
+name: GaussianDWM remote integrity and source audit
+on:
+  push:
+    branches: [main]
+    paths: [".github/workflows/audit-gaussiandwm.yml"]
+  workflow_dispatch:
+permissions:
+  contents: write
+concurrency:
+  group: gaussian-audit
+  cancel-in-progress: false
+jobs:
+  audit:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with: {fetch-depth: 0}
+      - name: Download remote ZIP afresh, verify SHA256/CRC, and check original PDFs
+        shell: bash
+        run: |
+          set -uo pipefail
+          D="reading-packs/2026-10-28_CVPR2026_GaussianDWM"
+          mkdir -p /tmp/gaussian-audit
+          export PACKDIR="$D"
+          curl -fL --retry 3 --connect-timeout 15 --max-time 180 \
+            'https://raw.githubusercontent.com/Daylawrence/Paper/ec144a9d7fdc8e0baa8d4ba5628f5caae0527d38/reading-packs/2026-10-28_CVPR2026_GaussianDWM/2026-10-28_CVPR2026_GaussianDWM_%E9%98%85%E8%AF%BB%E5%8C%85.zip' \
+            -o /tmp/gaussian-audit/remote.zip
+          curl -fL --retry 2 --connect-timeout 15 --max-time 100 \
+            'https://openaccess.thecvf.com/content/CVPR2026/papers/Deng_GaussianDWM_3D_Gaussian_Driving_World_Model_for_Unified_Scene_Understanding_CVPR_2026_paper.pdf' \
+            -o /tmp/gaussian-audit/cvf_main.pdf || :
+          curl -fL --retry 2 --connect-timeout 15 --max-time 100 \
+            'https://openaccess.thecvf.com/content/CVPR2026/supplemental/Deng_GaussianDWM_3D_Gaussian_CVPR_2026_supplemental.pdf' \
+            -o /tmp/gaussian-audit/cvf_supp.pdf || :
+          curl -fL --retry 2 --connect-timeout 15 --max-time 100 \
+            'https://arxiv.org/pdf/2512.23180v3' \
+            -o /tmp/gaussian-audit/arxiv_v3.pdf || :
+          python3 - <<'PY'
+          from pathlib import Path
+          import subprocess, json, hashlib, os, datetime
+          folder=Path('/tmp/gaussian-audit')
+          exp='1aa852e5e6e66f92e959fd740e17592c01df1f4064c386a0ae028a4313aaa77e'
+          result={'paper':'GaussianDWM','audit_date':'2026-10-30','source_archive_expected_sha256':exp,
+                  'remote_download_validation':'failed','sources':{},'issues':[]}
+          z=folder/'remote.zip'
+          if z.exists():
+            data=z.read_bytes()
+            actual=hashlib.sha256(data).hexdigest()
+            check=subprocess.run(['unzip','-t',str(z)],capture_output=True,text=True)
+            result['remote_zip']={'bytes':len(data),'sha256':actual,'unzip_crc_valid':check.returncode==0}
+            if len(data)==7048829 and actual==exp and check.returncode==0:
+              result['remote_download_validation']='passed'
+            else: result['issues'].append('Remote archive still has wrong bytes, SHA256 or CRC')
+          else: result['issues'].append('Remote ZIP download failed')
+          for label in ('cvf_main','cvf_supp','arxiv_v3'):
+            p=folder/(label+'.pdf')
+            if not p.exists():
+              result['sources'][label]={'available':False}
+              continue
+            info=subprocess.run(['pdfinfo',str(p)],capture_output=True,text=True)
+            pages=next((int(s.split(':')[1]) for s in info.stdout.splitlines() if s.startswith('Pages:')),None)
+            item={'available': info.returncode==0,'bytes':p.stat().st_size,'sha256':hashlib.sha256(p.read_bytes()).hexdigest(),'pages':pages}
+            if pages:
+              for pg in range(max(1,pages-3),pages+1):
+                q=subprocess.run(['pdftotext','-f',str(pg),'-l',str(pg),str(p),'-'],capture_output=True,text=True)
+                item.setdefault('last_page_text_chars',{})[str(pg)]=len(q.stdout.strip())
+            result['sources'][label]=item
+          base=Path(os.environ['PACKDIR'])
+          for num in (16,17,18,19):
+            p=base/'pages'/f'page-{num:02}.jpg'
+            result.setdefault('local_page_shas',{})[p.name]=hashlib.sha256(p.read_bytes()).hexdigest() if p.exists() else None
+          if result['local_page_shas'].get('page-18.jpg')==result['local_page_shas'].get('page-19.jpg'):
+            result['issues'].append('Page 18 and 19 images are byte-identical; inspect for blank placeholders')
+          (base/'remote-audit-2026-10-30.json').write_text(json.dumps(result,ensure_ascii=False,indent=2)+'\n',encoding='utf-8')
+          print(json.dumps(result,ensure_ascii=False,indent=2))
+          PY
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add "$D/remote-audit-2026-10-30.json"
+          git commit -m "Record GaussianDWM remote-download and source-integrity audit [skip ci]"
+          git push origin HEAD:main
