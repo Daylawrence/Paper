@@ -1,0 +1,134 @@
+{
+  "updated_date": "2026-10-30",
+  "policy": "GaussianDWM first until completed; then oldest uncompleted historical item, one paper per run; do not resume new recommendations while pending items exist",
+  "total_packs": 14,
+  "pending": 14,
+  "entries": [
+    {
+      "priority": 1,
+      "paper": "GaussianDWM",
+      "directory": "reading-packs/2026-10-28_CVPR2026_GaussianDWM",
+      "original_date": "2026-10-28",
+      "legacy_status": "repairing",
+      "repair_status": "repairing_content_quality_blocked",
+      "new_standard_completed": false
+    },
+    {
+      "priority": 2,
+      "paper": "DiffusionDrive",
+      "directory": "reading-packs/2026-09-18_CVPR2025_DiffusionDrive",
+      "original_date": "2026-09-18",
+      "legacy_status": "not_recorded",
+      "repair_status": "pending_expansion_and_remote_validation",
+      "new_standard_completed": false
+    },
+    {
+      "priority": 3,
+      "paper": "PE3R",
+      "directory": "reading-packs/2026-09-21_CVPR2026_PE3R",
+      "original_date": "2026-09-21",
+      "legacy_status": "not_recorded",
+      "repair_status": "pending_expansion_and_remote_validation",
+      "new_standard_completed": false
+    },
+    {
+      "priority": 4,
+      "paper": "ACoT-VLA",
+      "directory": "reading-packs/2026-09-23_CVPR2026_ACoT-VLA",
+      "original_date": "2026-09-23",
+      "legacy_status": "not_recorded",
+      "repair_status": "pending_expansion_and_remote_validation",
+      "new_standard_completed": false
+    },
+    {
+      "priority": 5,
+      "paper": "VLM-3R",
+      "directory": "reading-packs/2026-09-28_CVPR2026_VLM-3R",
+      "original_date": "2026-09-28",
+      "legacy_status": "not_recorded",
+      "repair_status": "pending_expansion_and_remote_validation",
+      "new_standard_completed": false
+    },
+    {
+      "priority": 6,
+      "paper": "VGG-T3",
+      "directory": "reading-packs/2026-09-30_CVPR2026_VGG-T3",
+      "original_date": "2026-09-30",
+      "legacy_status": "not_recorded",
+      "repair_status": "pending_expansion_and_remote_validation",
+      "new_standard_completed": false
+    },
+    {
+      "priority": 7,
+      "paper": "SRPO",
+      "directory": "reading-packs/2026-10-05_CVPR2026_SRPO",
+      "original_date": "2026-10-05",
+      "legacy_status": "not_recorded",
+      "repair_status": "pending_expansion_and_remote_validation",
+      "new_standard_completed": false
+    },
+    {
+      "priority": 8,
+      "paper": "WAM-Flow",
+      "directory": "reading-packs/2026-10-12_CVPR2026_WAM-Flow",
+      "original_date": "2026-10-05",
+      "legacy_status": "completed",
+      "repair_status": "pending_expansion_and_remote_validation",
+      "new_standard_completed": false
+    },
+    {
+      "priority": 9,
+      "paper": "G2VLM",
+      "directory": "reading-packs/2026-10-07_CVPR2026_G2VLM",
+      "original_date": "2026-10-07",
+      "legacy_status": "not_recorded",
+      "repair_status": "pending_expansion_and_remote_validation",
+      "new_standard_completed": false
+    },
+    {
+      "priority": 10,
+      "paper": "DrivePI",
+      "directory": "reading-packs/2026-10-14_CVPR2026_DrivePI",
+      "original_date": "2026-10-07",
+      "legacy_status": "completed",
+      "repair_status": "pending_expansion_and_remote_validation",
+      "new_standard_completed": false
+    },
+    {
+      "priority": 11,
+      "paper": "UniVLA",
+      "directory": "reading-packs/2026-10-19_ICLR2026_UniVLA",
+      "original_date": "2026-10-09",
+      "legacy_status": "completed",
+      "repair_status": "pending_expansion_and_remote_validation",
+      "new_standard_completed": false
+    },
+    {
+      "priority": 12,
+      "paper": "GLUEMAP",
+      "directory": "reading-packs/2026-10-21_CVPR2026_GLUEMAP",
+      "original_date": "2026-10-21",
+      "legacy_status": "completed",
+      "repair_status": "pending_expansion_and_remote_validation",
+      "new_standard_completed": false
+    },
+    {
+      "priority": 13,
+      "paper": "MoRe",
+      "directory": "reading-packs/2026-10-23_CVPR2026_MoRe",
+      "original_date": "2026-10-23",
+      "legacy_status": "completed",
+      "repair_status": "pending_expansion_and_remote_validation",
+      "new_standard_completed": false
+    },
+    {
+      "priority": 14,
+      "paper": "VLA-World",
+      "directory": "reading-packs/2026-10-26_CVPR2026F_VLA-World",
+      "original_date": "2026-10-26",
+      "legacy_status": "completed",
+      "repair_status": "pending_expansion_and_remote_validation",
+      "new_standard_completed": false
+    }
+  ]
+}

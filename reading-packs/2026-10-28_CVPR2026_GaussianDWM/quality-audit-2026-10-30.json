@@ -1,0 +1,55 @@
+{
+  "paper": "GaussianDWM",
+  "audit_date": "2026-10-30",
+  "audit_scope": "default branch, local original ZIP from user Library, and GitHub file/trees APIs",
+  "original_created_date": "2026-10-28",
+  "remote_head_checked": "dd3203a03fa8c56ce924d563c0b80be5f408e66e",
+  "expanded": {
+    "manifest_files": 34,
+    "git_tree_file_count": 37,
+    "matched_size_and_git_blob_sha": 34,
+    "remote_text_files_read": 9,
+    "remote_text_bytes_and_blob_sha_matching": 9,
+    "remote_extra_files": [
+      "2026-10-28_CVPR2026_GaussianDWM_阅读包.zip",
+      "manifest.json",
+      "remote-audit-2026-10-30.json"
+    ],
+    "full_binary_redownload_in_this_run": false
+  },
+  "archive": {
+    "local_bytes": 7048829,
+    "local_sha256": "1aa852e5e6e66f92e959fd740e17592c01df1f4064c386a0ae028a4313aaa77e",
+    "local_git_blob_sha": "9ecdd928324a0ef6662495f345b432ae5f18d979",
+    "local_zip_crc": "passed",
+    "github_remote_tree_bytes": 7048829,
+    "github_remote_tree_blob_sha": "9ecdd928324a0ef6662495f345b432ae5f18d979",
+    "prior_reported_broken_remote_bytes": 524288,
+    "previous_remote_download_report": "remote-audit-2026-10-30.json records full download, SHA256 and ZIP CRC success; this audit independently confirmed Git object identity, not a new full remote byte download"
+  },
+  "content_quality": {
+    "paper_pdf_pages": 19,
+    "source_layout": "12-page CVPR main paper plus 7-page supplement, as recorded in earlier source audit",
+    "paper_pdf_type": "rasterized images, no extractable text",
+    "blank_pages": [
+      18,
+      19
+    ],
+    "blank_page_18_sha256": "9cfc0fbff6a8bcce75bb63d9cefe74c6761a2e658b897a6afb2f8f0ecbe788d1",
+    "blank_page_19_sha256": "9cfc0fbff6a8bcce75bb63d9cefe74c6761a2e658b897a6afb2f8f0ecbe788d1",
+    "translation_html_paragraph_elements": 41,
+    "translation_coverage": "not passed: current text consists of section-level condensed paragraphs; reliable per-paragraph comparison against official full text not yet completed",
+    "source_cvf_main_pages_from_prior_audit": 12,
+    "source_cvf_supplement_pages_from_prior_audit": 7,
+    "source_pdf_contents_restored_in_this_run": false
+  },
+  "quality_blockers": [
+    "The packaged PDF and pages/page-18.jpg / pages/page-19.jpg are blank and fail the complete-paper requirement.",
+    "The translation has not passed the required full paragraph-by-paragraph translation audit and is substantially condensed.",
+    "A fresh end-user remote ZIP re-download and unzip validation was not independently completed in this audit."
+  ],
+  "delivery_status": "repairing",
+  "passed_metadata_checks": true,
+  "completed": false,
+  "followup": "Recover authoritative CVPR main/supplement PDFs, regenerate 19 authentic readable pages and paper.pdf, complete paragraph-level Chinese translation, refresh all dependent HTML/Markdown/PDF/ZIP and manifest, then re-download default-branch remote artifacts and verify every byte/hash/CRC."
+}

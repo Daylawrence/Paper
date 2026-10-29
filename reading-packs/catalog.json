@@ -217,7 +217,7 @@
     "pdf_bytes": 157043,
     "zip_sha256": "1aa852e5e6e66f92e959fd740e17592c01df1f4064c386a0ae028a4313aaa77e",
     "pdf_sha256": "2ac738ef0d5970edde9d7786d00fddb195c26a2834920097b90338f1679f616f",
-    "zip_git_blob_sha": "13190afb73623a19d2280b297e7ecb9d247abd10",
+    "zip_git_blob_sha": "9ecdd928324a0ef6662495f345b432ae5f18d979",
     "pdf_git_blob_sha": "df25e3a739fe97457629a08f44c3f334549c7bc1",
     "delivery_status": "repairing",
     "repair_started_date": "2026-10-30",
@@ -228,6 +228,13 @@
     "md_translation_path": "reading-packs/2026-10-28_CVPR2026_GaussianDWM/translation.md",
     "md_algorithms_path": "reading-packs/2026-10-28_CVPR2026_GaussianDWM/algorithms.md",
     "expanded_file_manifest_path": "reading-packs/2026-10-28_CVPR2026_GaussianDWM/manifest.json",
-    "repair_note": "Original 7,048,829-byte ZIP recovered in local file library. Expanded assets and Markdown restored; PDF/ZIP assembly and complete remote verification are still pending. Translation paragraph-level coverage also requires audit."
+    "repair_note": "ZIP Git blob now matches full 7,048,829-byte local original; 34/34 expanded files match remote default-branch byte counts and blob SHAs. But paper.pdf is rasterized with blank pages 18 and 19, and the condensed translation lacks complete paragraph-level verification. Do not mark completed until source page restoration, full translation, fresh remote download, and dependency audits pass.",
+    "zip_git_blob_sha_prior_invalid": "13190afb73623a19d2280b297e7ecb9d247abd10",
+    "zip_remote_bytes_current_metadata": 7048829,
+    "expanded_files_manifest_verified": 34,
+    "expanded_text_files_content_verified": 9,
+    "repair_last_checked_date": "2026-10-30",
+    "repair_status": "content_quality_blocked",
+    "repair_audit_path": "reading-packs/2026-10-28_CVPR2026_GaussianDWM/quality-audit-2026-10-30.json"
   }
 ]
