@@ -34,6 +34,7 @@ jobs:
           curl -fL --retry 2 --connect-timeout 15 --max-time 100 \
             'https://arxiv.org/pdf/2512.23180v3' \
             -o /tmp/gaussian-audit/arxiv_v3.pdf || :
+          sudo apt-get update -qq && sudo apt-get install -y -qq poppler-utils
           python3 - <<'PY'
           from pathlib import Path
           import subprocess, json, hashlib, os, datetime
