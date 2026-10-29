@@ -1,0 +1,58 @@
+{
+  "paper": "GaussianDWM",
+  "audit_date": "2026-10-30",
+  "source_archive_expected_sha256": "1aa852e5e6e66f92e959fd740e17592c01df1f4064c386a0ae028a4313aaa77e",
+  "remote_download_validation": "passed",
+  "sources": {
+    "cvf_main": {
+      "available": true,
+      "bytes": 12430933,
+      "sha256": "89faceab57ff03c0df3f803390a26f4f084432c9cff936cc69bf3d939643b87b",
+      "pages": 12,
+      "last_page_text_chars": {
+        "9": 5677,
+        "10": 5921,
+        "11": 5918,
+        "12": 4028
+      }
+    },
+    "cvf_supp": {
+      "available": true,
+      "bytes": 5137863,
+      "sha256": "1af4fc2a67bffe58564df6911917c6b618f321b1b17ca8b69e43b8c0c089b74e",
+      "pages": 7,
+      "last_page_text_chars": {
+        "4": 1908,
+        "5": 2193,
+        "6": 1442,
+        "7": 2195
+      }
+    },
+    "arxiv_v3": {
+      "available": true,
+      "bytes": 12178240,
+      "sha256": "a8e389f2be13aa66703e9252a3f0621af4c069404a93891415cb7bead01a951e",
+      "pages": 12,
+      "last_page_text_chars": {
+        "9": 5673,
+        "10": 5918,
+        "11": 5915,
+        "12": 4025
+      }
+    }
+  },
+  "issues": [
+    "Page 18 and 19 images are byte-identical; inspect for blank placeholders"
+  ],
+  "remote_zip": {
+    "bytes": 7048829,
+    "sha256": "1aa852e5e6e66f92e959fd740e17592c01df1f4064c386a0ae028a4313aaa77e",
+    "unzip_crc_valid": true
+  },
+  "local_page_shas": {
+    "page-16.jpg": "06acf848b4bfa6adcce48887ea0df00934018c0c19d7a7c114259e6159f824d1",
+    "page-17.jpg": "e6f49d272c2c4fbcde9ceb4fe29c4e82c831b7631155c5a3212e641742f24a92",
+    "page-18.jpg": "9cfc0fbff6a8bcce75bb63d9cefe74c6761a2e658b897a6afb2f8f0ecbe788d1",
+    "page-19.jpg": "9cfc0fbff6a8bcce75bb63d9cefe74c6761a2e658b897a6afb2f8f0ecbe788d1"
+  }
+}
