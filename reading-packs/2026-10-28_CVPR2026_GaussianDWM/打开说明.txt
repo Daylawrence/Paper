@@ -1,0 +1,8 @@
+GaussianDWM 阅读包（2026-10-28 原制；2026-10-30 修复迁移）
+直接阅读：在 GitHub 浏览 translation.md、algorithms.md、paper.pdf 和中文学习简报 PDF。
+完整离线界面：git clone 仓库后，从对应目录双击 index.html（file://）；无需解压 ZIP。
+如果使用 ZIP 备份，必须确认下载完整并解压之后才能打开；ZIP 不是主要交付方式。
+HTML 引用 style.css、app.js、pages/、images/、vendor/，全部资源需随同保留。
+GitHub 普通文件页不执行 HTML；未部署实际 Pages 时没有在线网页入口。
+源码核查 commit：50e29cb7df691f58dc5c9992b7de6ec496a4e6d0。
+原制日期：2026-10-28；修复迁移日期：2026-10-30。

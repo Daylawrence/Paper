@@ -1,6 +1,13 @@
-# 论文阅读包下载
+# 论文阅读包（展开 Markdown / PDF 优先）
 
-下载 ZIP 后完整解压，双击 `index.html` 阅读「原文 / 译文 / 关键解释」。中文简报 PDF 可直接在 GitHub 打开。ZIP 中包含原文、译文、算法解释及离线资源。
+
+## 2026-10-30 历史包修复中：GaussianDWM
+
+原制日期 2026-10-28。已找回完整原始 ZIP（7,048,829 字节），原 GitHub ZIP 只有 524,288 字节，**原下载链接暂不可用**。以下先提供展开文件： [译文 Markdown](2026-10-28_CVPR2026_GaussianDWM/translation.md) · [关键解释 Markdown](2026-10-28_CVPR2026_GaussianDWM/algorithms.md) · [中文简报 PDF](2026-10-28_CVPR2026_GaussianDWM/2026-10-28_CVPR2026_GaussianDWM_%E4%B8%AD%E6%96%87%E5%AD%A6%E4%B9%A0%E7%AE%80%E6%8A%A5.pdf) · [完整展开目录](2026-10-28_CVPR2026_GaussianDWM/) · [逐文件哈希清单](2026-10-28_CVPR2026_GaussianDWM/manifest.json)。
+
+原文合并 PDF 和 ZIP 正在按本地 SHA256 重建，**在远端核验完成前不标为 completed**。GitHub 文件页不执行 HTML；克隆仓库后在该目录双击 `index.html` 离线阅读。只有实际部署并验证 Pages 才会提供网页托管链接。旧包将继续依次修复，暂不推送新论文。
+
+以下为早期未逐包重新核验的 ZIP 归档；请优先使用已修复的展开目录。下载 ZIP 后完整解压，双击 `index.html` 阅读「原文 / 译文 / 关键解释」。中文简报 PDF 可直接在 GitHub 打开。ZIP 中包含原文、译文、算法解释及离线资源。
 
 以下为已生成历史成果的原文件归档，上传于 2026-10-10；保留原制作日期。本次校验了 ZIP 完整性与上传内容哈希，未重新审校全部译文。
 
@@ -19,4 +26,3 @@
 | 2026-10-21 | GLUEMAP（新论文推荐） | [下载 ZIP](2026-10-21_CVPR2026_GLUEMAP/2026-10-21_CVPR2026_GLUEMAP_%E9%98%85%E8%AF%BB%E5%8C%85.zip?raw=true) | [查看 PDF](2026-10-21_CVPR2026_GLUEMAP/2026-10-21_CVPR2026_GLUEMAP-Global-Structure-from-Motion-Meets-Feedforward-Reconstruction.pdf) |
 | 2026-10-23 | MoRe（新论文推荐） | [下载 ZIP](2026-10-23_CVPR2026_MoRe/2026-10-23_CVPR2026_MoRe_%E9%98%85%E8%AF%BB%E5%8C%85.zip?raw=true) | [查看 PDF](2026-10-23_CVPR2026_MoRe/2026-10-23_CVPR2026_MoRe-Motion-aware-Feed-forward-4D-Reconstruction-Transformer.pdf) |
 | 2026-10-26 | VLA-World（新论文推荐，CVPR 2026 Findings） | [下载 ZIP](2026-10-26_CVPR2026F_VLA-World/2026-10-26_CVPR2026F_VLA-World_%E9%98%85%E8%AF%BB%E5%8C%85.zip?raw=true) | [查看 PDF](2026-10-26_CVPR2026F_VLA-World/2026-10-26_CVPR2026F_VLA-World-Learning-Vision-Language-Action-World-Models.pdf) |
-| 2026-10-28 | GaussianDWM（新论文推荐，CVPR 2026） | [下载 ZIP](2026-10-28_CVPR2026_GaussianDWM/2026-10-28_CVPR2026_GaussianDWM_%E9%98%85%E8%AF%BB%E5%8C%85.zip?raw=true) | [查看 PDF](2026-10-28_CVPR2026_GaussianDWM/2026-10-28_CVPR2026_GaussianDWM_%E4%B8%AD%E6%96%87%E5%AD%A6%E4%B9%A0%E7%AE%80%E6%8A%A5.pdf) |

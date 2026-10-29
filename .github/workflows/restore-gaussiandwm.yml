@@ -1,0 +1,63 @@
+name: Restore GaussianDWM original PDF and ZIP
+on:
+  push:
+    branches: [main]
+    paths:
+      - ".github/workflows/restore-gaussiandwm.yml"
+      - "reading-packs/2026-10-28_CVPR2026_GaussianDWM/.repair_parts/**"
+  workflow_dispatch:
+permissions:
+  contents: write
+concurrency:
+  group: gaussiandwm-restore-main
+  cancel-in-progress: false
+jobs:
+  restore:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - name: Assemble and validate original files from verified Git blobs
+        shell: bash
+        run: |
+          set -euo pipefail
+          DIR="reading-packs/2026-10-28_CVPR2026_GaussianDWM"
+          ZIP="2026-10-28_CVPR2026_GaussianDWM_阅读包.zip"
+          cd "$DIR"
+          cat .repair_parts/paper.pdf.part?? > paper.pdf
+          cat .repair_parts/archive.zip.part?? > "$ZIP"
+          test "$(wc -c < paper.pdf)" -eq 4267188
+          test "$(wc -c < "$ZIP")" -eq 7048829
+          printf '%s  %s\n' '44c34da51999892aead3dca4cc3a73b607df113fa5948e5b5a79605d51c3958b' paper.pdf | sha256sum -c -
+          printf '%s  %s\n' '1aa852e5e6e66f92e959fd740e17592c01df1f4064c386a0ae028a4313aaa77e' "$ZIP" | sha256sum -c -
+          unzip -t "$ZIP" >/dev/null
+          python3 - <<'PY'
+          import json, pathlib, hashlib, re
+          root = pathlib.Path('.')
+          manifest = json.loads((root/'manifest.json').read_text(encoding='utf-8'))
+          assert manifest['file_count'] == 34
+          for rel, item in manifest['files'].items():
+              target = root / rel
+              assert target.is_file(), f"missing {rel}"
+              b = target.read_bytes()
+              assert len(b) == item['bytes'], f"wrong byte count {rel}"
+              assert hashlib.sha256(b).hexdigest() == item['sha256'], f"sha256 mismatch {rel}"
+              gitsha = hashlib.sha1(f"blob {len(b)}\0".encode() + b).hexdigest()
+              assert gitsha == item['git_blob_sha'], f"Git SHA mismatch {rel}"
+          html = (root/'index.html').read_text(encoding='utf-8')
+          for rel in set(re.findall(r'(?:src|href)="([^"]+)"', html)):
+              if re.match(r'^(?:https?:|mailto:|#)', rel):
+                  continue
+              assert (root/rel.split('#')[0]).is_file(), f"broken relative dependency {rel}"
+          pages = list((root/'pages').glob('page-*.jpg'))
+          assert len(pages) == 19, f"page count {len(pages)}"
+          print('PASS:', manifest['file_count'], 'manifest assets; 19 pages; all HTML refs')
+          PY
+          cd "$GITHUB_WORKSPACE"
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          rm -rf "$DIR/.repair_parts"
+          git add -A "$DIR"
+          git commit -m "Restore full GaussianDWM PDF and ZIP from verified parts [skip ci]"
+          git push origin HEAD:main
