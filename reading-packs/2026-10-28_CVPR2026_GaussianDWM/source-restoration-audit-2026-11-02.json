@@ -1,0 +1,44 @@
+{
+  "paper": "GaussianDWM",
+  "repair_date": "2026-11-02",
+  "original_created_date": "2026-10-28",
+  "action": "restore exact official main+supplement PDF, JPEG pages 01-19, and optional ZIP",
+  "sources": {
+    "main": {
+      "url": "https://openaccess.thecvf.com/content/CVPR2026/papers/Deng_GaussianDWM_3D_Gaussian_Driving_World_Model_for_Unified_Scene_Understanding_CVPR_2026_paper.pdf",
+      "bytes": 12430933,
+      "sha256": "89faceab57ff03c0df3f803390a26f4f084432c9cff936cc69bf3d939643b87b",
+      "pages": 12
+    },
+    "supplement": {
+      "url": "https://openaccess.thecvf.com/content/CVPR2026/supplemental/Deng_GaussianDWM_3D_Gaussian_CVPR_2026_supplemental.pdf",
+      "bytes": 5137863,
+      "sha256": "1af4fc2a67bffe58564df6911917c6b618f321b1b17ca8b69e43b8c0c089b74e",
+      "pages": 7
+    }
+  },
+  "previous_packaged_pdf_sha256": "44c34da51999892aead3dca4cc3a73b607df113fa5948e5b5a79605d51c3958b",
+  "previous_page_18_19_sha256": {
+    "18": "9cfc0fbff6a8bcce75bb63d9cefe74c6761a2e658b897a6afb2f8f0ecbe788d1",
+    "19": "9cfc0fbff6a8bcce75bb63d9cefe74c6761a2e658b897a6afb2f8f0ecbe788d1"
+  },
+  "source_pdf": {
+    "pages": 19,
+    "bytes": 17452487,
+    "sha256": "c6558bba56cb29b00c8ad7e3a04572614ea6ec21650e08b1ab7416ba0edacb5a",
+    "git_blob_sha": "4367f7541a3eb3d207ec2de10cc4f46fe1991617"
+  },
+  "new_page_18_sha256": "ab9e4c9212e6aafd2407d662516a4dd03be8709d97714ad2fcc51081e46c590f",
+  "new_page_19_sha256": "6382deef76f6f79feff06c517e581f78230ed90bdb8ec1451d41769e941dfeab",
+  "manifest_files_updated": 34,
+  "zip": {
+    "bytes": 20861399,
+    "sha256": "f7c5289268b9372b26d41a7917dba5d784ee6421fd420fe6105167b8d9c61be8",
+    "git_blob_sha": "9b5dcc4fc4f36d7d1bcf30bc9da053156b078e40",
+    "crc": "passed"
+  },
+  "remote_default_branch_validation": "pending",
+  "translation_quality": "not passed: paragraph-level complete translation still required",
+  "delivery_status": "repairing",
+  "completed": false
+}
