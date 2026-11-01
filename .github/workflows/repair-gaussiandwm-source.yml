@@ -1,0 +1,43 @@
+name: Repair GaussianDWM official PDF and missing source pages
+on:
+  push:
+    branches: [main]
+    paths:
+      - ".github/workflows/repair-gaussiandwm-source.yml"
+      - "scripts/restore_gaussiandwm_pages.py"
+  workflow_dispatch:
+permissions:
+  contents: write
+concurrency:
+  group: gaussiandwm-source-repair
+  cancel-in-progress: false
+jobs:
+  restore-pages:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - name: Install PDF render dependencies
+        run: python -m pip install --quiet pymupdf pillow
+      - name: Fetch checksum-pinned authoritative PDF and replace 19 paper pages
+        run: python scripts/restore_gaussiandwm_pages.py
+      - name: Commit source restoration (NOT a completed translation)
+        shell: bash
+        run: |
+          set -euo pipefail
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add -A reading-packs/2026-10-28_CVPR2026_GaussianDWM \
+            reading-packs/repair-queue.json reading-packs/catalog.json
+          if git diff --cached --quiet; then
+            echo "No changes"; exit 0
+          fi
+          git commit -m "Restore GaussianDWM CVF 19 source pages and ZIP, translation still pending [skip ci]"
+          git fetch origin main
+          git rebase origin/main
+          git push origin HEAD:main
