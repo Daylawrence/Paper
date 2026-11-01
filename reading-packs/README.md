@@ -1,14 +1,14 @@
 # 论文阅读包（展开 Markdown / PDF 优先）
 
-## 2026-10-30 修复进度：GaussianDWM 尚未完成
+## 2026-11-02 修复进度：GaussianDWM 原文与远端完整性已恢复
 
-保留原制日期 **2026-10-28**，修复核查日期 **2026-10-30**。**历史旧包修复优先，新论文推荐与上传暂停。** [修复队列](repair-queue.json)。
+保留原制作日期 **2026-10-28**；实际修复与远端验收日期 **2026-11-02**。继续**先修复历史旧包，暂停新论文推荐与上传**。[修复队列](repair-queue.json)。
 
-- **已验证的部分**：原 ZIP 为 **7,048,829 字节**，本地 SHA256 为 `1aa852e5e6e66f92e959fd740e17592c01df1f4064c386a0ae028a4313aaa77e`，且本地 ZIP CRC 校验成功。GitHub `main` 上 ZIP blob 大小和 Git SHA-1 与本地完整 ZIP 一致（`9ecdd928324a0ef6662495f345b432ae5f18d979`）；34/34 个已展开文件的远端大小与 Git blob SHA 均匹配，9 个文本文件额外重新获取并核对内容字节数。此前的 524,288 字节截断状态不再符合当前 Git 树元数据。
-- **仍不合格**：`paper.pdf` 是 19 页图片合成 PDF，其中 **第 18、19 页是纯白占位页**，没有恢复完整的原论文/补充材料内容；当前 `translation.md` / `translation.html` 是压缩的分节文本，**不能当作逐段完整译文**。本次不能将该包标为 `completed`，也不能把仅 ZIP CRC 成功等同于完整内容通过。
-- **后续必须修复**：恢复官方 12 页主文 + 7 页补充材料的真实页面，制作完整逐段翻译并同步 `translation.md`、`translation.html` 和 `index.html`，重做 PDF/ZIP，最后从 GitHub 远端再次完整下载并验证。
+- **原文页修复通过**：按 CVPR 2026 官方文件 SHA256 核验，下载并合并 12 页主论文和 7 页补充材料，恢复 19 页可搜索文字的 [paper.pdf](2026-10-28_CVPR2026_GaussianDWM/paper.pdf)，重新生成 page-01.jpg 到 page-19.jpg；原第 18、19 页相同的空白占位图已替换。
+- **GitHub 远端验收通过的部分**：完整展开目录的 34/34 个文件大小及 Git blob SHA 一致；重新下载远端 ZIP（20,861,399 字节，SHA256: f7c5289268b9372b26d41a7917dba5d784ee6421fd420fe6105167b8d9c61be8），通过 ZIP CRC 和内部逐文件 34 项字节数、SHA256、Git blob SHA；重新下载 paper.pdf，核验全部 19 页，末三页均有正文；静态相对资源链接无缺失。[远端验收明细](2026-10-28_CVPR2026_GaussianDWM/remote-verification-2026-11-02.json)。
+- **仍待修复，不得标 completed**：[translation.md](2026-10-28_CVPR2026_GaussianDWM/translation.md)、translation.html 和 index.html 内嵌译文仍是压缩的分节文本，尚未达到整篇正文和补充材料逐节逐段完整翻译的标准。维持 repairing 状态，本篇优先级不变。
 
-目前能在 GitHub 直接查看的**未完工资料**：[译文 Markdown（待完整校对）](2026-10-28_CVPR2026_GaussianDWM/translation.md) · [关键算法 Markdown](2026-10-28_CVPR2026_GaussianDWM/algorithms.md) · [中文简报 PDF](2026-10-28_CVPR2026_GaussianDWM/2026-10-28_CVPR2026_GaussianDWM_%E4%B8%AD%E6%96%87%E5%AD%A6%E4%B9%A0%E7%AE%80%E6%8A%A5.pdf) · [原文图片 PDF（末两页有缺陷）](2026-10-28_CVPR2026_GaussianDWM/paper.pdf) · [展开文件目录](2026-10-28_CVPR2026_GaussianDWM/) · [逐文件清单](2026-10-28_CVPR2026_GaussianDWM/manifest.json) · [质量审计](2026-10-28_CVPR2026_GaussianDWM/quality-audit-2026-10-30.json)。需要核对完整英文材料，请使用[论文的 CVPR 官方页面](https://openaccess.thecvf.com/content/CVPR2026/html/Deng_GaussianDWM_3D_Gaussian_Driving_World_Model_for_Unified_Scene_Understanding_CVPR_2026_paper.html)所列的主文与补充材料。
+直接阅读入口：[完整展开目录](2026-10-28_CVPR2026_GaussianDWM/) · [原文 PDF](2026-10-28_CVPR2026_GaussianDWM/paper.pdf) · [现有译文 Markdown（未完成）](2026-10-28_CVPR2026_GaussianDWM/translation.md) · [关键算法 Markdown](2026-10-28_CVPR2026_GaussianDWM/algorithms.md) · [中文学习简报 PDF](2026-10-28_CVPR2026_GaussianDWM/2026-10-28_CVPR2026_GaussianDWM_%E4%B8%AD%E6%96%87%E5%AD%A6%E4%B9%A0%E7%AE%80%E6%8A%A5.pdf) · [逐文件清单](2026-10-28_CVPR2026_GaussianDWM/manifest.json)。
 
 GitHub 文件页面**不执行 HTML**；可以直接阅读 Markdown/PDF，或 `git clone https://github.com/Daylawrence/Paper.git` 后本地打开对应 `index.html`。未部署且未验证 GitHub Pages，不提供虚构的网页阅读入口。ZIP 仅作备份，不作为取得展开资料的前提。
 
