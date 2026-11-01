@@ -37,7 +37,7 @@
     "git_blob_sha": "9b5dcc4fc4f36d7d1bcf30bc9da053156b078e40",
     "crc": "passed"
   },
-  "remote_default_branch_validation": "pending",
+  "remote_default_branch_validation": "passed, independent full ZIP and PDF redownload, 34 Git object checks",
   "translation_quality": "not passed: paragraph-level complete translation still required",
   "delivery_status": "repairing",
   "completed": false

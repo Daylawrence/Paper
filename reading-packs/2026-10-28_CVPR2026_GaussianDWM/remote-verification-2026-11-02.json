@@ -1,0 +1,30 @@
+{
+  "paper": "GaussianDWM",
+  "verification_date": "2026-11-02",
+  "remote_commit_checked": "1de8d5e276127fd1466b99e4cdea13ab91f1a077",
+  "default_branch": "main",
+  "remote_git_tree_34_expanded_entries": "passed",
+  "remote_zip": {
+    "bytes": 20861399,
+    "sha256": "f7c5289268b9372b26d41a7917dba5d784ee6421fd420fe6105167b8d9c61be8",
+    "git_blob_sha": "9b5dcc4fc4f36d7d1bcf30bc9da053156b078e40",
+    "crc": "passed",
+    "manifest_entry_checks": 34
+  },
+  "remote_paper_pdf": {
+    "bytes": 17452487,
+    "sha256": "c6558bba56cb29b00c8ad7e3a04572614ea6ec21650e08b1ab7416ba0edacb5a",
+    "git_blob_sha": "4367f7541a3eb3d207ec2de10cc4f46fe1991617",
+    "pages": 19,
+    "last_page_text_chars": {
+      "17": 2167,
+      "18": 1435,
+      "19": 2223
+    }
+  },
+  "static_relative_asset_links": "passed",
+  "source_pages_restored": true,
+  "full_chinese_translation": "not passed, original text substantially condensed",
+  "delivery_status": "repairing",
+  "completed": false
+}
