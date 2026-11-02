@@ -1,0 +1,1030 @@
+<!doctype html><html lang="zh-CN"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>DriveVLA-W0 阅读包</title><link rel="stylesheet" href="style.css"><link rel="stylesheet" href="vendor/katex.min.css"><title>完整中文译文</title></head><body class="standalone"><section class="notice"><h2 id="translation-scope">翻译范围与版本</h2><p>历史材料重制：2026-09-16。本次选定 arXiv:2510.12796v2，共 22 页，含附录/补充材料。会议身份为 ICLR2026；会议正式版与此版本的排版、引用编号可能不同，本译文严格沿用所选 arXiv 版本。参考文献列表不翻译，正文引用保留。作者原文观点均为忠实翻译，解释另在「关键解释」。</p><p>译文为非官方中文翻译，已逐块对应 113 个标题、段落、图注单元；所有表格数值和公式直接保留自所选版本。完整覆盖清单见 <a href="coverage.html">覆盖核对表</a>。图中标签对照：VLA (Action Prediction)=VLA（动作预测）；World Modeling=世界建模；Sparse Action Supervision=稀疏动作监督；Visual & Action Supervision=视觉与动作监督；Image/Text/Action=图像/文本/动作；Number of Frames=帧数；Collision Rate=碰撞率（图 1 单位为‱）；Decrease=下降；VLA Expert/Action Expert=VLA 专家/动作专家；Joint Attention=联合注意力；Query-based/Autoregressive/Flow Matching=查询式/自回归/流匹配；Ground Truth/GT=真实数据；Cond. on GT Traj=以真实轨迹为条件；Decelerate/Turn Right/Go Straight=减速/右转/直行；Generated/Prediction=生成/预测；Latency=延迟；Tokens=token 数；Training from scratch/Pretrain=从头训练/预训练；Future frames=未来帧。</p><p>表内缩写对照：NC 无责任碰撞；DAC 可行驶区域合规；TTC 碰撞时间；C./Comf. 舒适度；EP 自车进度；PDMS 预测驾驶员模型分数；DDC 行驶方向合规；TLC 交通灯合规；LK 车道保持；HC 历史舒适度；EC 扩展舒适度；EPDMS 扩展 PDMS；ADE 平均位移误差（米）；FID 弗雷歇起始距离；DS 驾驶分数；RC 路线完成率；IS 违规分数；FPS 每秒帧数；↑ 越大越好；↓ 越小越好。方法名与模型专名保留原名。</p></section><article class="ltx_document ltx_authors_1line">
+<h1 class="ltx_title ltx_title_document" data-block="0" id="tr-0">DriveVLA-W0：世界模型增强自动驾驶中的数据规模定律</h1>
+<div class="ltx_authors">
+<span class="ltx_creator ltx_role_author">
+<span class="ltx_personname">
+<span class="ltx_tabular ltx_align_middle" id="id1">
+<span class="ltx_tr" id="id1.1">
+<span class="ltx_td ltx_align_left" id="id1.1.1">Yingyan Li<sup class="ltx_sup" id="id1.1.1.1"><span class="ltx_text ltx_font_italic" id="id1.1.1.1.1">1∗</span></sup>  Shuyao Shang<sup class="ltx_sup" id="id1.1.1.2"><span class="ltx_text ltx_font_italic" id="id1.1.1.2.1">1∗</span></sup>  Weisong Liu<sup class="ltx_sup" id="id1.1.1.3"><span class="ltx_text ltx_font_italic" id="id1.1.1.3.1">1∗</span></sup>  Bing Zhan<sup class="ltx_sup" id="id1.1.1.4"><span class="ltx_text ltx_font_italic" id="id1.1.1.4.1">1∗</span></sup>  Haochen Wang<sup class="ltx_sup" id="id1.1.1.5"><span class="ltx_text ltx_font_italic" id="id1.1.1.5.1">1∗</span></sup></span></span>
+<span class="ltx_tr" id="id1.2">
+<span class="ltx_td ltx_align_left" id="id1.2.1"><span class="ltx_text ltx_font_bold" id="id1.2.1.1">Yuqi Wang<sup class="ltx_sup" id="id1.2.1.1.1"><span class="ltx_text ltx_font_italic" id="id1.2.1.1.1.1">1</span></sup></span>    <span class="ltx_text ltx_font_bold" id="id1.2.1.2">Yuntao Chen<sup class="ltx_sup" id="id1.2.1.2.1"><span class="ltx_text ltx_font_italic" id="id1.2.1.2.1.1">1</span></sup></span>    <span class="ltx_text ltx_font_bold" id="id1.2.1.3">Xiaoman Wang<sup class="ltx_sup" id="id1.2.1.3.1">2</sup></span>    <span class="ltx_text ltx_font_bold" id="id1.2.1.4">Yasong An<sup class="ltx_sup" id="id1.2.1.4.1">2</sup></span></span></span>
+<span class="ltx_tr" id="id1.3">
+<span class="ltx_td ltx_align_left" id="id1.3.1"><span class="ltx_text ltx_font_bold" id="id1.3.1.1">Chufeng Tang<sup class="ltx_sup" id="id1.3.1.1.1">2</sup></span>    <span class="ltx_text ltx_font_bold" id="id1.3.1.2">Lu Hou<sup class="ltx_sup" id="id1.3.1.2.1">2</sup></span>    <span class="ltx_text ltx_font_bold" id="id1.3.1.3">Lue Fan<math alttext="{}^{1}\textsuperscript{\Letter}" class="ltx_Math" display="inline" id="m12" intent=":literal"><semantics><mmultiscripts><mtext class="ltx_mathvariant_bold"><sup class="ltx_sup"><span class="ltx_text ltx_font_medium">🖂</span></sup></mtext><mprescripts></mprescripts><mrow></mrow><mn>1</mn></mmultiscripts><annotation encoding="application/x-tex">{}^{1}\textsuperscript{\Letter}</annotation></semantics></math></span>   <span class="ltx_text ltx_font_bold" id="id1.3.1.4">Zhaoxiang Zhang<math alttext="{}^{1}\textsuperscript{\Letter}" class="ltx_Math" display="inline" id="m13" intent=":literal"><semantics><mmultiscripts><mtext class="ltx_mathvariant_bold"><sup class="ltx_sup"><span class="ltx_text ltx_font_medium">🖂</span></sup></mtext><mprescripts></mprescripts><mrow></mrow><mn>1</mn></mmultiscripts><annotation encoding="application/x-tex">{}^{1}\textsuperscript{\Letter}</annotation></semantics></math></span></span></span>
+</span>
+<br class="ltx_break"/><sup class="ltx_sup" id="id2">1</sup>NLPR, Institute of Automation, Chinese Academy of Sciences (CASIA) 
+<br class="ltx_break"/><sup class="ltx_sup" id="id3">2</sup>Yinwang Intelligent Technology Co. Ltd.
+
+<br class="ltx_break"/><span class="ltx_text ltx_font_typewriter" id="id4">
+{liyingyan2021,shangshuyao2024,liuweisong2024,zhanbing2024}@ia.ac.cn
+
+<br class="ltx_break"/>
+{lue.fan, zhaoxiang.zhang}@ia.ac.cn
+</span>
+<br class="ltx_break"/>Code: <a class="ltx_ref ltx_url ltx_font_typewriter" href="https://github.com/BraveGroup/DriveVLA-W0" title="">https://github.com/BraveGroup/DriveVLA-W0</a>
+</span></span></div>
+<div class="ltx_abstract" id="abstract1"><h6 class="ltx_title ltx_title_abstract" data-block="1" id="tr-1">摘要</h6>
+<p class="ltx_p" data-block="2" id="abstract1.1">在大规模数据上扩展 Vision-Language-Action（VLA，视觉—语言—动作）模型，为实现更通用的驾驶智能提供了有前景的路径。然而，VLA 模型受到“监督不足（supervision deficit）”的限制：巨大的模型容量仅由稀疏、低维动作监督，导致相当一部分表征能力未被充分利用。为解决这一问题，我们提出 DriveVLA-W0，一种通过世界建模预测未来图像的训练范式。该任务产生密集的自监督信号，迫使模型学习驾驶环境的内在动力学。我们分别针对两类主流 VLA 架构实例化该范式，展示其通用性：对于使用离散视觉 token 的 VLA，采用自回归世界模型；对于使用连续视觉特征的 VLA，采用扩散世界模型。基于世界建模学到的丰富表征，我们引入轻量动作专家，解决实时部署中的推理延迟问题。在 NAVSIM v1/v2 基准及规模大 680 倍的内部数据集上进行的大量实验表明，DriveVLA-W0 显著优于 BEV 和 VLA 基线。关键的是，它增强了数据规模定律，表明随着训练集扩大，性能增益会加速增长。</p>
+</div>
+<div class="ltx_para" id="p1">
+<table class="ltx_tabular ltx_align_top" id="p1.1">
+<tr class="ltx_tr" id="p1.1.1">
+<td class="ltx_td ltx_align_left" id="p1.1.1.1"><span class="ltx_rule"></span></td></tr>
+</table>
+</div>
+<figure class="ltx_figure" id="S0.F1"><img alt="论文原图 1" class="ltx_graphics ltx_centering ltx_img_landscape" id="S0.F1.g1" src="images/figure-01.jpg"/>
+<figcaption class="ltx_caption ltx_centering" data-block="3">图 1：世界建模是 VLA 数据可扩展性的催化剂。(a) 与仅用动作监督训练的标准 VLA 不同，DriveVLA-W0 同时学习预测未来动作与视觉场景。(b) 世界建模任务提供密集监督来源，使模型更好地利用大规模数据。</figcaption>
+</figure>
+<section class="ltx_section" id="S1">
+<h2 class="ltx_title ltx_title_section" data-block="4" id="tr-4">1 引言</h2>
+<div class="ltx_para ltx_noindent" id="S1.p1">
+<p class="ltx_p" data-block="5" id="S1.p1.1">规模定律（Kaplan et al., 2020；Zhai et al., 2022；Baniodeh et al., 2025；Dehghani et al., 2023）为更通用的驾驶智能提供了一条有吸引力的路径：有望利用 PB 级驾驶数据训练强大的基础模型。目前主要存在两类范式。一类是围绕 Bird’s-Eye-View（BEV，鸟瞰视图）表征（Li et al., 2022；Huang et al., 2021）构建的专用模型（Hu et al., 2022；Jiang et al., 2023）。它们依赖精心设计的几何先验，这些先验虽对驾驶任务有效，却使非驾驶数据的利用不够直接；此外，相对紧凑的架构可能限制其在大规模数据上的扩展潜力。相应地，VLA 模型（Fu et al., 2025；Li et al., 2025b；Zhou et al., 2025c）成为有前景的替代方案。借助在互联网规模数据上预训练的大型 Vision-Language Model（VLM，视觉语言模型）（Wang et al., 2024b；Bai et al., 2025），VLA 拥有明显更大的模型规模和更强的内在扩展潜力。</p>
+</div>
+<div class="ltx_para ltx_noindent" id="S1.p2">
+<p class="ltx_p" data-block="6" id="S1.p2.1">然而，这种扩展潜力很大程度上尚未实现，原因在于一个关键挑战：VLA 巨大的模型规模面对的是极其稀疏的监督信号。标准范式仅用专家动作微调 VLM，要求模型把高维传感器输入映射为少量低维控制信号（如路径点），造成严重的“监督不足”。这阻碍模型学习丰富的世界表征，是单纯增加仅动作训练数据量无法克服的根本局限。实际上，我们观察到监督不充分时，大型 VLA 甚至不如更小的专用 BEV 模型。</p>
+</div>
+<div class="ltx_para ltx_noindent" id="S1.p3">
+<p class="ltx_p" data-block="7" id="S1.p3.1">为解决监督不足，我们利用世界建模（Li et al., 2024a；Wang et al., 2025；Cen et al., 2025；Chen et al., 2024），将它作为密集自监督目标，补充稀疏动作信号。通过要求模型预测未来图像，我们在每个时间步产生密集、丰富的监督信号，迫使模型学习环境内在动力学，构建丰富且具预测性的世界表征。为验证方法有效性，我们在两大 VLA 架构族上实现它；二者主要区别是使用离散 token 还是连续特征表示视觉。对将图像表示为离散视觉 token 的 VLA，世界建模是自然扩展，我们提出自回归世界模型，预测未来图像的离散视觉 token 序列。对使用连续特征的 VLA，这项任务更困难，因为它没有视觉词表，无法直接采用下一 token 预测。为弥补这一缺口，我们引入扩散世界模型，依据当前帧产生的视觉与动作特征，生成未来图像像素。</p>
+</div>
+<div class="ltx_para ltx_noindent" id="S1.p4">
+<p class="ltx_p" data-block="8" id="S1.p4.1">我们在从学术基准到大规模内部数据集的多个数据规模上验证世界建模方法。首先，学术基准上的扩展实验表明，世界建模对泛化至关重要：它学习稳健的视觉模式，而非过拟合数据集特有的动作模式。随后，我们利用包含 7000 万帧的内部数据集研究真正的规模定律，如图 1 所示。这证实了我们的核心假设：世界建模增强数据规模定律。该优势源于未来帧预测提供的密集视觉监督，形成了一种无法仅靠扩大动作监督数据数量来弥合的质的差距。最后，为实现实时部署，我们引入基于 Mixture-of-Experts（MoE，混合专家）的轻量动作专家。它将动作生成与大型 VLA 骨干解耦，使推理延迟降至基线的 63.1%，也为大规模研究不同动作解码器提供高效试验平台。实验揭示从小数据到大数据时性能趋势发生了显著反转：复杂的流匹配解码器在小数据集上往往占优，但在大规模数据下，简单的自回归解码器表现最好。本文有三项主要贡献：</p>
+<ul class="ltx_itemize" id="S1.I1">
+<li class="ltx_item" id="S1.I1.i1"><span class="ltx_tag ltx_tag_item">•</span>
+<div class="ltx_para ltx_noindent" id="S1.I1.i1.p1">
+<p class="ltx_p" data-block="9" id="S1.I1.i1.p1.1">我们将“监督不足”识别为制约 VLA 扩展的关键瓶颈，提出 DriveVLA-W0，通过世界建模从视觉预测中获得密集自监督学习信号。</p>
+</div></li>
+<li class="ltx_item" id="S1.I1.i2"><span class="ltx_tag ltx_tag_item">•</span>
+<div class="ltx_para ltx_noindent" id="S1.I1.i2.p1">
+<p class="ltx_p" data-block="10" id="S1.I1.i2.p1.1">实验揭示世界建模的两个关键规模优势。第一，它通过学习可迁移视觉表征，增强跨动作分布不同领域的泛化。第二，在 7000 万帧的大数据集上，它增强数据规模定律，提供了单纯扩大动作监督数据无法获得的收益。</p>
+</div></li>
+<li class="ltx_item" id="S1.I1.i3"><span class="ltx_tag ltx_tag_item">•</span>
+<div class="ltx_para" id="S1.I1.i3.p1">
+<p class="ltx_p" data-block="11" id="S1.I1.i3.p1.1">我们引入轻量 MoE 动作专家，使推理延迟降至基线的 63.1%。以它为试验平台，我们揭示动作解码器的规模规律反转：简单自回归模型在大规模数据上超越更复杂的流匹配模型，与小数据集观察到的趋势相反。</p>
+</div></li>
+</ul>
+</div>
+</section>
+<section class="ltx_section" id="S2">
+<h2 class="ltx_title ltx_title_section" data-block="12" id="tr-12">2 相关工作</h2>
+<div class="ltx_para ltx_noindent" id="S2.p1">
+<p class="ltx_p" data-block="13" id="S2.p1.1">自动驾驶中的 VLA。自动驾驶 VLM 的发展经历了三个主要阶段，从侧重解释逐步走向集成式端到端 VLA 架构。第一阶段是基于语言的场景解释模型，重点在可解释性。DriveGPT4（Xu et al., 2024）等使用大语言模型生成场景说明和高层机动建议，但不产生可直接执行的动作（Chen et al., 2025；Zhou et al., 2025b）。第二阶段是模块化语言到动作框架，旨在连接高层指令与底层控制。这些方法（Zhou et al., 2025a；Yuan et al., 2024；Zhang et al., 2025；Arai et al., 2025；Gao et al., 2025）采用多阶段流程，模块间通过离散文本指令等不可微接口连接，阻断梯度反传。目前的前沿是端到端 VLA（Renz et al., 2025；Renz et al., 2024；Jiang et al., 2025；Hwang et al., 2024；Yang et al., 2025；Zeng et al., 2025），用统一架构直接把传感器输入映射为轨迹。在此范式中，DriveMoE（Yang et al., 2025）引入 MoE 架构，将动作解码器串接在 VLM 骨干后。ReCogDrive（Li et al., 2025b）把 VLM 与通过模仿和强化学习训练的扩散规划器结合，弥合语言—动作差距。AutoVLA（Zhou et al., 2025c）将轨迹 token 化为动作基元，使单个自回归模型学习自适应推理和规划。我们遵循该范式，提出端到端 VLA。</p>
+</div>
+<div class="ltx_para ltx_noindent" id="S2.p2">
+<p class="ltx_p" data-block="14" id="S2.p2.1">驾驶和机器人中的世界模型。世界模型研究通常遵循两类不同思路：用作仿真数据合成器，或用作表征学习的辅助目标。第一类注重生成，旨在合成高质量驾驶数据。GAIA-1（Hu et al., 2023）、DrivingGPT（Chen et al., 2024）、Doe-1（Zheng et al., 2024a）等生成未来图像或多模态 token，构造逼真场景；Copilot4D（Zhang et al., 2023）则专门预测未来离散视觉 token。第二类利用世界建模作为自监督目标来增强表征学习。VaVAM（Bartoccioni et al., 2025）展示了生成式视频预训练的价值，但缺少动作条件。对此，UniVLA（Wang et al., 2025）和 WorldVLA（Cen et al., 2025）将动作加入自回归预测，学习稳健策略。在自动驾驶领域，LAW（Li et al., 2024a）率先以潜在世界模型探索该范式。与 LAW 预测潜在表征不同，我们监督模型预测未来图像，为 VLA 骨干提供更丰富、更直接的密集学习信号。</p>
+</div>
+</section>
+<section class="ltx_section" id="S3">
+<h2 class="ltx_title ltx_title_section" data-block="15" id="tr-15">3 方法</h2>
+<div class="ltx_para ltx_noindent" id="S3.p1">
+<p class="ltx_p" data-block="16" id="S3.p1.1">我们的方法分为三个关键步骤。首先建立 VLA 基线，展示稀疏、仅动作监督带来的挑战。其次，以核心贡献世界建模增强基线，提供密集自监督。在此基础上，引入基于 MoE 的轻量动作专家解决推理瓶颈，确保强大模型具备实时性能。</p>
+</div>
+<figure class="ltx_figure" id="S3.F2"><img alt="论文原图 2" class="ltx_graphics ltx_centering ltx_img_landscape" id="S3.F2.g1" src="images/figure-02.jpg"/>
+<figcaption class="ltx_caption ltx_centering" data-block="17">图 2：DriveVLA-W0 的架构，通过两种方式实现世界建模：(a) 预测离散视觉 token 的自回归（AR）世界模型；(b) 以多模态输入为条件，对潜在表征去噪的扩散世界模型。</figcaption>
+</figure>
+<section class="ltx_subsection" id="S3.SS1">
+<h3 class="ltx_title ltx_title_subsection" data-block="18" id="tr-18">3.1 VLA 基线</h3>
+<div class="ltx_para ltx_noindent" id="S3.SS1.p1">
+<p class="ltx_p" data-block="19" id="S3.SS1.p1.1">我们的 VLA 基线处理由语言指令（<math alttext="L_{t}" class="ltx_Math" display="inline" id="S3.SS1.p1.m1" intent=":literal"><semantics><msub><mi>L</mi><mi>t</mi></msub><annotation encoding="application/x-tex">L_{t}</annotation></semantics></math>）、前视图像（<math alttext="V_{t}" class="ltx_Math" display="inline" id="S3.SS1.p1.m2" intent=":literal"><semantics><msub><mi>V</mi><mi>t</mi></msub><annotation encoding="application/x-tex">V_{t}</annotation></semantics></math>）和历史动作（<math alttext="A_{t-1}" class="ltx_Math" display="inline" id="S3.SS1.p1.m3" intent=":literal"><semantics><msub><mi>A</mi><mrow><mi>t</mi><mo>−</mo><mn>1</mn></mrow></msub><annotation encoding="application/x-tex">A_{t-1}</annotation></semantics></math>）组成的序列。为保证广泛适用性，我们基于两类主流 VLM 构建变体：VLA (VQ) 把图像量化为离散视觉 token，使用 Emu3 风格骨干；VLA (ViT) 提取连续特征，使用 Qwen2.5-VL 风格骨干。</p>
+</div>
+<div class="ltx_para ltx_noindent" id="S3.SS1.p2">
+<p class="ltx_p" data-block="20" id="S3.SS1.p2.1">输入 token 化。高层驾驶语言指令（<math alttext="L_{t}" class="ltx_Math" display="inline" id="S3.SS1.p2.m1" intent=":literal"><semantics><msub><mi>L</mi><mi>t</mi></msub><annotation encoding="application/x-tex">L_{t}</annotation></semantics></math>）使用 VLM 原生 tokenizer 处理。对于历史动作，我们使用 FAST tokenizer（Pertsch et al., 2025）将连续路径点轨迹转换为离散 token 序列，记为 <math alttext="A_{t-1}" class="ltx_Math" display="inline" id="S3.SS1.p2.m2" intent=":literal"><semantics><msub><mi>A</mi><mrow><mi>t</mi><mo>−</mo><mn>1</mn></mrow></msub><annotation encoding="application/x-tex">A_{t-1}</annotation></semantics></math>。</p>
+</div>
+<div class="ltx_para ltx_noindent" id="S3.SS1.p3">
+<p class="ltx_p" data-block="21" id="S3.SS1.p3.1">VLM 骨干。在每个时刻 <math alttext="t" class="ltx_Math" display="inline" id="S3.SS1.p3.m1" intent=":literal"><semantics><mi>t</mi><annotation encoding="application/x-tex">t</annotation></semantics></math>，遵循 Wang et al. (2025) 和 Fan et al. (2025)，将 <math alttext="H" class="ltx_Math" display="inline" id="S3.SS1.p3.m3" intent=":literal"><semantics><mi>H</mi><annotation encoding="application/x-tex">H</annotation></semantics></math> 步历史中的多模态片段拼接为深度交错输入序列 <math alttext="S_{t}" class="ltx_Math" display="inline" id="S3.SS1.p3.m2" intent=":literal"><semantics><msub><mi>S</mi><mi>t</mi></msub><annotation encoding="application/x-tex">S_{t}</annotation></semantics></math>：<math alttext="S_{t}=[L_{t-H},V_{t-H},A_{t-H-1},\dots,L_{t},V_{t},A_{t-1}]" class="ltx_Math" display="inline" id="S3.SS1.p3.m4" intent=":literal"><semantics><mrow><msub><mi>S</mi><mi>t</mi></msub><mo>=</mo><mrow><mo stretchy="false">[</mo><mrow><msub><mi>L</mi><mrow><mi>t</mi><mo>−</mo><mi>H</mi></mrow></msub><mo>,</mo><msub><mi>V</mi><mrow><mi>t</mi><mo>−</mo><mi>H</mi></mrow></msub><mo>,</mo><msub><mi>A</mi><mrow><mi>t</mi><mo>−</mo><mi>H</mi><mo>−</mo><mn>1</mn></mrow></msub><mo>,</mo><mi mathvariant="normal">…</mi><mo>,</mo><msub><mi>L</mi><mi>t</mi></msub><mo>,</mo><msub><mi>V</mi><mi>t</mi></msub><mo>,</mo><msub><mi>A</mi><mrow><mi>t</mi><mo>−</mo><mn>1</mn></mrow></msub></mrow><mo stretchy="false">]</mo></mrow></mrow><annotation encoding="application/x-tex">S_{t}=[L_{t-H},V_{t-H},A_{t-H-1},\dots,L_{t},V_{t},A_{t-1}]</annotation></semantics></math>。VLM 骨干使用因果注意力掩码，自回归地处理该序列。我们选择两个代表模型：Emu3 (8B)（Wang et al., 2024b）处理离散视觉表征，Qwen2.5-VL (7B)（Bai et al., 2025）处理连续特征。骨干输出最后一层隐藏状态，再按模态分别拆为语言（<math alttext="F_{t}^{L}" class="ltx_Math" display="inline" id="S3.SS1.p3.m5" intent=":literal"><semantics><msubsup><mi>F</mi><mi>t</mi><mi>L</mi></msubsup><annotation encoding="application/x-tex">F_{t}^{L}</annotation></semantics></math>）、视觉（<math alttext="F_{t}^{V}" class="ltx_Math" display="inline" id="S3.SS1.p3.m6" intent=":literal"><semantics><msubsup><mi>F</mi><mi>t</mi><mi>V</mi></msubsup><annotation encoding="application/x-tex">F_{t}^{V}</annotation></semantics></math>）和动作（<math alttext="F_{t}^{A}" class="ltx_Math" display="inline" id="S3.SS1.p3.m7" intent=":literal"><semantics><msubsup><mi>F</mi><mi>t</mi><mi>A</mi></msubsup><annotation encoding="application/x-tex">F_{t}^{A}</annotation></semantics></math>）特征。</p>
+</div>
+<div class="ltx_para ltx_noindent" id="S3.SS1.p4">
+<p class="ltx_p" data-block="22" id="S3.SS1.p4.1">动作预测。训练时，我们用标准交叉熵损失优化模型，使其预测真实动作 token 序列 <math alttext="A_{t}=(a_{1},\dots,a_{M})" class="ltx_Math" display="inline" id="S3.SS1.p4.m1" intent=":literal"><semantics><mrow><msub><mi>A</mi><mi>t</mi></msub><mo>=</mo><mrow><mo stretchy="false">(</mo><msub><mi>a</mi><mn>1</mn></msub><mo>,</mo><mi mathvariant="normal">…</mi><mo>,</mo><msub><mi>a</mi><mi>M</mi></msub><mo stretchy="false">)</mo></mrow></mrow><annotation encoding="application/x-tex">A_{t}=(a_{1},\dots,a_{M})</annotation></semantics></math>：</p>
+<table class="ltx_equation ltx_eqn_table" id="S3.E1">
+<tbody><tr class="ltx_equation ltx_eqn_row ltx_align_baseline">
+<td class="ltx_eqn_cell ltx_eqn_center_padleft"></td>
+<td class="ltx_eqn_cell ltx_align_center"><math alttext="\mathcal{L}_{\text{Action}}=-\sum_{i=1}^{L}\log P(a_{i}|S_{t},a_{&lt;i})." class="ltx_math_unparsed" display="block" id="S3.E1.m1" intent=":literal"><semantics><mrow><msub><mi class="ltx_font_mathcaligraphic">ℒ</mi><mtext>Action</mtext></msub><mo rspace="0em">=</mo><mo lspace="0em" rspace="0.055em">−</mo><munderover><mo movablelimits="false">∑</mo><mrow><mi>i</mi><mo>=</mo><mn>1</mn></mrow><mi>L</mi></munderover><mi>log</mi><mi>P</mi><mrow><mo stretchy="false">(</mo><msub><mi>a</mi><mi>i</mi></msub><mo fence="false" rspace="0.167em" stretchy="false">|</mo><msub><mi>S</mi><mi>t</mi></msub><mo>,</mo><msub><mi>a</mi><mrow><mphantom></mphantom><mo>&lt;</mo><mi>i</mi></mrow></msub><mo stretchy="false">)</mo></mrow><mo lspace="0em">.</mo></mrow><annotation encoding="application/x-tex">\mathcal{L}_{\text{Action}}=-\sum_{i=1}^{L}\log P(a_{i}|S_{t},a_{&lt;i}).</annotation></semantics></math></td>
+<td class="ltx_eqn_cell ltx_eqn_center_padright"></td>
+<td class="ltx_eqn_cell ltx_eqn_eqno ltx_align_middle ltx_align_right" rowspan="1"><span class="ltx_tag ltx_tag_equation ltx_align_right">(1)</span></td></tr></tbody>
+</table>
+<p class="ltx_p" data-block="23" id="S3.SS1.p4.2">推理时，训练好的模型以上下文 <math alttext="S_{t}" class="ltx_Math" display="inline" id="S3.SS1.p4.m2" intent=":literal"><semantics><msub><mi>S</mi><mi>t</mi></msub><annotation encoding="application/x-tex">S_{t}</annotation></semantics></math> 为条件，自回归生成动作 token 序列；再由 FAST detokenizer（Pertsch et al., 2025）将其还原为连续路径点轨迹。</p>
+</div>
+</section>
+<section class="ltx_subsection" id="S3.SS2">
+<h3 class="ltx_title ltx_title_subsection" data-block="24" id="tr-24">3.2 世界建模</h3>
+<div class="ltx_para ltx_noindent" id="S3.SS2.p1">
+<p class="ltx_p" data-block="25" id="S3.SS2.p1.1">既有 VLA 流程通常只监督动作，产生稀疏监督信号：高维传感器输入被压缩成少量低维控制信号，形成“监督不足”。为此，我们引入世界建模作为强大的自监督目标，并针对两类 VLA 分别实现。对具备离散视觉词表的 VLA，把世界模型表述为下一 token 预测，形成自回归世界模型；对使用连续视觉特征的 VLA，引入扩散世界模型，在连续潜在空间生成未来图像。</p>
+</div>
+<div class="ltx_para ltx_noindent" id="S3.SS2.p2">
+<p class="ltx_p" data-block="26" id="S3.SS2.p2.1">自回归世界模型。我们的 AR 世界模型以历史观察和动作为条件，自回归生成当前视觉场景的离散视觉 token 序列，进而预测当前场景（图 2(a)）。</p>
+</div>
+<div class="ltx_para ltx_noindent" id="S3.SS2.p3">
+<p class="ltx_p" data-block="27" id="S3.SS2.p3.1">训练。以此前的上下文 <math alttext="S_{&lt;V_{t}}" class="ltx_Math" display="inline" id="S3.SS2.p3.m2" intent=":literal"><semantics><msub><mi>S</mi><mrow><mphantom></mphantom><mo>&lt;</mo><msub><mi>V</mi><mi>t</mi></msub></mrow></msub><annotation encoding="application/x-tex">S_{&lt;V_{t}}</annotation></semantics></math> 为条件，模型学习自回归生成当前图像的视觉 token 序列 <math alttext="V_{t}=(v_{1},\dots,v_{N})" class="ltx_Math" display="inline" id="S3.SS2.p3.m1" intent=":literal"><semantics><mrow><msub><mi>V</mi><mi>t</mi></msub><mo>=</mo><mrow><mo stretchy="false">(</mo><msub><mi>v</mi><mn>1</mn></msub><mo>,</mo><mi mathvariant="normal">…</mi><mo>,</mo><msub><mi>v</mi><mi>N</mi></msub><mo stretchy="false">)</mo></mrow></mrow><annotation encoding="application/x-tex">V_{t}=(v_{1},\dots,v_{N})</annotation></semantics></math>。优化目标是最小化下一 token 预测损失：</p>
+<table class="ltx_equation ltx_eqn_table" id="S3.E2">
+<tbody><tr class="ltx_equation ltx_eqn_row ltx_align_baseline">
+<td class="ltx_eqn_cell ltx_eqn_center_padleft"></td>
+<td class="ltx_eqn_cell ltx_align_center"><math alttext="\mathcal{L}_{\text{WM-AR}}=-\sum_{i=1}^{N}\log P(v_{i}|S_{&lt;V_{t}},v_{&lt;i})." class="ltx_math_unparsed" display="block" id="S3.E2.m1" intent=":literal"><semantics><mrow><msub><mi class="ltx_font_mathcaligraphic">ℒ</mi><mtext>WM-AR</mtext></msub><mo rspace="0em">=</mo><mo lspace="0em" rspace="0.055em">−</mo><munderover><mo movablelimits="false">∑</mo><mrow><mi>i</mi><mo>=</mo><mn>1</mn></mrow><mi>N</mi></munderover><mi>log</mi><mi>P</mi><mrow><mo stretchy="false">(</mo><msub><mi>v</mi><mi>i</mi></msub><mo fence="false" rspace="0.167em" stretchy="false">|</mo><msub><mi>S</mi><mrow><mphantom></mphantom><mo>&lt;</mo><msub><mi>V</mi><mi>t</mi></msub></mrow></msub><mo>,</mo><msub><mi>v</mi><mrow><mphantom></mphantom><mo>&lt;</mo><mi>i</mi></mrow></msub><mo stretchy="false">)</mo></mrow><mo lspace="0em">.</mo></mrow><annotation encoding="application/x-tex">\mathcal{L}_{\text{WM-AR}}=-\sum_{i=1}^{N}\log P(v_{i}|S_{&lt;V_{t}},v_{&lt;i}).</annotation></semantics></math></td>
+<td class="ltx_eqn_cell ltx_eqn_center_padright"></td>
+<td class="ltx_eqn_cell ltx_eqn_eqno ltx_align_middle ltx_align_right" rowspan="1"><span class="ltx_tag ltx_tag_equation ltx_align_right">(2)</span></td></tr></tbody>
+</table>
+<p class="ltx_p" data-block="28" id="S3.SS2.p3.2">我们将这一完整框架称为 DriveVLA-W0 (VQ)。它通过动作损失与 AR 世界模型损失的加权和联合训练：<math alttext="\mathcal{L}_{\text{Total}}=\mathcal{L}_{\text{Action}}+\alpha\mathcal{L}_{\text{WM-AR}}" class="ltx_Math" display="inline" id="S3.SS2.p3.m3" intent=":literal"><semantics><mrow><msub><mi class="ltx_font_mathcaligraphic">ℒ</mi><mtext>Total</mtext></msub><mo>=</mo><mrow><msub><mi class="ltx_font_mathcaligraphic">ℒ</mi><mtext>Action</mtext></msub><mo>+</mo><mrow><mi>α</mi><mo lspace="0em" rspace="0em">​</mo><msub><mi class="ltx_font_mathcaligraphic">ℒ</mi><mtext>WM-AR</mtext></msub></mrow></mrow></mrow><annotation encoding="application/x-tex">\mathcal{L}_{\text{Total}}=\mathcal{L}_{\text{Action}}+\alpha\mathcal{L}_{\text{WM-AR}}</annotation></semantics></math>，其中 <math alttext="\alpha" class="ltx_Math" display="inline" id="S3.SS2.p3.m4" intent=":literal"><semantics><mi>α</mi><annotation encoding="application/x-tex">\alpha</annotation></semantics></math> 是平衡系数。</p>
+</div>
+<div class="ltx_para ltx_noindent" id="S3.SS2.p4">
+<p class="ltx_p" data-block="29" id="S3.SS2.p4.1">推理。为保证低延迟，驾驶推理通常跳过显式视觉 token 生成，但该能力仍可用于可视化。生成图像时，模型自回归采样视觉 token 序列，再通过 MoVQGAN（Zheng et al., 2022）解码器渲染最终图像 <math alttext="\hat{I}_{t}" class="ltx_Math" display="inline" id="S3.SS2.p4.m1" intent=":literal"><semantics><msub><mover accent="true"><mi>I</mi><mo>^</mo></mover><mi>t</mi></msub><annotation encoding="application/x-tex">\hat{I}_{t}</annotation></semantics></math>。</p>
+</div>
+<div class="ltx_para ltx_noindent" id="S3.SS2.p5">
+<p class="ltx_p" data-block="30" id="S3.SS2.p5.1">扩散世界模型。不同于 VQ 版本，VLA (ViT) 没有适合下一 token 预测的离散视觉词表。因此，我们引入扩散世界模型，通过训练潜在扩散模型（Rombach et al., 2021；Wang et al., 2024a），以 VLA 丰富的输出特征（<math alttext="F_{t}^{V},F_{t}^{A}" class="ltx_Math" display="inline" id="S3.SS2.p5.m1" intent=":literal"><semantics><mrow><msubsup><mi>F</mi><mi>t</mi><mi>V</mi></msubsup><mo>,</mo><msubsup><mi>F</mi><mi>t</mi><mi>A</mi></msubsup></mrow><annotation encoding="application/x-tex">F_{t}^{V},F_{t}^{A}</annotation></semantics></math>）为条件生成未来图像，提供密集监督（图 2）。选择预测未来帧（<math alttext="\mathbf{I}_{t+1}" class="ltx_Math" display="inline" id="S3.SS2.p5.m2" intent=":literal"><semantics><msub><mi>𝐈</mi><mrow><mi>t</mi><mo>+</mo><mn>1</mn></mrow></msub><annotation encoding="application/x-tex">\mathbf{I}_{t+1}</annotation></semantics></math>）至关重要：模型同时以全部当前特征为条件，因此必须预测未来，才能学习预测性动力学，而非仅执行重建。</p>
+</div>
+<div class="ltx_para ltx_noindent" id="S3.SS2.p6">
+<p class="ltx_p" data-block="31" id="S3.SS2.p6.1">训练。该框架以 VLA 当前视觉与动作特征（<math alttext="F_{t}^{V}" class="ltx_Math" display="inline" id="S3.SS2.p6.m2" intent=":literal"><semantics><msubsup><mi>F</mi><mi>t</mi><mi>V</mi></msubsup><annotation encoding="application/x-tex">F_{t}^{V}</annotation></semantics></math>、<math alttext="F_{t}^{A}" class="ltx_Math" display="inline" id="S3.SS2.p6.m3" intent=":literal"><semantics><msubsup><mi>F</mi><mi>t</mi><mi>A</mi></msubsup><annotation encoding="application/x-tex">F_{t}^{A}</annotation></semantics></math>）为条件，学习预测未来视觉场景（<math alttext="\mathbf{I}_{t+1}" class="ltx_Math" display="inline" id="S3.SS2.p6.m1" intent=":literal"><semantics><msub><mi>𝐈</mi><mrow><mi>t</mi><mo>+</mo><mn>1</mn></mrow></msub><annotation encoding="application/x-tex">\mathbf{I}_{t+1}</annotation></semantics></math>）。遵循标准潜在扩散设置，训练模型对未来图像潜在表征的加噪版本去噪，使用 MSE（均方误差）目标优化：</p>
+<table class="ltx_equation ltx_eqn_table" id="S3.E3">
+<tbody><tr class="ltx_equation ltx_eqn_row ltx_align_baseline">
+<td class="ltx_eqn_cell ltx_eqn_center_padleft"></td>
+<td class="ltx_eqn_cell ltx_align_center"><math alttext="\mathcal{L}_{\text{WM-Diff}}=\mathbb{E}_{z_{t+1},\epsilon,k}\left[\|\epsilon-\hat{\epsilon}(z_{t+1,k},k,F_{t}^{V},F_{t}^{A})\|^{2}\right]." class="ltx_Math" display="block" id="S3.E3.m1" intent=":literal"><semantics><mrow><mrow><msub><mi class="ltx_font_mathcaligraphic">ℒ</mi><mtext>WM-Diff</mtext></msub><mo>=</mo><mrow><msub><mi>𝔼</mi><mrow><msub><mi>z</mi><mrow><mi>t</mi><mo>+</mo><mn>1</mn></mrow></msub><mo>,</mo><mi>ϵ</mi><mo>,</mo><mi>k</mi></mrow></msub><mo lspace="0em" rspace="0em">​</mo><mrow><mo>[</mo><msup><mrow><mo stretchy="false">‖</mo><mrow><mi>ϵ</mi><mo>−</mo><mrow><mover accent="true"><mi>ϵ</mi><mo>^</mo></mover><mo lspace="0em" rspace="0em">​</mo><mrow><mo stretchy="false">(</mo><msub><mi>z</mi><mrow><mrow><mi>t</mi><mo>+</mo><mn>1</mn></mrow><mo>,</mo><mi>k</mi></mrow></msub><mo>,</mo><mi>k</mi><mo>,</mo><msubsup><mi>F</mi><mi>t</mi><mi>V</mi></msubsup><mo>,</mo><msubsup><mi>F</mi><mi>t</mi><mi>A</mi></msubsup><mo stretchy="false">)</mo></mrow></mrow></mrow><mo stretchy="false">‖</mo></mrow><mn>2</mn></msup><mo>]</mo></mrow></mrow></mrow><mo lspace="0em">.</mo></mrow><annotation encoding="application/x-tex">\mathcal{L}_{\text{WM-Diff}}=\mathbb{E}_{z_{t+1},\epsilon,k}\left[\|\epsilon-\hat{\epsilon}(z_{t+1,k},k,F_{t}^{V},F_{t}^{A})\|^{2}\right].</annotation></semantics></math></td>
+<td class="ltx_eqn_cell ltx_eqn_center_padright"></td>
+<td class="ltx_eqn_cell ltx_eqn_eqno ltx_align_middle ltx_align_right" rowspan="1"><span class="ltx_tag ltx_tag_equation ltx_align_right">(3)</span></td></tr></tbody>
+</table>
+<p class="ltx_p" data-block="32" id="S3.SS2.p6.2">其中 <math alttext="z_{t+1}" class="ltx_Math" display="inline" id="S3.SS2.p6.m4" intent=":literal"><semantics><msub><mi>z</mi><mrow><mi>t</mi><mo>+</mo><mn>1</mn></mrow></msub><annotation encoding="application/x-tex">z_{t+1}</annotation></semantics></math> 是未来图像 <math alttext="\mathbf{I}_{t+1}" class="ltx_Math" display="inline" id="S3.SS2.p6.m5" intent=":literal"><semantics><msub><mi>𝐈</mi><mrow><mi>t</mi><mo>+</mo><mn>1</mn></mrow></msub><annotation encoding="application/x-tex">\mathbf{I}_{t+1}</annotation></semantics></math> 的潜在表征，<math alttext="\epsilon\sim\mathcal{N}(0,\mathbf{I})" class="ltx_Math" display="inline" id="S3.SS2.p6.m6" intent=":literal"><semantics><mrow><mi>ϵ</mi><mo>∼</mo><mrow><mi class="ltx_font_mathcaligraphic">𝒩</mi><mo>⁡</mo><mrow><mo stretchy="false">(</mo><mn>0</mn><mo>,</mo><mi>𝐈</mi><mo stretchy="false">)</mo></mrow></mrow></mrow><annotation encoding="application/x-tex">\epsilon\sim\mathcal{N}(0,\mathbf{I})</annotation></semantics></math> 是采样的高斯噪声，<math alttext="k" class="ltx_Math" display="inline" id="S3.SS2.p6.m7" intent=":literal"><semantics><mi>k</mi><annotation encoding="application/x-tex">k</annotation></semantics></math> 是随机扩散时间步，<math alttext="\hat{\epsilon}" class="ltx_Math" display="inline" id="S3.SS2.p6.m8" intent=":literal"><semantics><mover accent="true"><mi>ϵ</mi><mo>^</mo></mover><annotation encoding="application/x-tex">\hat{\epsilon}</annotation></semantics></math> 是去噪网络，它从带噪潜变量 <math alttext="z_{t+1,k}" class="ltx_Math" display="inline" id="S3.SS2.p6.m9" intent=":literal"><semantics><msub><mi>z</mi><mrow><mrow><mi>t</mi><mo>+</mo><mn>1</mn></mrow><mo>,</mo><mi>k</mi></mrow></msub><annotation encoding="application/x-tex">z_{t+1,k}</annotation></semantics></math> 中预测噪声。我们将整体框架称为 DriveVLA-W0 (ViT)。通过联合目标结合动作预测与扩散世界模型损失，进行端到端训练：<math alttext="\mathcal{L}_{\text{Total}}=\mathcal{L}_{\text{Action}}+\beta\mathcal{L}_{\text{WM-Diff}}" class="ltx_Math" display="inline" id="S3.SS2.p6.m10" intent=":literal"><semantics><mrow><msub><mi class="ltx_font_mathcaligraphic">ℒ</mi><mtext>Total</mtext></msub><mo>=</mo><mrow><msub><mi class="ltx_font_mathcaligraphic">ℒ</mi><mtext>Action</mtext></msub><mo>+</mo><mrow><mi>β</mi><mo lspace="0em" rspace="0em">​</mo><msub><mi class="ltx_font_mathcaligraphic">ℒ</mi><mtext>WM-Diff</mtext></msub></mrow></mrow></mrow><annotation encoding="application/x-tex">\mathcal{L}_{\text{Total}}=\mathcal{L}_{\text{Action}}+\beta\mathcal{L}_{\text{WM-Diff}}</annotation></semantics></math>，其中 <math alttext="\beta" class="ltx_Math" display="inline" id="S3.SS2.p6.m11" intent=":literal"><semantics><mi>β</mi><annotation encoding="application/x-tex">\beta</annotation></semantics></math> 为平衡系数。</p>
+</div>
+<div class="ltx_para ltx_noindent" id="S3.SS2.p7">
+<p class="ltx_p" data-block="33" id="S3.SS2.p7.1">推理。与 AR 模型一样，驾驶推理跳过扩散过程以保证实时性能。进行定性分析时，可以从随机噪声开始，以特征 <math alttext="F_{t}^{V}" class="ltx_Math" display="inline" id="S3.SS2.p7.m1" intent=":literal"><semantics><msubsup><mi>F</mi><mi>t</mi><mi>V</mi></msubsup><annotation encoding="application/x-tex">F_{t}^{V}</annotation></semantics></math>、<math alttext="F_{t}^{A}" class="ltx_Math" display="inline" id="S3.SS2.p7.m2" intent=":literal"><semantics><msubsup><mi>F</mi><mi>t</mi><mi>A</mi></msubsup><annotation encoding="application/x-tex">F_{t}^{A}</annotation></semantics></math> 为条件执行反向扩散，产生预测的未来图像 <math alttext="\hat{I}_{t+1}" class="ltx_Math" display="inline" id="S3.SS2.p7.m3" intent=":literal"><semantics><msub><mover accent="true"><mi>I</mi><mo>^</mo></mover><mrow><mi>t</mi><mo>+</mo><mn>1</mn></mrow></msub><annotation encoding="application/x-tex">\hat{I}_{t+1}</annotation></semantics></math>。</p>
+</div>
+</section>
+<section class="ltx_subsection" id="S3.SS3">
+<h3 class="ltx_title ltx_title_subsection" data-block="34" id="tr-34">3.3 动作专家</h3>
+<div class="ltx_para ltx_noindent" id="S3.SS3.p1">
+<p class="ltx_p" data-block="35" id="S3.SS3.p1.1">MoE 架构。（Black et al.；Intelligence et al., 2025）大型 VLA 骨干擅长表征学习，但其规模妨碍实时控制。为此，我们引入 500M 参数的轻量动作专家，与主 VLA 专家（完整 VLA 骨干）在 MoE 架构中并行工作。动作专家的 Transformer 块结构与 VLA 专家相似，但隐藏维度小得多。这种结构相似性通过 Joint Attention（联合注意力）实现深度、高效的信息融合，如图 3(a)。两个专家先各自计算 Query、Key、Value 矩阵，再沿 token 序列维拼接为联合注意力的输入：</p>
+<table class="ltx_equation ltx_eqn_table" id="S3.E4">
+<tbody><tr class="ltx_equation ltx_eqn_row ltx_align_baseline">
+<td class="ltx_eqn_cell ltx_eqn_center_padleft"></td>
+<td class="ltx_eqn_cell ltx_align_center"><math alttext="Q=[Q_{\text{VLA}};Q_{\text{AE}}],\quad K=[K_{\text{VLA}};K_{\text{AE}}],\quad V=[V_{\text{VLA}};V_{\text{AE}}]." class="ltx_Math" display="block" id="S3.E4.m1" intent=":literal"><semantics><mrow><mrow><mrow><mi>Q</mi><mo>=</mo><mrow><mo stretchy="false">[</mo><mrow><msub><mi>Q</mi><mtext>VLA</mtext></msub><mo>;</mo><msub><mi>Q</mi><mtext>AE</mtext></msub></mrow><mo stretchy="false">]</mo></mrow></mrow><mo rspace="1.167em">,</mo><mrow><mi>K</mi><mo>=</mo><mrow><mo stretchy="false">[</mo><mrow><msub><mi>K</mi><mtext>VLA</mtext></msub><mo>;</mo><msub><mi>K</mi><mtext>AE</mtext></msub></mrow><mo stretchy="false">]</mo></mrow></mrow><mo rspace="1.167em">,</mo><mrow><mi>V</mi><mo>=</mo><mrow><mo stretchy="false">[</mo><mrow><msub><mi>V</mi><mtext>VLA</mtext></msub><mo>;</mo><msub><mi>V</mi><mtext>AE</mtext></msub></mrow><mo stretchy="false">]</mo></mrow></mrow></mrow><mo lspace="0em">.</mo></mrow><annotation encoding="application/x-tex">Q=[Q_{\text{VLA}};Q_{\text{AE}}],\quad K=[K_{\text{VLA}};K_{\text{AE}}],\quad V=[V_{\text{VLA}};V_{\text{AE}}].</annotation></semantics></math></td>
+<td class="ltx_eqn_cell ltx_eqn_center_padright"></td>
+<td class="ltx_eqn_cell ltx_eqn_eqno ltx_align_middle ltx_align_right" rowspan="1"><span class="ltx_tag ltx_tag_equation ltx_align_right">(4)</span></td></tr></tbody>
+</table>
+<p class="ltx_p" data-block="36" id="S3.SS3.p1.2">随后将注意力输出拆分，送回各自专家，如图 3。这使 VLA 丰富表征与动作专家专用上下文，能在一次高效计算中紧密、对称地整合。</p>
+</div>
+<div class="ltx_para ltx_noindent" id="S3.SS3.p2">
+<p class="ltx_p" data-block="37" id="S3.SS3.p2.1">该高效 MoE 架构也为系统研究三种动作解码策略提供理想平台：基于查询、自回归和流匹配专家。这些变体的一个共同点，是预填充前一动作的特征（<math alttext="A_{t-1}" class="ltx_Math" display="inline" id="S3.SS3.p2.m1" intent=":literal"><semantics><msub><mi>A</mi><mrow><mi>t</mi><mo>−</mo><mn>1</mn></mrow></msub><annotation encoding="application/x-tex">A_{t-1}</annotation></semantics></math>），为当前决策提供强时序先验。</p>
+</div>
+<figure class="ltx_figure" id="S3.F3"><img alt="论文原图 3" class="ltx_graphics ltx_centering ltx_img_landscape" id="S3.F3.g1" src="images/figure-03.jpg"/>
+<figcaption class="ltx_caption ltx_centering" data-block="38">图 3：(a) MoE 架构把大型 VLA 专家与轻量动作专家配对，实现高效推理。(b–d) 该框架用于比较三种动作解码方案：基于查询、自回归、流匹配。</figcaption>
+</figure>
+<div class="ltx_para ltx_noindent" id="S3.SS3.p3">
+<p class="ltx_p" data-block="39" id="S3.SS3.p3.1">基于查询的动作专家。该专家使用一组可学习动作查询，通过联合注意力与 VLA 多模态上下文交互。更新后的查询由 MLP 头投影，直接回归连续路径点轨迹。模型以预测轨迹与真实轨迹间的 L1 距离最小化为目标。</p>
+</div>
+<div class="ltx_para ltx_noindent" id="S3.SS3.p4">
+<p class="ltx_p" data-block="40" id="S3.SS3.p4.1">自回归动作专家。该专家通过自回归预测离散 token 序列来生成动作。其训练目标与表述和第 3.1 节的 VLA 基线相同，即最小化标准交叉熵损失。</p>
+</div>
+<div class="ltx_para ltx_noindent" id="S3.SS3.p5">
+<p class="ltx_p" data-block="41" id="S3.SS3.p5.1">流匹配动作专家。不同于离散的自回归方法，我们还实现了基于流匹配的连续动作生成。该方法学习条件向量场 <math alttext="v_{\phi}" class="ltx_Math" display="inline" id="S3.SS3.p5.m1" intent=":literal"><semantics><msub><mi>v</mi><mi>ϕ</mi></msub><annotation encoding="application/x-tex">v_{\phi}</annotation></semantics></math>，定义从简单噪声分布到复杂真实驾驶动作分布的直接“路径”。训练时，在随机噪声样本与真实动作之间定义简单直线路径（Liu et al., 2022）；随后用均方误差损失优化模型，使其以多模态上下文 <math alttext="\mathbf{c}_{t}" class="ltx_Math" display="inline" id="S3.SS3.p5.m3" intent=":literal"><semantics><msub><mi>𝐜</mi><mi>t</mi></msub><annotation encoding="application/x-tex">\mathbf{c}_{t}</annotation></semantics></math> 为条件，在每个位置预测与路径对齐的向量场 <math alttext="v_{\phi}" class="ltx_Math" display="inline" id="S3.SS3.p5.m2" intent=":literal"><semantics><msub><mi>v</mi><mi>ϕ</mi></msub><annotation encoding="application/x-tex">v_{\phi}</annotation></semantics></math>。推理时，从新噪声样本开始，使用数值 ODE 求解器，沿学到的向量场走固定步数，将噪声确定性地转成位于已学数据流形上的精确连续动作。</p>
+</div>
+</section>
+</section>
+<section class="ltx_section" id="S4">
+<h2 class="ltx_title ltx_title_section" data-block="42" id="tr-42">4 实验</h2>
+<figure class="ltx_table" id="S4.T1">
+<figcaption class="ltx_caption ltx_centering" data-block="43">表 1：在 NAVSIM v1 上与最先进方法比较。NC：无责任碰撞；DAC：可行驶区域合规；TTC：碰撞时间；C.：舒适度；EP：自车进度；PDMS：预测驾驶员模型分数。缩写：1x Cam 为单个前视相机，Nx Cam 为环视相机，L 为 LiDAR。*：使用基于查询的动作专家。†：遵循 Li et al. (2024b)，使用带多轨迹锚点的查询动作专家。‡：遵循 Zhou et al. (2025c)，使用 AR 动作专家与 best-of-N（N=6）策略。</figcaption>
+<div class="ltx_inline-block ltx_align_center ltx_transformed_outer" id="S4.T1.6"><span class="ltx_transformed_inner">
+<table class="ltx_tabular ltx_align_middle" id="S4.T1.6.1">
+<tr class="ltx_tr" id="S4.T1.6.1.1">
+<td class="ltx_td ltx_align_left ltx_border_r ltx_border_tt" id="S4.T1.6.1.1.1"><span class="ltx_text ltx_font_bold" id="S4.T1.6.1.1.1.1">方法</span></td>
+<td class="ltx_td ltx_align_center ltx_border_r ltx_border_tt" id="S4.T1.6.1.1.2"><span class="ltx_text ltx_font_bold" id="S4.T1.6.1.1.2.1">出处</span></td>
+<td class="ltx_td ltx_align_center ltx_border_r ltx_border_tt" id="S4.T1.6.1.1.3"><span class="ltx_text ltx_font_bold" id="S4.T1.6.1.1.3.1">传感器</span></td>
+<td class="ltx_td ltx_align_center ltx_border_tt" id="S4.T1.6.1.1.4"><span class="ltx_text ltx_font_bold" id="S4.T1.6.1.1.4.1">NC <math alttext="\uparrow" class="ltx_Math" display="inline" id="S4.T1.m3" intent=":literal"><semantics><mo stretchy="false">↑</mo><annotation encoding="application/x-tex">\uparrow</annotation></semantics></math></span></td>
+<td class="ltx_td ltx_align_center ltx_border_r ltx_border_tt" id="S4.T1.6.1.1.5"><span class="ltx_text ltx_font_bold" id="S4.T1.6.1.1.5.1">DAC <math alttext="\uparrow" class="ltx_Math" display="inline" id="S4.T1.m4" intent=":literal"><semantics><mo stretchy="false">↑</mo><annotation encoding="application/x-tex">\uparrow</annotation></semantics></math></span></td>
+<td class="ltx_td ltx_align_center ltx_border_tt" id="S4.T1.6.1.1.6"><span class="ltx_text ltx_font_bold" id="S4.T1.6.1.1.6.1">TTC <math alttext="\uparrow" class="ltx_Math" display="inline" id="S4.T1.m5" intent=":literal"><semantics><mo stretchy="false">↑</mo><annotation encoding="application/x-tex">\uparrow</annotation></semantics></math></span></td>
+<td class="ltx_td ltx_align_center ltx_border_tt" id="S4.T1.6.1.1.7"><span class="ltx_text ltx_font_bold" id="S4.T1.6.1.1.7.1">C. <math alttext="\uparrow" class="ltx_Math" display="inline" id="S4.T1.m6" intent=":literal"><semantics><mo stretchy="false">↑</mo><annotation encoding="application/x-tex">\uparrow</annotation></semantics></math></span></td>
+<td class="ltx_td ltx_align_center ltx_border_r ltx_border_tt" id="S4.T1.6.1.1.8"><span class="ltx_text ltx_font_bold" id="S4.T1.6.1.1.8.1">EP <math alttext="\uparrow" class="ltx_Math" display="inline" id="S4.T1.m7" intent=":literal"><semantics><mo stretchy="false">↑</mo><annotation encoding="application/x-tex">\uparrow</annotation></semantics></math></span></td>
+<td class="ltx_td ltx_align_center ltx_border_tt" id="S4.T1.6.1.1.9"><span class="ltx_text ltx_font_bold" id="S4.T1.6.1.1.9.1">PDMS <math alttext="\uparrow" class="ltx_Math" display="inline" id="S4.T1.m8" intent=":literal"><semantics><mo mathbackground="#DFDFDF" stretchy="false">↑</mo><annotation encoding="application/x-tex">\uparrow</annotation></semantics></math></span></td></tr>
+<tr class="ltx_tr" id="S4.T1.6.1.2">
+<td class="ltx_td ltx_align_left ltx_border_r ltx_border_t" id="S4.T1.6.1.2.1">人类</td>
+<td class="ltx_td ltx_align_center ltx_border_r ltx_border_t" id="S4.T1.6.1.2.2">-</td>
+<td class="ltx_td ltx_align_center ltx_border_r ltx_border_t" id="S4.T1.6.1.2.3">-</td>
+<td class="ltx_td ltx_align_center ltx_border_t" id="S4.T1.6.1.2.4">100</td>
+<td class="ltx_td ltx_align_center ltx_border_r ltx_border_t" id="S4.T1.6.1.2.5">100</td>
+<td class="ltx_td ltx_align_center ltx_border_t" id="S4.T1.6.1.2.6">100</td>
+<td class="ltx_td ltx_align_center ltx_border_t" id="S4.T1.6.1.2.7">99.9</td>
+<td class="ltx_td ltx_align_center ltx_border_r ltx_border_t" id="S4.T1.6.1.2.8">87.5</td>
+<td class="ltx_td ltx_align_center ltx_border_t" id="S4.T1.6.1.2.9"><span class="ltx_text" id="S4.T1.6.1.2.9.1">94.8</span></td></tr>
+<tr class="ltx_tr" id="S4.T1.6.1.3">
+<td class="ltx_td ltx_align_left ltx_border_t" colspan="9" id="S4.T1.6.1.3.1"><span class="ltx_text ltx_font_italic" id="S4.T1.6.1.3.1.1">基于 BEV 的方法</span></td></tr>
+<tr class="ltx_tr" id="S4.T1.6.1.4">
+<td class="ltx_td ltx_align_left ltx_border_r" id="S4.T1.6.1.4.1">UniAD <cite class="ltx_cite ltx_citemacro_citep">(Hu et al., 2022)</cite></td>
+<td class="ltx_td ltx_align_center ltx_border_r" id="S4.T1.6.1.4.2">CVPR’23</td>
+<td class="ltx_td ltx_align_center ltx_border_r" id="S4.T1.6.1.4.3">6 个相机</td>
+<td class="ltx_td ltx_align_center" id="S4.T1.6.1.4.4">97.8</td>
+<td class="ltx_td ltx_align_center ltx_border_r" id="S4.T1.6.1.4.5">91.9</td>
+<td class="ltx_td ltx_align_center" id="S4.T1.6.1.4.6">92.9</td>
+<td class="ltx_td ltx_align_center" id="S4.T1.6.1.4.7"><span class="ltx_text ltx_font_bold" id="S4.T1.6.1.4.7.1">100.0</span></td>
+<td class="ltx_td ltx_align_center ltx_border_r" id="S4.T1.6.1.4.8">78.8</td>
+<td class="ltx_td ltx_align_center" id="S4.T1.6.1.4.9"><span class="ltx_text" id="S4.T1.6.1.4.9.1">83.4</span></td></tr>
+<tr class="ltx_tr" id="S4.T1.6.1.5">
+<td class="ltx_td ltx_align_left ltx_border_r" id="S4.T1.6.1.5.1">TransFuser <cite class="ltx_cite ltx_citemacro_citep">(Prakash et al., 2021)</cite></td>
+<td class="ltx_td ltx_align_center ltx_border_r" id="S4.T1.6.1.5.2">TPAMI’23</td>
+<td class="ltx_td ltx_align_center ltx_border_r" id="S4.T1.6.1.5.3">3 个相机＋LiDAR</td>
+<td class="ltx_td ltx_align_center" id="S4.T1.6.1.5.4">97.7</td>
+<td class="ltx_td ltx_align_center ltx_border_r" id="S4.T1.6.1.5.5">92.8</td>
+<td class="ltx_td ltx_align_center" id="S4.T1.6.1.5.6">92.8</td>
+<td class="ltx_td ltx_align_center" id="S4.T1.6.1.5.7"><span class="ltx_text ltx_font_bold" id="S4.T1.6.1.5.7.1">100.0</span></td>
+<td class="ltx_td ltx_align_center ltx_border_r" id="S4.T1.6.1.5.8">79.2</td>
+<td class="ltx_td ltx_align_center" id="S4.T1.6.1.5.9"><span class="ltx_text" id="S4.T1.6.1.5.9.1">84.0</span></td></tr>
+<tr class="ltx_tr" id="S4.T1.6.1.6">
+<td class="ltx_td ltx_align_left ltx_border_r" id="S4.T1.6.1.6.1">PARA-Drive <cite class="ltx_cite ltx_citemacro_citep">(Weng et al., 2024)</cite></td>
+<td class="ltx_td ltx_align_center ltx_border_r" id="S4.T1.6.1.6.2">CVPR’24</td>
+<td class="ltx_td ltx_align_center ltx_border_r" id="S4.T1.6.1.6.3">6 个相机</td>
+<td class="ltx_td ltx_align_center" id="S4.T1.6.1.6.4">97.9</td>
+<td class="ltx_td ltx_align_center ltx_border_r" id="S4.T1.6.1.6.5">92.4</td>
+<td class="ltx_td ltx_align_center" id="S4.T1.6.1.6.6">93.0</td>
+<td class="ltx_td ltx_align_center" id="S4.T1.6.1.6.7">99.8</td>
+<td class="ltx_td ltx_align_center ltx_border_r" id="S4.T1.6.1.6.8">79.3</td>
+<td class="ltx_td ltx_align_center" id="S4.T1.6.1.6.9"><span class="ltx_text" id="S4.T1.6.1.6.9.1">84.0</span></td></tr>
+<tr class="ltx_tr" id="S4.T1.6.1.7">
+<td class="ltx_td ltx_align_left ltx_border_r" id="S4.T1.6.1.7.1">LAW <cite class="ltx_cite ltx_citemacro_citep">(Li et al., 2024a)</cite></td>
+<td class="ltx_td ltx_align_center ltx_border_r" id="S4.T1.6.1.7.2">ICLR’25</td>
+<td class="ltx_td ltx_align_center ltx_border_r" id="S4.T1.6.1.7.3">1 个相机</td>
+<td class="ltx_td ltx_align_center" id="S4.T1.6.1.7.4">96.4</td>
+<td class="ltx_td ltx_align_center ltx_border_r" id="S4.T1.6.1.7.5">95.4</td>
+<td class="ltx_td ltx_align_center" id="S4.T1.6.1.7.6">88.7</td>
+<td class="ltx_td ltx_align_center" id="S4.T1.6.1.7.7">99.9</td>
+<td class="ltx_td ltx_align_center ltx_border_r" id="S4.T1.6.1.7.8">81.7</td>
+<td class="ltx_td ltx_align_center" id="S4.T1.6.1.7.9"><span class="ltx_text" id="S4.T1.6.1.7.9.1">84.6</span></td></tr>
+<tr class="ltx_tr" id="S4.T1.6.1.8">
+<td class="ltx_td ltx_align_left ltx_border_r" id="S4.T1.6.1.8.1">Hydra-MDP <cite class="ltx_cite ltx_citemacro_citep">(Li et al., 2024b)</cite></td>
+<td class="ltx_td ltx_align_center ltx_border_r" id="S4.T1.6.1.8.2">arXiv’24</td>
+<td class="ltx_td ltx_align_center ltx_border_r" id="S4.T1.6.1.8.3">3 个相机＋LiDAR</td>
+<td class="ltx_td ltx_align_center" id="S4.T1.6.1.8.4">98.3</td>
+<td class="ltx_td ltx_align_center ltx_border_r" id="S4.T1.6.1.8.5">96.0</td>
+<td class="ltx_td ltx_align_center" id="S4.T1.6.1.8.6">94.6</td>
+<td class="ltx_td ltx_align_center" id="S4.T1.6.1.8.7"><span class="ltx_text ltx_font_bold" id="S4.T1.6.1.8.7.1">100.0</span></td>
+<td class="ltx_td ltx_align_center ltx_border_r" id="S4.T1.6.1.8.8">78.7</td>
+<td class="ltx_td ltx_align_center" id="S4.T1.6.1.8.9"><span class="ltx_text" id="S4.T1.6.1.8.9.1">86.5</span></td></tr>
+<tr class="ltx_tr" id="S4.T1.6.1.9">
+<td class="ltx_td ltx_align_left ltx_border_r" id="S4.T1.6.1.9.1">DiffusionDrive <cite class="ltx_cite ltx_citemacro_citep">(Liao et al., 2025)</cite></td>
+<td class="ltx_td ltx_align_center ltx_border_r" id="S4.T1.6.1.9.2">CVPR’25</td>
+<td class="ltx_td ltx_align_center ltx_border_r" id="S4.T1.6.1.9.3">3 个相机＋LiDAR</td>
+<td class="ltx_td ltx_align_center" id="S4.T1.6.1.9.4">98.2</td>
+<td class="ltx_td ltx_align_center ltx_border_r" id="S4.T1.6.1.9.5">96.2</td>
+<td class="ltx_td ltx_align_center" id="S4.T1.6.1.9.6">94.7</td>
+<td class="ltx_td ltx_align_center" id="S4.T1.6.1.9.7"><span class="ltx_text ltx_font_bold" id="S4.T1.6.1.9.7.1">100.0</span></td>
+<td class="ltx_td ltx_align_center ltx_border_r" id="S4.T1.6.1.9.8">82.2</td>
+<td class="ltx_td ltx_align_center" id="S4.T1.6.1.9.9"><span class="ltx_text" id="S4.T1.6.1.9.9.1">88.1</span></td></tr>
+<tr class="ltx_tr" id="S4.T1.6.1.10">
+<td class="ltx_td ltx_align_left ltx_border_r" id="S4.T1.6.1.10.1">WoTE <cite class="ltx_cite ltx_citemacro_citep">(Li et al., 2025a)</cite></td>
+<td class="ltx_td ltx_align_center ltx_border_r" id="S4.T1.6.1.10.2">ICCV’25</td>
+<td class="ltx_td ltx_align_center ltx_border_r" id="S4.T1.6.1.10.3">3 个相机＋LiDAR</td>
+<td class="ltx_td ltx_align_center" id="S4.T1.6.1.10.4">98.5</td>
+<td class="ltx_td ltx_align_center ltx_border_r" id="S4.T1.6.1.10.5">96.8</td>
+<td class="ltx_td ltx_align_center" id="S4.T1.6.1.10.6">94.4</td>
+<td class="ltx_td ltx_align_center" id="S4.T1.6.1.10.7">99.9</td>
+<td class="ltx_td ltx_align_center ltx_border_r" id="S4.T1.6.1.10.8">81.9</td>
+<td class="ltx_td ltx_align_center" id="S4.T1.6.1.10.9"><span class="ltx_text" id="S4.T1.6.1.10.9.1">88.3</span></td></tr>
+<tr class="ltx_tr" id="S4.T1.6.1.11">
+<td class="ltx_td ltx_align_left ltx_border_t" colspan="9" id="S4.T1.6.1.11.1"><span class="ltx_text ltx_font_italic" id="S4.T1.6.1.11.1.1">基于 VLA 的方法</span></td></tr>
+<tr class="ltx_tr" id="S4.T1.6.1.12">
+<td class="ltx_td ltx_align_left ltx_border_r" id="S4.T1.6.1.12.1"><span class="ltx_text" id="S4.T1.6.1.12.1.1">DriveVLA-W0<sup class="ltx_sup" id="S4.T1.6.1.12.1.1.1">∗</sup></span></td>
+<td class="ltx_td ltx_align_center ltx_border_r" id="S4.T1.6.1.12.2"><span class="ltx_text" id="S4.T1.6.1.12.2.1">-</span></td>
+<td class="ltx_td ltx_align_center ltx_border_r" id="S4.T1.6.1.12.3"><span class="ltx_text" id="S4.T1.6.1.12.3.1">1 个相机</span></td>
+<td class="ltx_td ltx_align_center" id="S4.T1.6.1.12.4"><span class="ltx_text" id="S4.T1.6.1.12.4.1">98.7</span></td>
+<td class="ltx_td ltx_align_center ltx_border_r" id="S4.T1.6.1.12.5"><span class="ltx_text" id="S4.T1.6.1.12.5.1">96.2</span></td>
+<td class="ltx_td ltx_align_center" id="S4.T1.6.1.12.6"><span class="ltx_text" id="S4.T1.6.1.12.6.1">95.5</span></td>
+<td class="ltx_td ltx_align_center" id="S4.T1.6.1.12.7"><span class="ltx_text ltx_font_bold" id="S4.T1.6.1.12.7.1">100.0</span></td>
+<td class="ltx_td ltx_align_center ltx_border_r" id="S4.T1.6.1.12.8"><span class="ltx_text" id="S4.T1.6.1.12.8.1">82.2</span></td>
+<td class="ltx_td ltx_align_center" id="S4.T1.6.1.12.9"><span class="ltx_text" id="S4.T1.6.1.12.9.1">88.4</span></td></tr>
+<tr class="ltx_tr" id="S4.T1.6.1.13">
+<td class="ltx_td ltx_align_left ltx_border_r" id="S4.T1.6.1.13.1">AutoVLA <cite class="ltx_cite ltx_citemacro_citep">(Zhou et al., 2025c)</cite></td>
+<td class="ltx_td ltx_align_center ltx_border_r" id="S4.T1.6.1.13.2">NeurIPS’25</td>
+<td class="ltx_td ltx_align_center ltx_border_r" id="S4.T1.6.1.13.3">3 个相机</td>
+<td class="ltx_td ltx_align_center" id="S4.T1.6.1.13.4">98.4</td>
+<td class="ltx_td ltx_align_center ltx_border_r" id="S4.T1.6.1.13.5">95.6</td>
+<td class="ltx_td ltx_align_center" id="S4.T1.6.1.13.6"><span class="ltx_text ltx_font_bold" id="S4.T1.6.1.13.6.1">98.0</span></td>
+<td class="ltx_td ltx_align_center" id="S4.T1.6.1.13.7">99.9</td>
+<td class="ltx_td ltx_align_center ltx_border_r" id="S4.T1.6.1.13.8">81.9</td>
+<td class="ltx_td ltx_align_center" id="S4.T1.6.1.13.9"><span class="ltx_text" id="S4.T1.6.1.13.9.1">89.1</span></td></tr>
+<tr class="ltx_tr" id="S4.T1.6.1.14">
+<td class="ltx_td ltx_align_left ltx_border_r" id="S4.T1.6.1.14.1">ReCogDrive <cite class="ltx_cite ltx_citemacro_citep">(Li et al., 2025b)</cite></td>
+<td class="ltx_td ltx_align_center ltx_border_r" id="S4.T1.6.1.14.2">arXiv’25</td>
+<td class="ltx_td ltx_align_center ltx_border_r" id="S4.T1.6.1.14.3">3 个相机</td>
+<td class="ltx_td ltx_align_center" id="S4.T1.6.1.14.4">98.2</td>
+<td class="ltx_td ltx_align_center ltx_border_r" id="S4.T1.6.1.14.5">97.8</td>
+<td class="ltx_td ltx_align_center" id="S4.T1.6.1.14.6">95.2</td>
+<td class="ltx_td ltx_align_center" id="S4.T1.6.1.14.7">99.8</td>
+<td class="ltx_td ltx_align_center ltx_border_r" id="S4.T1.6.1.14.8">83.5</td>
+<td class="ltx_td ltx_align_center" id="S4.T1.6.1.14.9"><span class="ltx_text" id="S4.T1.6.1.14.9.1">89.6</span></td></tr>
+<tr class="ltx_tr" id="S4.T1.6.1.15">
+<td class="ltx_td ltx_align_left ltx_border_r" id="S4.T1.6.1.15.1"><span class="ltx_text" id="S4.T1.6.1.15.1.1">DriveVLA-W0<math alttext="{\dagger}" class="ltx_Math" display="inline" id="S4.T1.m10" intent=":literal"><semantics><mo mathbackground="#E6E6E6">†</mo><annotation encoding="application/x-tex">{\dagger}</annotation></semantics></math></span></td>
+<td class="ltx_td ltx_align_center ltx_border_r" id="S4.T1.6.1.15.2"><span class="ltx_text" id="S4.T1.6.1.15.2.1">-</span></td>
+<td class="ltx_td ltx_align_center ltx_border_r" id="S4.T1.6.1.15.3"><span class="ltx_text" id="S4.T1.6.1.15.3.1">1 个相机</span></td>
+<td class="ltx_td ltx_align_center" id="S4.T1.6.1.15.4"><span class="ltx_text" id="S4.T1.6.1.15.4.1">98.7</span></td>
+<td class="ltx_td ltx_align_center ltx_border_r" id="S4.T1.6.1.15.5"><span class="ltx_text ltx_font_bold" id="S4.T1.6.1.15.5.1">99.1</span></td>
+<td class="ltx_td ltx_align_center" id="S4.T1.6.1.15.6"><span class="ltx_text" id="S4.T1.6.1.15.6.1">95.3</span></td>
+<td class="ltx_td ltx_align_center" id="S4.T1.6.1.15.7"><span class="ltx_text" id="S4.T1.6.1.15.7.1">99.3</span></td>
+<td class="ltx_td ltx_align_center ltx_border_r" id="S4.T1.6.1.15.8"><span class="ltx_text" id="S4.T1.6.1.15.8.1">83.3</span></td>
+<td class="ltx_td ltx_align_center" id="S4.T1.6.1.15.9"><span class="ltx_text" id="S4.T1.6.1.15.9.1">90.2</span></td></tr>
+<tr class="ltx_tr" id="S4.T1.6.1.16">
+<td class="ltx_td ltx_align_left ltx_border_r" id="S4.T1.6.1.16.1">AutoVLA† <cite class="ltx_cite ltx_citemacro_citep">(Zhou et al., 2025c)</cite></td>
+<td class="ltx_td ltx_align_center ltx_border_r" id="S4.T1.6.1.16.2">NeurIPS’25</td>
+<td class="ltx_td ltx_align_center ltx_border_r" id="S4.T1.6.1.16.3">3 个相机</td>
+<td class="ltx_td ltx_align_center" id="S4.T1.6.1.16.4">99.1</td>
+<td class="ltx_td ltx_align_center ltx_border_r" id="S4.T1.6.1.16.5">97.1</td>
+<td class="ltx_td ltx_align_center" id="S4.T1.6.1.16.6">97.1</td>
+<td class="ltx_td ltx_align_center" id="S4.T1.6.1.16.7"><span class="ltx_text ltx_font_bold" id="S4.T1.6.1.16.7.1">100.0</span></td>
+<td class="ltx_td ltx_align_center ltx_border_r" id="S4.T1.6.1.16.8">87.6</td>
+<td class="ltx_td ltx_align_center" id="S4.T1.6.1.16.9"><span class="ltx_text" id="S4.T1.6.1.16.9.1">92.1</span></td></tr>
+<tr class="ltx_tr" id="S4.T1.6.1.17">
+<td class="ltx_td ltx_align_left ltx_border_bb ltx_border_r" id="S4.T1.6.1.17.1"><span class="ltx_text" id="S4.T1.6.1.17.1.1">DriveVLA-W0‡</span></td>
+<td class="ltx_td ltx_align_center ltx_border_bb ltx_border_r" id="S4.T1.6.1.17.2"><span class="ltx_text" id="S4.T1.6.1.17.2.1">-</span></td>
+<td class="ltx_td ltx_align_center ltx_border_bb ltx_border_r" id="S4.T1.6.1.17.3"><span class="ltx_text" id="S4.T1.6.1.17.3.1">1 个相机</span></td>
+<td class="ltx_td ltx_align_center ltx_border_bb" id="S4.T1.6.1.17.4"><span class="ltx_text ltx_font_bold" id="S4.T1.6.1.17.4.1">99.3</span></td>
+<td class="ltx_td ltx_align_center ltx_border_bb ltx_border_r" id="S4.T1.6.1.17.5"><span class="ltx_text" id="S4.T1.6.1.17.5.1">97.4</span></td>
+<td class="ltx_td ltx_align_center ltx_border_bb" id="S4.T1.6.1.17.6"><span class="ltx_text" id="S4.T1.6.1.17.6.1">97.0</span></td>
+<td class="ltx_td ltx_align_center ltx_border_bb" id="S4.T1.6.1.17.7"><span class="ltx_text" id="S4.T1.6.1.17.7.1">99.9</span></td>
+<td class="ltx_td ltx_align_center ltx_border_bb ltx_border_r" id="S4.T1.6.1.17.8"><span class="ltx_text ltx_font_bold" id="S4.T1.6.1.17.8.1">88.3</span></td>
+<td class="ltx_td ltx_align_center ltx_border_bb" id="S4.T1.6.1.17.9"><span class="ltx_text ltx_font_bold" id="S4.T1.6.1.17.9.1">93.0</span></td></tr>
+</table>
+</span></div>
+</figure>
+<figure class="ltx_table" id="S4.T2">
+<figcaption class="ltx_caption ltx_centering" data-block="44">表 2：在采用扩展指标的 NAVSIM v2 上与最先进方法比较。NC：无责任碰撞；DAC：可行驶区域合规；DDC：行驶方向合规；TLC：交通灯合规；EP：自车进度；TTC：碰撞时间；LK：车道保持；HC：历史舒适度；EC：扩展舒适度；EPDMS：扩展预测驾驶员模型分数。</figcaption>
+<div class="ltx_inline-block ltx_align_center ltx_transformed_outer" id="S4.T2.4"><span class="ltx_transformed_inner">
+<table class="ltx_tabular ltx_align_middle" id="S4.T2.4.1">
+<tr class="ltx_tr" id="S4.T2.4.1.1">
+<td class="ltx_td ltx_align_left ltx_border_r ltx_border_tt" id="S4.T2.4.1.1.1"><span class="ltx_text ltx_font_bold" id="S4.T2.4.1.1.1.1">方法</span></td>
+<td class="ltx_td ltx_align_center ltx_border_tt" id="S4.T2.4.1.1.2"><span class="ltx_text ltx_font_bold" id="S4.T2.4.1.1.2.1">NC <math alttext="\uparrow" class="ltx_Math" display="inline" id="S4.T2.m1" intent=":literal"><semantics><mo stretchy="false">↑</mo><annotation encoding="application/x-tex">\uparrow</annotation></semantics></math></span></td>
+<td class="ltx_td ltx_align_center ltx_border_tt" id="S4.T2.4.1.1.3"><span class="ltx_text ltx_font_bold" id="S4.T2.4.1.1.3.1">DAC <math alttext="\uparrow" class="ltx_Math" display="inline" id="S4.T2.m2" intent=":literal"><semantics><mo stretchy="false">↑</mo><annotation encoding="application/x-tex">\uparrow</annotation></semantics></math></span></td>
+<td class="ltx_td ltx_align_center ltx_border_tt" id="S4.T2.4.1.1.4"><span class="ltx_text ltx_font_bold" id="S4.T2.4.1.1.4.1">DDC <math alttext="\uparrow" class="ltx_Math" display="inline" id="S4.T2.m3" intent=":literal"><semantics><mo stretchy="false">↑</mo><annotation encoding="application/x-tex">\uparrow</annotation></semantics></math></span></td>
+<td class="ltx_td ltx_align_center ltx_border_r ltx_border_tt" id="S4.T2.4.1.1.5"><span class="ltx_text ltx_font_bold" id="S4.T2.4.1.1.5.1">TLC <math alttext="\uparrow" class="ltx_Math" display="inline" id="S4.T2.m4" intent=":literal"><semantics><mo stretchy="false">↑</mo><annotation encoding="application/x-tex">\uparrow</annotation></semantics></math></span></td>
+<td class="ltx_td ltx_align_center ltx_border_tt" id="S4.T2.4.1.1.6"><span class="ltx_text ltx_font_bold" id="S4.T2.4.1.1.6.1">EP <math alttext="\uparrow" class="ltx_Math" display="inline" id="S4.T2.m5" intent=":literal"><semantics><mo stretchy="false">↑</mo><annotation encoding="application/x-tex">\uparrow</annotation></semantics></math></span></td>
+<td class="ltx_td ltx_align_center ltx_border_tt" id="S4.T2.4.1.1.7"><span class="ltx_text ltx_font_bold" id="S4.T2.4.1.1.7.1">TTC <math alttext="\uparrow" class="ltx_Math" display="inline" id="S4.T2.m6" intent=":literal"><semantics><mo stretchy="false">↑</mo><annotation encoding="application/x-tex">\uparrow</annotation></semantics></math></span></td>
+<td class="ltx_td ltx_align_center ltx_border_tt" id="S4.T2.4.1.1.8"><span class="ltx_text ltx_font_bold" id="S4.T2.4.1.1.8.1">LK <math alttext="\uparrow" class="ltx_Math" display="inline" id="S4.T2.m7" intent=":literal"><semantics><mo stretchy="false">↑</mo><annotation encoding="application/x-tex">\uparrow</annotation></semantics></math></span></td>
+<td class="ltx_td ltx_align_center ltx_border_tt" id="S4.T2.4.1.1.9"><span class="ltx_text ltx_font_bold" id="S4.T2.4.1.1.9.1">HC <math alttext="\uparrow" class="ltx_Math" display="inline" id="S4.T2.m8" intent=":literal"><semantics><mo stretchy="false">↑</mo><annotation encoding="application/x-tex">\uparrow</annotation></semantics></math></span></td>
+<td class="ltx_td ltx_align_center ltx_border_r ltx_border_tt" id="S4.T2.4.1.1.10"><span class="ltx_text ltx_font_bold" id="S4.T2.4.1.1.10.1">EC <math alttext="\uparrow" class="ltx_Math" display="inline" id="S4.T2.m9" intent=":literal"><semantics><mo stretchy="false">↑</mo><annotation encoding="application/x-tex">\uparrow</annotation></semantics></math></span></td>
+<td class="ltx_td ltx_align_center ltx_border_tt" id="S4.T2.4.1.1.11"><span class="ltx_text ltx_font_bold" id="S4.T2.4.1.1.11.1">EPDMS <math alttext="\uparrow" class="ltx_Math" display="inline" id="S4.T2.m10" intent=":literal"><semantics><mo mathbackground="#DFDFDF" stretchy="false">↑</mo><annotation encoding="application/x-tex">\uparrow</annotation></semantics></math></span></td></tr>
+<tr class="ltx_tr" id="S4.T2.4.1.2">
+<td class="ltx_td ltx_align_left ltx_border_r ltx_border_t" id="S4.T2.4.1.2.1">自车状态</td>
+<td class="ltx_td ltx_align_center ltx_border_t" id="S4.T2.4.1.2.2">93.1</td>
+<td class="ltx_td ltx_align_center ltx_border_t" id="S4.T2.4.1.2.3">77.9</td>
+<td class="ltx_td ltx_align_center ltx_border_t" id="S4.T2.4.1.2.4">92.7</td>
+<td class="ltx_td ltx_align_center ltx_border_r ltx_border_t" id="S4.T2.4.1.2.5">99.6</td>
+<td class="ltx_td ltx_align_center ltx_border_t" id="S4.T2.4.1.2.6">86.0</td>
+<td class="ltx_td ltx_align_center ltx_border_t" id="S4.T2.4.1.2.7">91.5</td>
+<td class="ltx_td ltx_align_center ltx_border_t" id="S4.T2.4.1.2.8">89.4</td>
+<td class="ltx_td ltx_align_center ltx_border_t" id="S4.T2.4.1.2.9"><span class="ltx_text ltx_font_bold" id="S4.T2.4.1.2.9.1">98.3</span></td>
+<td class="ltx_td ltx_align_center ltx_border_r ltx_border_t" id="S4.T2.4.1.2.10">85.4</td>
+<td class="ltx_td ltx_align_center ltx_border_t" id="S4.T2.4.1.2.11"><span class="ltx_text" id="S4.T2.4.1.2.11.1">64.0</span></td></tr>
+<tr class="ltx_tr" id="S4.T2.4.1.3">
+<td class="ltx_td ltx_align_left ltx_border_r" id="S4.T2.4.1.3.1">TransFuser <cite class="ltx_cite ltx_citemacro_citep">(Prakash et al., 2021)</cite></td>
+<td class="ltx_td ltx_align_center" id="S4.T2.4.1.3.2">96.9</td>
+<td class="ltx_td ltx_align_center" id="S4.T2.4.1.3.3">89.9</td>
+<td class="ltx_td ltx_align_center" id="S4.T2.4.1.3.4">97.8</td>
+<td class="ltx_td ltx_align_center ltx_border_r" id="S4.T2.4.1.3.5">99.7</td>
+<td class="ltx_td ltx_align_center" id="S4.T2.4.1.3.6">87.1</td>
+<td class="ltx_td ltx_align_center" id="S4.T2.4.1.3.7">95.4</td>
+<td class="ltx_td ltx_align_center" id="S4.T2.4.1.3.8">92.7</td>
+<td class="ltx_td ltx_align_center" id="S4.T2.4.1.3.9"><span class="ltx_text ltx_font_bold" id="S4.T2.4.1.3.9.1">98.3</span></td>
+<td class="ltx_td ltx_align_center ltx_border_r" id="S4.T2.4.1.3.10">87.2</td>
+<td class="ltx_td ltx_align_center" id="S4.T2.4.1.3.11"><span class="ltx_text" id="S4.T2.4.1.3.11.1">76.7</span></td></tr>
+<tr class="ltx_tr" id="S4.T2.4.1.4">
+<td class="ltx_td ltx_align_left ltx_border_r" id="S4.T2.4.1.4.1">HydraMDP++ <cite class="ltx_cite ltx_citemacro_citep">(Li et al., 2024b)</cite></td>
+<td class="ltx_td ltx_align_center" id="S4.T2.4.1.4.2">97.2</td>
+<td class="ltx_td ltx_align_center" id="S4.T2.4.1.4.3">97.5</td>
+<td class="ltx_td ltx_align_center" id="S4.T2.4.1.4.4"><span class="ltx_text ltx_font_bold" id="S4.T2.4.1.4.4.1">99.4</span></td>
+<td class="ltx_td ltx_align_center ltx_border_r" id="S4.T2.4.1.4.5">99.6</td>
+<td class="ltx_td ltx_align_center" id="S4.T2.4.1.4.6">83.1</td>
+<td class="ltx_td ltx_align_center" id="S4.T2.4.1.4.7">96.5</td>
+<td class="ltx_td ltx_align_center" id="S4.T2.4.1.4.8">94.4</td>
+<td class="ltx_td ltx_align_center" id="S4.T2.4.1.4.9">98.2</td>
+<td class="ltx_td ltx_align_center ltx_border_r" id="S4.T2.4.1.4.10">70.9</td>
+<td class="ltx_td ltx_align_center" id="S4.T2.4.1.4.11"><span class="ltx_text" id="S4.T2.4.1.4.11.1">81.4</span></td></tr>
+<tr class="ltx_tr" id="S4.T2.4.1.5">
+<td class="ltx_td ltx_align_left ltx_border_r" id="S4.T2.4.1.5.1">DriveSuprem <cite class="ltx_cite ltx_citemacro_citep">(Yao et al., 2025)</cite></td>
+<td class="ltx_td ltx_align_center" id="S4.T2.4.1.5.2">97.5</td>
+<td class="ltx_td ltx_align_center" id="S4.T2.4.1.5.3">96.5</td>
+<td class="ltx_td ltx_align_center" id="S4.T2.4.1.5.4"><span class="ltx_text ltx_font_bold" id="S4.T2.4.1.5.4.1">99.4</span></td>
+<td class="ltx_td ltx_align_center ltx_border_r" id="S4.T2.4.1.5.5">99.6</td>
+<td class="ltx_td ltx_align_center" id="S4.T2.4.1.5.6"><span class="ltx_text ltx_font_bold" id="S4.T2.4.1.5.6.1">88.4</span></td>
+<td class="ltx_td ltx_align_center" id="S4.T2.4.1.5.7">96.6</td>
+<td class="ltx_td ltx_align_center" id="S4.T2.4.1.5.8">95.5</td>
+<td class="ltx_td ltx_align_center" id="S4.T2.4.1.5.9"><span class="ltx_text ltx_font_bold" id="S4.T2.4.1.5.9.1">98.3</span></td>
+<td class="ltx_td ltx_align_center ltx_border_r" id="S4.T2.4.1.5.10">77.0</td>
+<td class="ltx_td ltx_align_center" id="S4.T2.4.1.5.11"><span class="ltx_text" id="S4.T2.4.1.5.11.1">83.1</span></td></tr>
+<tr class="ltx_tr" id="S4.T2.4.1.6">
+<td class="ltx_td ltx_align_left ltx_border_r" id="S4.T2.4.1.6.1">ARTEMIS <cite class="ltx_cite ltx_citemacro_citep">(Feng et al., 2025)</cite></td>
+<td class="ltx_td ltx_align_center" id="S4.T2.4.1.6.2">98.3</td>
+<td class="ltx_td ltx_align_center" id="S4.T2.4.1.6.3">95.1</td>
+<td class="ltx_td ltx_align_center" id="S4.T2.4.1.6.4">98.6</td>
+<td class="ltx_td ltx_align_center ltx_border_r" id="S4.T2.4.1.6.5"><span class="ltx_text ltx_font_bold" id="S4.T2.4.1.6.5.1">99.8</span></td>
+<td class="ltx_td ltx_align_center" id="S4.T2.4.1.6.6">81.5</td>
+<td class="ltx_td ltx_align_center" id="S4.T2.4.1.6.7">97.4</td>
+<td class="ltx_td ltx_align_center" id="S4.T2.4.1.6.8">96.5</td>
+<td class="ltx_td ltx_align_center" id="S4.T2.4.1.6.9"><span class="ltx_text ltx_font_bold" id="S4.T2.4.1.6.9.1">98.3</span></td>
+<td class="ltx_td ltx_align_center ltx_border_r" id="S4.T2.4.1.6.10">-</td>
+<td class="ltx_td ltx_align_center" id="S4.T2.4.1.6.11"><span class="ltx_text" id="S4.T2.4.1.6.11.1">83.1</span></td></tr>
+<tr class="ltx_tr" id="S4.T2.4.1.7">
+<td class="ltx_td ltx_align_left ltx_border_r" id="S4.T2.4.1.7.1">DiffusionDrive <cite class="ltx_cite ltx_citemacro_citep">(Liao et al., 2025)</cite></td>
+<td class="ltx_td ltx_align_center" id="S4.T2.4.1.7.2">98.2</td>
+<td class="ltx_td ltx_align_center" id="S4.T2.4.1.7.3">95.9</td>
+<td class="ltx_td ltx_align_center" id="S4.T2.4.1.7.4"><span class="ltx_text ltx_font_bold" id="S4.T2.4.1.7.4.1">99.4</span></td>
+<td class="ltx_td ltx_align_center ltx_border_r" id="S4.T2.4.1.7.5"><span class="ltx_text ltx_font_bold" id="S4.T2.4.1.7.5.1">99.8</span></td>
+<td class="ltx_td ltx_align_center" id="S4.T2.4.1.7.6">87.5</td>
+<td class="ltx_td ltx_align_center" id="S4.T2.4.1.7.7">97.3</td>
+<td class="ltx_td ltx_align_center" id="S4.T2.4.1.7.8"><span class="ltx_text ltx_font_bold" id="S4.T2.4.1.7.8.1">96.8</span></td>
+<td class="ltx_td ltx_align_center" id="S4.T2.4.1.7.9"><span class="ltx_text ltx_font_bold" id="S4.T2.4.1.7.9.1">98.3</span></td>
+<td class="ltx_td ltx_align_center ltx_border_r" id="S4.T2.4.1.7.10"><span class="ltx_text ltx_font_bold" id="S4.T2.4.1.7.10.1">87.7</span></td>
+<td class="ltx_td ltx_align_center" id="S4.T2.4.1.7.11"><span class="ltx_text" id="S4.T2.4.1.7.11.1">84.5</span></td></tr>
+<tr class="ltx_tr" id="S4.T2.4.1.8">
+<td class="ltx_td ltx_align_left ltx_border_bb ltx_border_r ltx_border_t" id="S4.T2.4.1.8.1">DriveVLA-W0</td>
+<td class="ltx_td ltx_align_center ltx_border_bb ltx_border_t" id="S4.T2.4.1.8.2"><span class="ltx_text ltx_font_bold" id="S4.T2.4.1.8.2.1">98.5</span></td>
+<td class="ltx_td ltx_align_center ltx_border_bb ltx_border_t" id="S4.T2.4.1.8.3"><span class="ltx_text ltx_font_bold" id="S4.T2.4.1.8.3.1">99.1</span></td>
+<td class="ltx_td ltx_align_center ltx_border_bb ltx_border_t" id="S4.T2.4.1.8.4">98.0</td>
+<td class="ltx_td ltx_align_center ltx_border_bb ltx_border_r ltx_border_t" id="S4.T2.4.1.8.5">99.7</td>
+<td class="ltx_td ltx_align_center ltx_border_bb ltx_border_t" id="S4.T2.4.1.8.6">86.4</td>
+<td class="ltx_td ltx_align_center ltx_border_bb ltx_border_t" id="S4.T2.4.1.8.7"><span class="ltx_text ltx_font_bold" id="S4.T2.4.1.8.7.1">98.1</span></td>
+<td class="ltx_td ltx_align_center ltx_border_bb ltx_border_t" id="S4.T2.4.1.8.8">93.2</td>
+<td class="ltx_td ltx_align_center ltx_border_bb ltx_border_t" id="S4.T2.4.1.8.9">97.9</td>
+<td class="ltx_td ltx_align_center ltx_border_bb ltx_border_r ltx_border_t" id="S4.T2.4.1.8.10">58.9</td>
+<td class="ltx_td ltx_align_center ltx_border_bb ltx_border_t" id="S4.T2.4.1.8.11"><span class="ltx_text ltx_font_bold" id="S4.T2.4.1.8.11.1">86.1</span></td></tr>
+</table>
+</span></div>
+</figure>
+<section class="ltx_subsection" id="S4.SS1">
+<h3 class="ltx_title ltx_title_subsection" data-block="45" id="tr-45">4.1 数据集</h3>
+<div class="ltx_para ltx_noindent" id="S4.SS1.p1">
+<p class="ltx_p" data-block="46" id="S4.SS1.p1.1">NAVSIM。我们使用由 OpenScene（Contributors, 2023）衍生的 NAVSIM（Dauner et al., 2024）基准，评估安全关键场景中的性能。</p>
+</div>
+<div class="ltx_para ltx_noindent" id="S4.SS1.p2">
+<p class="ltx_p" data-block="47" id="S4.SS1.p2.1">NAVSIM v1 指标包括无责任碰撞（NC）、可行驶区域合规（DAC）、碰撞时间（TTC）、舒适度（C.）和自车进度（EP）。NAVSIM 使用预测驾驶员模型分数（PDMS）评估模型性能：<math alttext="PDMS=NC\times DAC\times\frac{5\times EP+5\times TTC+2\times C.}{12}" class="ltx_Math" display="inline" id="S4.SS1.p2.m1" intent=":literal"><semantics><mrow><mrow><mi>P</mi><mo lspace="0em" rspace="0em">​</mo><mi>D</mi><mo lspace="0em" rspace="0em">​</mo><mi>M</mi><mo lspace="0em" rspace="0em">​</mo><mi>S</mi></mrow><mo>=</mo><mrow><mrow><mrow><mrow><mi>N</mi><mo lspace="0em" rspace="0em">​</mo><mi>C</mi></mrow><mo lspace="0.222em" rspace="0.222em">×</mo><mi>D</mi></mrow><mo lspace="0em" rspace="0em">​</mo><mi>A</mi><mo lspace="0em" rspace="0em">​</mo><mi>C</mi></mrow><mo lspace="0.222em" rspace="0.222em">×</mo><mfrac><mrow><mrow><mrow><mrow><mn>5</mn><mo lspace="0.222em" rspace="0.222em">×</mo><mi>E</mi></mrow><mo lspace="0em" rspace="0em">​</mo><mi>P</mi></mrow><mo>+</mo><mrow><mrow><mn>5</mn><mo lspace="0.222em" rspace="0.222em">×</mo><mi>T</mi></mrow><mo lspace="0em" rspace="0em">​</mo><mi>T</mi><mo lspace="0em" rspace="0em">​</mo><mi>C</mi></mrow><mo>+</mo><mrow><mn>2</mn><mo lspace="0.222em" rspace="0.222em">×</mo><mi>C</mi></mrow></mrow><mo lspace="0em">.</mo></mrow><mn>12</mn></mfrac></mrow></mrow><annotation encoding="application/x-tex">PDMS=NC\times DAC\times\frac{5\times EP+5\times TTC+2\times C.}{12}</annotation></semantics></math>。</p>
+</div>
+<div class="ltx_para ltx_noindent" id="S4.SS1.p3">
+<p class="ltx_p" data-block="48" id="S4.SS1.p3.1">NAVSIM v2（Cao et al., 2025）包含被分为惩罚项与加权子分数的多个组成部分。关键指标是无责任碰撞（NC）、可行驶区域合规（DAC）、行驶方向合规（DDC）、交通灯合规（TLC）、自车进度（EP）、碰撞时间（TTC）、车道保持（LK）、历史舒适度（HC）和扩展舒适度（EC）。它使用扩展预测驾驶员模型分数（EPDMS）评估性能：<math alttext="\text{EPDMS}=\text{NC}\times\text{DAC}\times\text{DDC}\times\text{TLC}\times\frac{5\times\text{EP}+5\times\text{TTC}+2\times\text{LK}+2\times\text{HC}+2\times\text{EC}}{16}" class="ltx_Math" display="inline" id="S4.SS1.p3.m1" intent=":literal"><semantics><mrow><mtext>EPDMS</mtext><mo>=</mo><mrow><mtext>NC</mtext><mo lspace="0.222em" rspace="0.222em">×</mo><mtext>DAC</mtext><mo lspace="0.222em" rspace="0.222em">×</mo><mtext>DDC</mtext><mo lspace="0.222em" rspace="0.222em">×</mo><mtext>TLC</mtext><mo lspace="0.222em" rspace="0.222em">×</mo><mfrac><mrow><mrow><mn>5</mn><mo lspace="0.222em" rspace="0.222em">×</mo><mtext>EP</mtext></mrow><mo>+</mo><mrow><mn>5</mn><mo lspace="0.222em" rspace="0.222em">×</mo><mtext>TTC</mtext></mrow><mo>+</mo><mrow><mn>2</mn><mo lspace="0.222em" rspace="0.222em">×</mo><mtext>LK</mtext></mrow><mo>+</mo><mrow><mn>2</mn><mo lspace="0.222em" rspace="0.222em">×</mo><mtext>HC</mtext></mrow><mo>+</mo><mrow><mn>2</mn><mo lspace="0.222em" rspace="0.222em">×</mo><mtext>EC</mtext></mrow></mrow><mn>16</mn></mfrac></mrow></mrow><annotation encoding="application/x-tex">\text{EPDMS}=\text{NC}\times\text{DAC}\times\text{DDC}\times\text{TLC}\times\frac{5\times\text{EP}+5\times\text{TTC}+2\times\text{LK}+2\times\text{HC}+2\times\text{EC}}{16}</annotation></semantics></math>。</p>
+</div>
+<div class="ltx_para ltx_noindent" id="S4.SS1.p4">
+<p class="ltx_p" data-block="49" id="S4.SS1.p4.1">内部数据集。为检验超出学术基准的数据可扩展性，我们使用大规模内部数据集训练和评估。训练集含 7000 万帧，来自超过 100 万个不重复片段，经过整理以保证广泛驾驶场景的多样性与平衡性，并显著增加挑战性、安全关键事件的比例。测试集包含 100 个挑战场景。轨迹评估使用未来 3 秒、6 路径点（2 Hz）的平均位移误差（ADE）；安全性使用碰撞率，计算方法与 NAVSIM 的无责任碰撞（NC）指标相同。</p>
+</div>
+</section>
+<section class="ltx_subsection" id="S4.SS2">
+<h3 class="ltx_title ltx_title_subsection" data-block="50" id="tr-50">4.2 实现细节</h3>
+<div class="ltx_para ltx_noindent" id="S4.SS2.p1">
+<p class="ltx_p" data-block="51" id="S4.SS2.p1.1">两阶段训练范式。模型采用两阶段训练：先学习丰富世界表征，再专门学习动作生成。第一阶段以 6VA 序列配置预训练 VLA 骨干，用世界模型损失与动作预测损失的联合目标优化。第二阶段接入动作专家，骨干改为处理 2VA 输入序列。我们不冻结 VLA 骨干，但模型仅由动作专家部分的动作损失监督。</p>
+</div>
+<div class="ltx_para ltx_noindent" id="S4.SS2.p2">
+<p class="ltx_p" data-block="52" id="S4.SS2.p2.1">NAVSIM。基准实验中，模型先在 NuPlan（Caesar et al., 2021）预训练 8k 步，再在 NAVSIM 微调 4k 步，图像分辨率为 256×144。训练使用 8 张 NVIDIA L20、全局 batch size 48，AdamW 优化器、余弦学习率调度、初始学习率 2e-4，以及 bfloat16 混合精度。消融实验默认选用架构较简单的 DriveVLA-W0 (VQ)。</p>
+</div>
+<div class="ltx_para ltx_noindent" id="S4.SS2.p3">
+<p class="ltx_p" data-block="53" id="S4.SS2.p3.1">内部数据集。大规模内部实验使用相同数据预训练 50k 步、微调 30k 步；使用 64 张 GPU 的集群，全局 batch size 256。优化器和学习率调度与 NAVSIM 设置相同。</p>
+</div>
+<div class="ltx_para ltx_noindent" id="S4.SS2.p4">
+<p class="ltx_p" data-block="54" id="S4.SS2.p4.1">重新实现的 TransFuser。为内部数据集提供强基线，我们改造并重新实现著名的 TransFuser（Prakash et al., 2021）架构。为与单相机设置公平比较，我们将仅图像版 Latent-TransFuser 从多视图输入改成单个前视图。为研究模型规模影响，我们实现 50M 与 7B 两个版本：较小的 TransFuser-50M 使用标准 ResNet-34；较大的 TransFuser-7B 使用 ViT-7B 骨干，以 DINOv3（Siméoni et al., 2025）预训练权重初始化。</p>
+</div>
+</section>
+<section class="ltx_subsection" id="S4.SS3">
+<h3 class="ltx_title ltx_title_subsection" data-block="55" id="tr-55">4.3 与最先进方法比较</h3>
+<div class="ltx_para ltx_noindent" id="S4.SS3.p1">
+<p class="ltx_p" data-block="56" id="S4.SS3.p1.1">如表 1、表 2 所示，DriveVLA-W0 超越不同架构范式中的领先方法，包括基于 BEV 的 WoTE（Li et al., 2025a）和基于 VLA 的 AutoVLA（Zhou et al., 2025c），在 NAVSIM 上达到新的最先进水平。特别是，本模型仅用单个前视相机，就超过了使用多相机加 LiDAR 等更丰富传感器配置的竞争方法。这种优异表现归功于世界建模目标提供的强大密集监督，使模型学到更有效的特征表征。</p>
+</div>
+</section>
+<section class="ltx_subsection" id="S4.SS4">
+<h3 class="ltx_title ltx_title_subsection" data-block="57" id="tr-57">4.4 世界模型增强数据规模定律</h3>
+<figure class="ltx_figure" id="S4.F4"><img alt="论文原图 4" class="ltx_graphics ltx_centering ltx_img_landscape" id="S4.F4.g1" src="images/figure-04.jpg"/>
+<figcaption class="ltx_caption ltx_centering" data-block="58">图 4：世界建模随数据扩展释放泛化能力。对稀疏监督基线，预训练带来负面影响（红箭头）；世界模型则使 VLA-W0 从预训练获益（绿箭头），在视觉相似（b）但动作分布不同（a）的数据集间实现正向知识迁移。图（a）来自 Dauner et al. (2024)。</figcaption>
+</figure>
+<div class="ltx_para ltx_noindent" id="S4.SS4.p1">
+<p class="ltx_p" data-block="59" id="S4.SS4.p1.1">世界建模随数据扩展释放泛化能力。为测试不同动作分布间的泛化，我们先在大规模 NuPlan 预训练，再在聚焦挑战性长尾机动的小型基准 NAVSIM 微调。该设置的视觉域仍相似，但动作空间存在明显域偏移，给知识迁移带来挑战。如图 4、表 7 所示，世界建模对有效迁移至关重要。我们观察到两种相反趋势：1）仅依赖稀疏动作监督的基线常因预训练受损，例如 TransFuser-7B 与 VLA (VQ) 基线显著下降（红箭头），因为过拟合 NuPlan 动作分布形成了不利先验，妨碍适应 NAVSIM 边缘场景；2）VLA-W0 始终从预训练获益。要求模型预测未来视觉帧，促使它学习可迁移的环境视觉表征，从而获得更强泛化能力。</p>
+</div>
+<div class="ltx_para ltx_noindent" id="S4.SS4.p2">
+<p class="ltx_p" data-block="60" id="S4.SS4.p2.1">随数据扩展，世界建模优于仅动作监督。我们在三种数据规模（70k、700k、70M 帧）上训练模型，研究数据可扩展性。为清晰消融世界建模范式的作用，这些实验直接在基础 VLA 上进行，不使用动作专家。如表 3，世界模型是释放大数据收益的关键。仅依赖稀疏动作监督的基线很快饱和，而 DriveVLA-W0 持续改善。在 70M 帧时效果最明显：加入世界建模后，VQ 模型的 ADE 改善 28.8%，ViT 模型碰撞率改善 15.9%。这表明，即使有海量训练数据，仅动作监督也无法复制密集世界模型目标带来的质的优势。〔译注：这里原文写 70k、700k、70M；图 1 的横轴为 700K、7M、70M，原文如此。〕</p>
+</div>
+<figure class="ltx_table" id="S4.T3">
+<figcaption class="ltx_caption ltx_centering" data-block="61">表 3：随数据扩展，世界建模优于仅动作监督。不同于稀疏监督下过早进入平台期的基线，VLA-W0 持续改善。</figcaption>
+<div class="ltx_inline-block ltx_align_center ltx_transformed_outer" id="S4.T3.4"><span class="ltx_transformed_inner">
+<table class="ltx_tabular ltx_align_middle" id="S4.T3.4.1">
+<tr class="ltx_tr" id="S4.T3.4.1.1">
+<td class="ltx_td ltx_align_left ltx_border_tt" id="S4.T3.4.1.1.1" rowspan="2"><span class="ltx_text ltx_font_bold" id="S4.T3.4.1.1.1.1">模型</span></td>
+<td class="ltx_td ltx_align_center ltx_border_tt" colspan="6" id="S4.T3.4.1.1.2"><span class="ltx_text ltx_font_bold" id="S4.T3.4.1.1.2.1">内部数据集规模（帧数）</span></td></tr>
+<tr class="ltx_tr" id="S4.T3.4.1.2">
+<td class="ltx_td ltx_align_center ltx_border_t" colspan="2" id="S4.T3.4.1.2.1"><span class="ltx_text ltx_font_bold" id="S4.T3.4.1.2.1.1">70k</span></td>
+<td class="ltx_td ltx_align_center ltx_border_t" colspan="2" id="S4.T3.4.1.2.2"><span class="ltx_text ltx_font_bold" id="S4.T3.4.1.2.2.1">700k</span></td>
+<td class="ltx_td ltx_align_center ltx_border_t" colspan="2" id="S4.T3.4.1.2.3"><span class="ltx_text ltx_font_bold" id="S4.T3.4.1.2.3.1">70M</span></td></tr>
+<tr class="ltx_tr" id="S4.T3.4.1.3">
+<td class="ltx_td" id="S4.T3.4.1.3.1"></td>
+<td class="ltx_td ltx_align_left ltx_border_t" id="S4.T3.4.1.3.2">ADE (m) <math alttext="\downarrow" class="ltx_Math" display="inline" id="S4.T3.m1" intent=":literal"><semantics><mo stretchy="false">↓</mo><annotation encoding="application/x-tex">\downarrow</annotation></semantics></math></td>
+<td class="ltx_td ltx_align_left ltx_border_t" id="S4.T3.4.1.3.3">碰撞率（%） <math alttext="\downarrow" class="ltx_Math" display="inline" id="S4.T3.m2" intent=":literal"><semantics><mo stretchy="false">↓</mo><annotation encoding="application/x-tex">\downarrow</annotation></semantics></math></td>
+<td class="ltx_td ltx_align_left ltx_border_t" id="S4.T3.4.1.3.4">ADE (m) <math alttext="\downarrow" class="ltx_Math" display="inline" id="S4.T3.m3" intent=":literal"><semantics><mo stretchy="false">↓</mo><annotation encoding="application/x-tex">\downarrow</annotation></semantics></math></td>
+<td class="ltx_td ltx_align_left ltx_border_t" id="S4.T3.4.1.3.5">碰撞率（%） <math alttext="\downarrow" class="ltx_Math" display="inline" id="S4.T3.m4" intent=":literal"><semantics><mo stretchy="false">↓</mo><annotation encoding="application/x-tex">\downarrow</annotation></semantics></math></td>
+<td class="ltx_td ltx_align_left ltx_border_t" id="S4.T3.4.1.3.6">ADE (m) <math alttext="\downarrow" class="ltx_Math" display="inline" id="S4.T3.m5" intent=":literal"><semantics><mo stretchy="false">↓</mo><annotation encoding="application/x-tex">\downarrow</annotation></semantics></math></td>
+<td class="ltx_td ltx_align_left ltx_border_t" id="S4.T3.4.1.3.7">碰撞率（%） <math alttext="\downarrow" class="ltx_Math" display="inline" id="S4.T3.m6" intent=":literal"><semantics><mo stretchy="false">↓</mo><annotation encoding="application/x-tex">\downarrow</annotation></semantics></math></td></tr>
+<tr class="ltx_tr" id="S4.T3.4.1.4">
+<td class="ltx_td ltx_align_left ltx_border_t" id="S4.T3.4.1.4.1">TransFuser-50M</td>
+<td class="ltx_td ltx_align_left ltx_border_t" id="S4.T3.4.1.4.2"><math alttext="2.5893" class="ltx_Math" display="inline" id="S4.T3.m7" intent=":literal"><semantics><mn>2.5893</mn><annotation encoding="application/x-tex">2.5893</annotation></semantics></math></td>
+<td class="ltx_td ltx_align_left ltx_border_t" id="S4.T3.4.1.4.3"><math alttext="0.0894" class="ltx_Math" display="inline" id="S4.T3.m8" intent=":literal"><semantics><mn>0.0894</mn><annotation encoding="application/x-tex">0.0894</annotation></semantics></math></td>
+<td class="ltx_td ltx_align_left ltx_border_t" id="S4.T3.4.1.4.4"><math alttext="1.7464" class="ltx_Math" display="inline" id="S4.T3.m9" intent=":literal"><semantics><mn>1.7464</mn><annotation encoding="application/x-tex">1.7464</annotation></semantics></math></td>
+<td class="ltx_td ltx_align_left ltx_border_t" id="S4.T3.4.1.4.5"><math alttext="0.0563" class="ltx_Math" display="inline" id="S4.T3.m10" intent=":literal"><semantics><mn>0.0563</mn><annotation encoding="application/x-tex">0.0563</annotation></semantics></math></td>
+<td class="ltx_td ltx_align_left ltx_border_t" id="S4.T3.4.1.4.6"><math alttext="1.2627" class="ltx_Math" display="inline" id="S4.T3.m11" intent=":literal"><semantics><mn>1.2627</mn><annotation encoding="application/x-tex">1.2627</annotation></semantics></math></td>
+<td class="ltx_td ltx_align_left ltx_border_t" id="S4.T3.4.1.4.7"><math alttext="0.0472" class="ltx_Math" display="inline" id="S4.T3.m12" intent=":literal"><semantics><mn>0.0472</mn><annotation encoding="application/x-tex">0.0472</annotation></semantics></math></td></tr>
+<tr class="ltx_tr" id="S4.T3.4.1.5">
+<td class="ltx_td ltx_align_left" id="S4.T3.4.1.5.1">TransFuser-7B</td>
+<td class="ltx_td ltx_align_left" id="S4.T3.4.1.5.2"><math alttext="2.5757" class="ltx_Math" display="inline" id="S4.T3.m13" intent=":literal"><semantics><mn>2.5757</mn><annotation encoding="application/x-tex">2.5757</annotation></semantics></math></td>
+<td class="ltx_td ltx_align_left" id="S4.T3.4.1.5.3"><math alttext="0.0839" class="ltx_Math" display="inline" id="S4.T3.m14" intent=":literal"><semantics><mn>0.0839</mn><annotation encoding="application/x-tex">0.0839</annotation></semantics></math></td>
+<td class="ltx_td ltx_align_left" id="S4.T3.4.1.5.4"><math alttext="2.1391" class="ltx_Math" display="inline" id="S4.T3.m15" intent=":literal"><semantics><mn>2.1391</mn><annotation encoding="application/x-tex">2.1391</annotation></semantics></math></td>
+<td class="ltx_td ltx_align_left" id="S4.T3.4.1.5.5"><math alttext="0.0710" class="ltx_Math" display="inline" id="S4.T3.m16" intent=":literal"><semantics><mn>0.0710</mn><annotation encoding="application/x-tex">0.0710</annotation></semantics></math></td>
+<td class="ltx_td ltx_align_left" id="S4.T3.4.1.5.6"><math alttext="1.2244" class="ltx_Math" display="inline" id="S4.T3.m17" intent=":literal"><semantics><mn>1.2244</mn><annotation encoding="application/x-tex">1.2244</annotation></semantics></math></td>
+<td class="ltx_td ltx_align_left" id="S4.T3.4.1.5.7"><math alttext="0.0539" class="ltx_Math" display="inline" id="S4.T3.m18" intent=":literal"><semantics><mn>0.0539</mn><annotation encoding="application/x-tex">0.0539</annotation></semantics></math></td></tr>
+<tr class="ltx_tr" id="S4.T3.4.1.6">
+<td class="ltx_td ltx_align_left ltx_border_t" id="S4.T3.4.1.6.1">VLA (VQ) （基线）</td>
+<td class="ltx_td ltx_align_left ltx_border_t" id="S4.T3.4.1.6.2"><math alttext="2.8520" class="ltx_Math" display="inline" id="S4.T3.m19" intent=":literal"><semantics><mn>2.8520</mn><annotation encoding="application/x-tex">2.8520</annotation></semantics></math></td>
+<td class="ltx_td ltx_align_left ltx_border_t" id="S4.T3.4.1.6.3"><math alttext="0.0982" class="ltx_Math" display="inline" id="S4.T3.m20" intent=":literal"><semantics><mn>0.0982</mn><annotation encoding="application/x-tex">0.0982</annotation></semantics></math></td>
+<td class="ltx_td ltx_align_left ltx_border_t" id="S4.T3.4.1.6.4"><math alttext="1.5424" class="ltx_Math" display="inline" id="S4.T3.m21" intent=":literal"><semantics><mn>1.5424</mn><annotation encoding="application/x-tex">1.5424</annotation></semantics></math></td>
+<td class="ltx_td ltx_align_left ltx_border_t" id="S4.T3.4.1.6.5"><math alttext="0.0565" class="ltx_Math" display="inline" id="S4.T3.m22" intent=":literal"><semantics><mn>0.0565</mn><annotation encoding="application/x-tex">0.0565</annotation></semantics></math></td>
+<td class="ltx_td ltx_align_left ltx_border_t" id="S4.T3.4.1.6.6"><math alttext="1.4829" class="ltx_Math" display="inline" id="S4.T3.m23" intent=":literal"><semantics><mn>1.4829</mn><annotation encoding="application/x-tex">1.4829</annotation></semantics></math></td>
+<td class="ltx_td ltx_align_left ltx_border_t" id="S4.T3.4.1.6.7"><math alttext="0.0488" class="ltx_Math" display="inline" id="S4.T3.m24" intent=":literal"><semantics><mn>0.0488</mn><annotation encoding="application/x-tex">0.0488</annotation></semantics></math></td></tr>
+<tr class="ltx_tr" id="S4.T3.4.1.7">
+<td class="ltx_td ltx_align_left" id="S4.T3.4.1.7.1">   <span class="ltx_text ltx_font_italic" id="S4.T3.4.1.7.1.1">＋世界模型 （本文）</span></td>
+<td class="ltx_td ltx_align_left" id="S4.T3.4.1.7.2">2.7482 <math alttext="\uparrow" class="ltx_Math" display="inline" id="S4.T3.m25" intent=":literal"><semantics><mo mathcolor="#2ECC71" stretchy="false">↑</mo><annotation encoding="application/x-tex">\uparrow</annotation></semantics></math><span class="ltx_text" id="S4.T3.4.1.7.2.1">3.6%</span></td>
+<td class="ltx_td ltx_align_left" id="S4.T3.4.1.7.3">0.0956 <math alttext="\uparrow" class="ltx_Math" display="inline" id="S4.T3.m26" intent=":literal"><semantics><mo mathcolor="#2ECC71" stretchy="false">↑</mo><annotation encoding="application/x-tex">\uparrow</annotation></semantics></math><span class="ltx_text" id="S4.T3.4.1.7.3.1">2.7%</span></td>
+<td class="ltx_td ltx_align_left" id="S4.T3.4.1.7.4">1.5985 <math alttext="\downarrow" class="ltx_Math" display="inline" id="S4.T3.m27" intent=":literal"><semantics><mo mathcolor="#E74C3C" stretchy="false">↓</mo><annotation encoding="application/x-tex">\downarrow</annotation></semantics></math><span class="ltx_text" id="S4.T3.4.1.7.4.1">3.6%</span></td>
+<td class="ltx_td ltx_align_left" id="S4.T3.4.1.7.5">0.0520 <math alttext="\uparrow" class="ltx_Math" display="inline" id="S4.T3.m28" intent=":literal"><semantics><mo mathcolor="#2ECC71" stretchy="false">↑</mo><annotation encoding="application/x-tex">\uparrow</annotation></semantics></math><span class="ltx_text" id="S4.T3.4.1.7.5.1">8.0%</span></td>
+<td class="ltx_td ltx_align_left" id="S4.T3.4.1.7.6">1.0563 <math alttext="\uparrow" class="ltx_Math" display="inline" id="S4.T3.m29" intent=":literal"><semantics><mo mathcolor="#2ECC71" stretchy="false">↑</mo><annotation encoding="application/x-tex">\uparrow</annotation></semantics></math><span class="ltx_text" id="S4.T3.4.1.7.6.1">28.8%</span></td>
+<td class="ltx_td ltx_align_left" id="S4.T3.4.1.7.7">0.0392 <math alttext="\uparrow" class="ltx_Math" display="inline" id="S4.T3.m30" intent=":literal"><semantics><mo mathcolor="#2ECC71" stretchy="false">↑</mo><annotation encoding="application/x-tex">\uparrow</annotation></semantics></math><span class="ltx_text" id="S4.T3.4.1.7.7.1">19.7%</span></td></tr>
+<tr class="ltx_tr" id="S4.T3.4.1.8">
+<td class="ltx_td ltx_align_left ltx_border_t" id="S4.T3.4.1.8.1">VLA (ViT) （基线）</td>
+<td class="ltx_td ltx_align_left ltx_border_t" id="S4.T3.4.1.8.2"><math alttext="3.1524" class="ltx_Math" display="inline" id="S4.T3.m31" intent=":literal"><semantics><mn>3.1524</mn><annotation encoding="application/x-tex">3.1524</annotation></semantics></math></td>
+<td class="ltx_td ltx_align_left ltx_border_t" id="S4.T3.4.1.8.3"><math alttext="0.0950" class="ltx_Math" display="inline" id="S4.T3.m32" intent=":literal"><semantics><mn>0.0950</mn><annotation encoding="application/x-tex">0.0950</annotation></semantics></math></td>
+<td class="ltx_td ltx_align_left ltx_border_t" id="S4.T3.4.1.8.4"><math alttext="1.4202" class="ltx_Math" display="inline" id="S4.T3.m33" intent=":literal"><semantics><mn>1.4202</mn><annotation encoding="application/x-tex">1.4202</annotation></semantics></math></td>
+<td class="ltx_td ltx_align_left ltx_border_t" id="S4.T3.4.1.8.5"><math alttext="0.0462" class="ltx_Math" display="inline" id="S4.T3.m34" intent=":literal"><semantics><mn>0.0462</mn><annotation encoding="application/x-tex">0.0462</annotation></semantics></math></td>
+<td class="ltx_td ltx_align_left ltx_border_t" id="S4.T3.4.1.8.6"><math alttext="1.1051" class="ltx_Math" display="inline" id="S4.T3.m35" intent=":literal"><semantics><mn>1.1051</mn><annotation encoding="application/x-tex">1.1051</annotation></semantics></math></td>
+<td class="ltx_td ltx_align_left ltx_border_t" id="S4.T3.4.1.8.7"><math alttext="0.0359" class="ltx_Math" display="inline" id="S4.T3.m36" intent=":literal"><semantics><mn>0.0359</mn><annotation encoding="application/x-tex">0.0359</annotation></semantics></math></td></tr>
+<tr class="ltx_tr" id="S4.T3.4.1.9">
+<td class="ltx_td ltx_align_left ltx_border_bb" id="S4.T3.4.1.9.1">   <span class="ltx_text ltx_font_italic" id="S4.T3.4.1.9.1.1">＋世界模型 （本文）</span></td>
+<td class="ltx_td ltx_align_left ltx_border_bb" id="S4.T3.4.1.9.2">2.5268 <math alttext="\uparrow" class="ltx_Math" display="inline" id="S4.T3.m37" intent=":literal"><semantics><mo mathcolor="#2ECC71" stretchy="false">↑</mo><annotation encoding="application/x-tex">\uparrow</annotation></semantics></math><span class="ltx_text" id="S4.T3.4.1.9.2.1">19.9%</span></td>
+<td class="ltx_td ltx_align_left ltx_border_bb" id="S4.T3.4.1.9.3">0.0834 <math alttext="\uparrow" class="ltx_Math" display="inline" id="S4.T3.m38" intent=":literal"><semantics><mo mathcolor="#2ECC71" stretchy="false">↑</mo><annotation encoding="application/x-tex">\uparrow</annotation></semantics></math><span class="ltx_text" id="S4.T3.4.1.9.3.1">12.2%</span></td>
+<td class="ltx_td ltx_align_left ltx_border_bb" id="S4.T3.4.1.9.4">1.3436 <math alttext="\uparrow" class="ltx_Math" display="inline" id="S4.T3.m39" intent=":literal"><semantics><mo mathcolor="#2ECC71" stretchy="false">↑</mo><annotation encoding="application/x-tex">\uparrow</annotation></semantics></math><span class="ltx_text" id="S4.T3.4.1.9.4.1">5.4%</span></td>
+<td class="ltx_td ltx_align_left ltx_border_bb" id="S4.T3.4.1.9.5">0.0513 <math alttext="\downarrow" class="ltx_Math" display="inline" id="S4.T3.m40" intent=":literal"><semantics><mo mathcolor="#E74C3C" stretchy="false">↓</mo><annotation encoding="application/x-tex">\downarrow</annotation></semantics></math><span class="ltx_text" id="S4.T3.4.1.9.5.1">11.0%</span></td>
+<td class="ltx_td ltx_align_left ltx_border_bb" id="S4.T3.4.1.9.6">1.0640 <math alttext="\uparrow" class="ltx_Math" display="inline" id="S4.T3.m41" intent=":literal"><semantics><mo mathcolor="#2ECC71" stretchy="false">↑</mo><annotation encoding="application/x-tex">\uparrow</annotation></semantics></math><span class="ltx_text" id="S4.T3.4.1.9.6.1">3.7%</span></td>
+<td class="ltx_td ltx_align_left ltx_border_bb" id="S4.T3.4.1.9.7">0.0302 <math alttext="\uparrow" class="ltx_Math" display="inline" id="S4.T3.m42" intent=":literal"><semantics><mo mathcolor="#2ECC71" stretchy="false">↑</mo><annotation encoding="application/x-tex">\uparrow</annotation></semantics></math><span class="ltx_text" id="S4.T3.4.1.9.7.1">15.9%</span></td></tr>
+</table>
+</span></div>
+</figure>
+<div class="ltx_para ltx_noindent" id="S4.SS4.p3">
+<p class="ltx_p" data-block="62" id="S4.SS4.p3.1">动作专家的性能随数据扩展发生反转。比较 NAVSIM（100k 帧）与内部数据集（70M 帧）上的动作专家，发现由预测精度和建模能力权衡所驱动的明显反转。如表 4，小规模 NAVSIM 上轨迹分布简单，查询式与流匹配等连续解码器表现出色：较高精度使它们优于受量化误差影响的离散自回归方法。但在大数据集上，主要挑战变为建模远更复杂的轨迹分布。此时，自回归解码器强大的建模能力及样本高效的 teacher-forced（教师强制）训练，使其最能有效扩展。相比之下，查询专家遇到表征瓶颈；流匹配专家则因样本效率过低，无法在复杂数据流形上收敛，从而出现上述性能反转。</p>
+</div>
+<figure class="ltx_table" id="S4.T4">
+<figcaption class="ltx_caption ltx_centering" data-block="63">表 4：动作专家性能随数据扩展反转。对每个数据集，三种专家都从相同预训练 VLA 初始化。小数据表现最好的查询式专家，在更大规模时被自回归专家超越，呈现清晰的性能反转。</figcaption>
+<div class="ltx_inline-block ltx_align_center ltx_transformed_outer" id="S4.T4.4"><span class="ltx_transformed_inner">
+<table class="ltx_tabular ltx_align_middle" id="S4.T4.4.1">
+<tr class="ltx_tr" id="S4.T4.4.1.1">
+<td class="ltx_td ltx_align_left ltx_border_tt" id="S4.T4.4.1.1.1" rowspan="2"><span class="ltx_text ltx_font_bold" id="S4.T4.4.1.1.1.1">动作专家</span></td>
+<td class="ltx_td ltx_align_center ltx_border_r ltx_border_tt" colspan="6" id="S4.T4.4.1.1.2"><span class="ltx_text ltx_font_bold" id="S4.T4.4.1.1.2.1">NAVSIM（103k 帧）</span></td>
+<td class="ltx_td ltx_align_center ltx_border_tt" colspan="2" id="S4.T4.4.1.1.3"><span class="ltx_text ltx_font_bold" id="S4.T4.4.1.1.3.1">内部数据集（70M 帧）</span></td></tr>
+<tr class="ltx_tr" id="S4.T4.4.1.2">
+<td class="ltx_td ltx_align_center ltx_border_t" id="S4.T4.4.1.2.1"><span class="ltx_text ltx_font_bold" id="S4.T4.4.1.2.1.1">NC</span> <math alttext="\uparrow" class="ltx_Math" display="inline" id="S4.T4.m1" intent=":literal"><semantics><mo stretchy="false">↑</mo><annotation encoding="application/x-tex">\uparrow</annotation></semantics></math></td>
+<td class="ltx_td ltx_align_center ltx_border_t" id="S4.T4.4.1.2.2"><span class="ltx_text ltx_font_bold" id="S4.T4.4.1.2.2.1">DAC</span> <math alttext="\uparrow" class="ltx_Math" display="inline" id="S4.T4.m2" intent=":literal"><semantics><mo stretchy="false">↑</mo><annotation encoding="application/x-tex">\uparrow</annotation></semantics></math></td>
+<td class="ltx_td ltx_align_center ltx_border_t" id="S4.T4.4.1.2.3"><span class="ltx_text ltx_font_bold" id="S4.T4.4.1.2.3.1">TTC</span> <math alttext="\uparrow" class="ltx_Math" display="inline" id="S4.T4.m3" intent=":literal"><semantics><mo stretchy="false">↑</mo><annotation encoding="application/x-tex">\uparrow</annotation></semantics></math></td>
+<td class="ltx_td ltx_align_center ltx_border_t" id="S4.T4.4.1.2.4"><span class="ltx_text ltx_font_bold" id="S4.T4.4.1.2.4.1">C.</span> <math alttext="\uparrow" class="ltx_Math" display="inline" id="S4.T4.m4" intent=":literal"><semantics><mo stretchy="false">↑</mo><annotation encoding="application/x-tex">\uparrow</annotation></semantics></math></td>
+<td class="ltx_td ltx_align_center ltx_border_t" id="S4.T4.4.1.2.5"><span class="ltx_text ltx_font_bold" id="S4.T4.4.1.2.5.1">EP</span> <math alttext="\uparrow" class="ltx_Math" display="inline" id="S4.T4.m5" intent=":literal"><semantics><mo stretchy="false">↑</mo><annotation encoding="application/x-tex">\uparrow</annotation></semantics></math></td>
+<td class="ltx_td ltx_align_center ltx_border_r ltx_border_t" id="S4.T4.4.1.2.6"><span class="ltx_text ltx_font_bold" id="S4.T4.4.1.2.6.1">PDMS</span> <math alttext="\uparrow" class="ltx_Math" display="inline" id="S4.T4.m6" intent=":literal"><semantics><mo stretchy="false">↑</mo><annotation encoding="application/x-tex">\uparrow</annotation></semantics></math></td>
+<td class="ltx_td ltx_align_center ltx_border_t" id="S4.T4.4.1.2.7"><span class="ltx_text ltx_font_bold" id="S4.T4.4.1.2.7.1">ADE (m)</span> <math alttext="\downarrow" class="ltx_Math" display="inline" id="S4.T4.m7" intent=":literal"><semantics><mo stretchy="false">↓</mo><annotation encoding="application/x-tex">\downarrow</annotation></semantics></math></td>
+<td class="ltx_td ltx_align_center ltx_border_t" id="S4.T4.4.1.2.8"><span class="ltx_text ltx_font_bold" id="S4.T4.4.1.2.8.1">碰撞率（%）</span> <math alttext="\downarrow" class="ltx_Math" display="inline" id="S4.T4.m8" intent=":literal"><semantics><mo stretchy="false">↓</mo><annotation encoding="application/x-tex">\downarrow</annotation></semantics></math></td></tr>
+<tr class="ltx_tr" id="S4.T4.4.1.3">
+<td class="ltx_td ltx_align_left ltx_border_t" id="S4.T4.4.1.3.1">基于查询</td>
+<td class="ltx_td ltx_align_center ltx_border_t" id="S4.T4.4.1.3.2">98.7</td>
+<td class="ltx_td ltx_align_center ltx_border_t" id="S4.T4.4.1.3.3">96.2</td>
+<td class="ltx_td ltx_align_center ltx_border_t" id="S4.T4.4.1.3.4">95.5</td>
+<td class="ltx_td ltx_align_center ltx_border_t" id="S4.T4.4.1.3.5">100.0</td>
+<td class="ltx_td ltx_align_center ltx_border_t" id="S4.T4.4.1.3.6">82.2</td>
+<td class="ltx_td ltx_align_center ltx_border_r ltx_border_t" id="S4.T4.4.1.3.7">88.4</td>
+<td class="ltx_td ltx_align_center ltx_border_t" id="S4.T4.4.1.3.8">1.1248</td>
+<td class="ltx_td ltx_align_center ltx_border_t" id="S4.T4.4.1.3.9">0.0453</td></tr>
+<tr class="ltx_tr" id="S4.T4.4.1.4">
+<td class="ltx_td ltx_align_left" id="S4.T4.4.1.4.1">流匹配</td>
+<td class="ltx_td ltx_align_center" id="S4.T4.4.1.4.2">98.4</td>
+<td class="ltx_td ltx_align_center" id="S4.T4.4.1.4.3">95.3</td>
+<td class="ltx_td ltx_align_center" id="S4.T4.4.1.4.4">95.2</td>
+<td class="ltx_td ltx_align_center" id="S4.T4.4.1.4.5">100.0</td>
+<td class="ltx_td ltx_align_center" id="S4.T4.4.1.4.6">80.9</td>
+<td class="ltx_td ltx_align_center ltx_border_r" id="S4.T4.4.1.4.7">87.2 <math alttext="\downarrow" class="ltx_Math" display="inline" id="S4.T4.m9" intent=":literal"><semantics><mo mathcolor="#E74C3C" stretchy="false">↓</mo><annotation encoding="application/x-tex">\downarrow</annotation></semantics></math><span class="ltx_text" id="S4.T4.4.1.4.7.1">1.4%</span></td>
+<td class="ltx_td ltx_align_center" id="S4.T4.4.1.4.8">1.0362 <math alttext="\uparrow" class="ltx_Math" display="inline" id="S4.T4.m10" intent=":literal"><semantics><mo mathcolor="#2ECC71" stretchy="false">↑</mo><annotation encoding="application/x-tex">\uparrow</annotation></semantics></math><span class="ltx_text" id="S4.T4.4.1.4.8.1">7.9%</span></td>
+<td class="ltx_td ltx_align_center" id="S4.T4.4.1.4.9">0.0398 <math alttext="\uparrow" class="ltx_Math" display="inline" id="S4.T4.m11" intent=":literal"><semantics><mo mathcolor="#2ECC71" stretchy="false">↑</mo><annotation encoding="application/x-tex">\uparrow</annotation></semantics></math><span class="ltx_text" id="S4.T4.4.1.4.9.1">12.1%</span></td></tr>
+<tr class="ltx_tr" id="S4.T4.4.1.5">
+<td class="ltx_td ltx_align_left ltx_border_bb" id="S4.T4.4.1.5.1">自回归</td>
+<td class="ltx_td ltx_align_center ltx_border_bb" id="S4.T4.4.1.5.2">98.4</td>
+<td class="ltx_td ltx_align_center ltx_border_bb" id="S4.T4.4.1.5.3">93.6</td>
+<td class="ltx_td ltx_align_center ltx_border_bb" id="S4.T4.4.1.5.4">94.5</td>
+<td class="ltx_td ltx_align_center ltx_border_bb" id="S4.T4.4.1.5.5">100.0</td>
+<td class="ltx_td ltx_align_center ltx_border_bb" id="S4.T4.4.1.5.6">79.3</td>
+<td class="ltx_td ltx_align_center ltx_border_bb ltx_border_r" id="S4.T4.4.1.5.7">85.3 <math alttext="\downarrow" class="ltx_Math" display="inline" id="S4.T4.m12" intent=":literal"><semantics><mo mathcolor="#E74C3C" stretchy="false">↓</mo><annotation encoding="application/x-tex">\downarrow</annotation></semantics></math><span class="ltx_text" id="S4.T4.4.1.5.7.1">3.6%</span></td>
+<td class="ltx_td ltx_align_center ltx_border_bb" id="S4.T4.4.1.5.8">1.0069 <math alttext="\uparrow" class="ltx_Math" display="inline" id="S4.T4.m13" intent=":literal"><semantics><mo mathcolor="#2ECC71" stretchy="false">↑</mo><annotation encoding="application/x-tex">\uparrow</annotation></semantics></math><span class="ltx_text" id="S4.T4.4.1.5.8.1">10.5%</span></td>
+<td class="ltx_td ltx_align_center ltx_border_bb" id="S4.T4.4.1.5.9">0.0295 <math alttext="\uparrow" class="ltx_Math" display="inline" id="S4.T4.m14" intent=":literal"><semantics><mo mathcolor="#2ECC71" stretchy="false">↑</mo><annotation encoding="application/x-tex">\uparrow</annotation></semantics></math><span class="ltx_text" id="S4.T4.4.1.5.9.1">34.9%</span></td></tr>
+</table>
+</span></div>
+</figure>
+</section>
+<section class="ltx_subsection" id="S4.SS5">
+<h3 class="ltx_title ltx_title_subsection" data-block="64" id="tr-64">4.5 消融研究</h3>
+<div class="ltx_para ltx_noindent" id="S4.SS5.p1">
+<p class="ltx_p" data-block="65" id="S4.SS5.p1.1">下面两项世界模型消融均不使用动作专家。</p>
+</div>
+<div class="ltx_para ltx_noindent" id="S4.SS5.p2">
+<p class="ltx_p" data-block="66" id="S4.SS5.p2.1">纯视觉与视觉—动作序列。如表 6，使用交错视觉—动作序列（6VA）预训练，相比仅用视觉损失预训练（6V）的基线显著改善，PDMS 从 84.1 升至 85.6。这说明让视觉预测以相应自车动作为依据至关重要：它要求模型预测特定动作导致的视觉结果，而非泛化、模糊的未来，促使模型学习环境内在的因果动力学。〔译注：正文引用表 6；纯视觉/视觉—动作对比的实际表题是表 5，原文如此。〕</p>
+</div>
+<div class="ltx_para ltx_noindent" id="S4.SS5.p3">
+<p class="ltx_p" data-block="67" id="S4.SS5.p3.1">序列长度消融。我们用 VA、2VA、6VA 三种配置消融预训练序列长度。表 6 揭示明确趋势：性能随时序上下文扩展而提升，最长 6VA 表现最好。这表明更长上下文窗口对学习复杂、长时域环境动力学至关重要，因为它能更好捕获规划所需的时间依赖。</p>
+</div>
+<figure class="ltx_table" id="S4.T6">
+<div class="ltx_flex_figure ltx_flex_table">
+<div class="ltx_flex_cell ltx_flex_size_2">
+<figure class="ltx_figure ltx_figure_panel ltx_minipage ltx_align_center ltx_align_top" id="S4.T6.fig1">
+<figcaption class="ltx_caption ltx_centering" data-block="68">表 5：纯视觉与视觉—动作序列设计的消融研究。</figcaption>
+<div class="ltx_inline-block ltx_align_center ltx_transformed_outer" id="S4.T6.fig1.3"><span class="ltx_transformed_inner">
+<table class="ltx_tabular ltx_align_middle" id="S4.T6.fig1.3.1">
+<tr class="ltx_tr" id="S4.T6.fig1.3.1.1">
+<td class="ltx_td ltx_align_center ltx_border_tt" id="S4.T6.fig1.3.1.1.1"><span class="ltx_text" id="S4.T6.fig1.3.1.1.1.1"></span> <span class="ltx_text" id="S4.T6.fig1.3.1.1.1.2">
+<span class="ltx_tabular ltx_align_middle" id="S4.T6.fig1.3.1.1.1.2.1">
+<span class="ltx_tr" id="S4.T6.fig1.3.1.1.1.2.1.1">
+<span class="ltx_td ltx_nopad_r ltx_align_center" id="S4.T6.fig1.3.1.1.1.2.1.1.1">Pretrain</span></span>
+<span class="ltx_tr" id="S4.T6.fig1.3.1.1.1.2.1.2">
+<span class="ltx_td ltx_nopad_r ltx_align_center" id="S4.T6.fig1.3.1.1.1.2.1.2.1">(NuPlan)</span></span>
+</span></span><span class="ltx_text" id="S4.T6.fig1.3.1.1.1.3"></span></td>
+<td class="ltx_td ltx_align_center ltx_border_r ltx_border_tt" id="S4.T6.fig1.3.1.1.2"><span class="ltx_text" id="S4.T6.fig1.3.1.1.2.1"></span> <span class="ltx_text" id="S4.T6.fig1.3.1.1.2.2">
+<span class="ltx_tabular ltx_align_middle" id="S4.T6.fig1.3.1.1.2.2.1">
+<span class="ltx_tr" id="S4.T6.fig1.3.1.1.2.2.1.1">
+<span class="ltx_td ltx_nopad_r ltx_align_center" id="S4.T6.fig1.3.1.1.2.2.1.1.1">Finetune</span></span>
+<span class="ltx_tr" id="S4.T6.fig1.3.1.1.2.2.1.2">
+<span class="ltx_td ltx_nopad_r ltx_align_center" id="S4.T6.fig1.3.1.1.2.2.1.2.1">(NAVSIM)</span></span>
+</span></span><span class="ltx_text" id="S4.T6.fig1.3.1.1.2.3"></span></td>
+<td class="ltx_td ltx_align_center ltx_border_tt" id="S4.T6.fig1.3.1.1.3"><span class="ltx_text ltx_font_bold" id="S4.T6.fig1.3.1.1.3.1">NC</span> <math alttext="\uparrow" class="ltx_Math" display="inline" id="S4.T6.m1" intent=":literal"><semantics><mo stretchy="false">↑</mo><annotation encoding="application/x-tex">\uparrow</annotation></semantics></math></td>
+<td class="ltx_td ltx_align_center ltx_border_r ltx_border_tt" id="S4.T6.fig1.3.1.1.4"><span class="ltx_text ltx_font_bold" id="S4.T6.fig1.3.1.1.4.1">DAC</span> <math alttext="\uparrow" class="ltx_Math" display="inline" id="S4.T6.m2" intent=":literal"><semantics><mo stretchy="false">↑</mo><annotation encoding="application/x-tex">\uparrow</annotation></semantics></math></td>
+<td class="ltx_td ltx_align_center ltx_border_tt" id="S4.T6.fig1.3.1.1.5"><span class="ltx_text ltx_font_bold" id="S4.T6.fig1.3.1.1.5.1">PDMS<span class="ltx_text ltx_font_medium" id="S4.T6.fig1.3.1.1.5.1.1"> <math alttext="\uparrow" class="ltx_Math" display="inline" id="S4.T6.m3" intent=":literal"><semantics><mo mathbackground="#D9D9D9" stretchy="false">↑</mo><annotation encoding="application/x-tex">\uparrow</annotation></semantics></math></span></span></td></tr>
+<tr class="ltx_tr" id="S4.T6.fig1.3.1.2">
+<td class="ltx_td ltx_align_center ltx_border_t" id="S4.T6.fig1.3.1.2.1">/</td>
+<td class="ltx_td ltx_align_center ltx_border_r ltx_border_t" id="S4.T6.fig1.3.1.2.2">2VA</td>
+<td class="ltx_td ltx_align_center ltx_border_t" id="S4.T6.fig1.3.1.2.3">97.1</td>
+<td class="ltx_td ltx_align_center ltx_border_r ltx_border_t" id="S4.T6.fig1.3.1.2.4">90.3</td>
+<td class="ltx_td ltx_align_center ltx_border_t" id="S4.T6.fig1.3.1.2.5"><span class="ltx_text" id="S4.T6.fig1.3.1.2.5.1">80.7</span></td></tr>
+<tr class="ltx_tr" id="S4.T6.fig1.3.1.3">
+<td class="ltx_td ltx_align_center" id="S4.T6.fig1.3.1.3.1">6V</td>
+<td class="ltx_td ltx_align_center ltx_border_r" id="S4.T6.fig1.3.1.3.2">2VA</td>
+<td class="ltx_td ltx_align_center" id="S4.T6.fig1.3.1.3.3">97.9</td>
+<td class="ltx_td ltx_align_center ltx_border_r" id="S4.T6.fig1.3.1.3.4">92.8</td>
+<td class="ltx_td ltx_align_center" id="S4.T6.fig1.3.1.3.5"><span class="ltx_text" id="S4.T6.fig1.3.1.3.5.1">84.1</span></td></tr>
+<tr class="ltx_tr" id="S4.T6.fig1.3.1.4">
+<td class="ltx_td ltx_align_center ltx_border_bb" id="S4.T6.fig1.3.1.4.1">6VA</td>
+<td class="ltx_td ltx_align_center ltx_border_bb ltx_border_r" id="S4.T6.fig1.3.1.4.2">2VA</td>
+<td class="ltx_td ltx_align_center ltx_border_bb" id="S4.T6.fig1.3.1.4.3">98.3</td>
+<td class="ltx_td ltx_align_center ltx_border_bb ltx_border_r" id="S4.T6.fig1.3.1.4.4">93.8</td>
+<td class="ltx_td ltx_align_center ltx_border_bb" id="S4.T6.fig1.3.1.4.5"><span class="ltx_text" id="S4.T6.fig1.3.1.4.5.1">85.6</span></td></tr>
+</table>
+</span></div>
+</figure></div><div class="ltx_flex_cell ltx_flex_size_2">
+<figure class="ltx_figure ltx_figure_panel ltx_minipage ltx_align_center ltx_align_top" id="S4.T6.fig2">
+<figcaption class="ltx_caption ltx_centering" data-block="69">表 6：不同序列长度的消融研究。</figcaption>
+<div class="ltx_inline-block ltx_align_center ltx_transformed_outer" id="S4.T6.fig2.3"><span class="ltx_transformed_inner">
+<table class="ltx_tabular ltx_align_middle" id="S4.T6.fig2.3.1">
+<tr class="ltx_tr" id="S4.T6.fig2.3.1.1">
+<td class="ltx_td ltx_align_center ltx_border_tt" id="S4.T6.fig2.3.1.1.1"><span class="ltx_text" id="S4.T6.fig2.3.1.1.1.1"></span> <span class="ltx_text" id="S4.T6.fig2.3.1.1.1.2">
+<span class="ltx_tabular ltx_align_middle" id="S4.T6.fig2.3.1.1.1.2.1">
+<span class="ltx_tr" id="S4.T6.fig2.3.1.1.1.2.1.1">
+<span class="ltx_td ltx_nopad_r ltx_align_center" id="S4.T6.fig2.3.1.1.1.2.1.1.1">Pretrain</span></span>
+<span class="ltx_tr" id="S4.T6.fig2.3.1.1.1.2.1.2">
+<span class="ltx_td ltx_nopad_r ltx_align_center" id="S4.T6.fig2.3.1.1.1.2.1.2.1">(NuPlan)</span></span>
+</span></span><span class="ltx_text" id="S4.T6.fig2.3.1.1.1.3"></span></td>
+<td class="ltx_td ltx_align_center ltx_border_r ltx_border_tt" id="S4.T6.fig2.3.1.1.2"><span class="ltx_text" id="S4.T6.fig2.3.1.1.2.1"></span> <span class="ltx_text" id="S4.T6.fig2.3.1.1.2.2">
+<span class="ltx_tabular ltx_align_middle" id="S4.T6.fig2.3.1.1.2.2.1">
+<span class="ltx_tr" id="S4.T6.fig2.3.1.1.2.2.1.1">
+<span class="ltx_td ltx_nopad_r ltx_align_center" id="S4.T6.fig2.3.1.1.2.2.1.1.1">Finetune</span></span>
+<span class="ltx_tr" id="S4.T6.fig2.3.1.1.2.2.1.2">
+<span class="ltx_td ltx_nopad_r ltx_align_center" id="S4.T6.fig2.3.1.1.2.2.1.2.1">(NAVSIM)</span></span>
+</span></span><span class="ltx_text" id="S4.T6.fig2.3.1.1.2.3"></span></td>
+<td class="ltx_td ltx_align_center ltx_border_tt" id="S4.T6.fig2.3.1.1.3"><span class="ltx_text ltx_font_bold" id="S4.T6.fig2.3.1.1.3.1">NC</span> <math alttext="\uparrow" class="ltx_Math" display="inline" id="S4.T6.m4" intent=":literal"><semantics><mo stretchy="false">↑</mo><annotation encoding="application/x-tex">\uparrow</annotation></semantics></math></td>
+<td class="ltx_td ltx_align_center ltx_border_r ltx_border_tt" id="S4.T6.fig2.3.1.1.4"><span class="ltx_text ltx_font_bold" id="S4.T6.fig2.3.1.1.4.1">DAC</span> <math alttext="\uparrow" class="ltx_Math" display="inline" id="S4.T6.m5" intent=":literal"><semantics><mo stretchy="false">↑</mo><annotation encoding="application/x-tex">\uparrow</annotation></semantics></math></td>
+<td class="ltx_td ltx_align_center ltx_border_tt" id="S4.T6.fig2.3.1.1.5"><span class="ltx_text ltx_font_bold" id="S4.T6.fig2.3.1.1.5.1">PDMS<span class="ltx_text ltx_font_medium" id="S4.T6.fig2.3.1.1.5.1.1"> <math alttext="\uparrow" class="ltx_Math" display="inline" id="S4.T6.m6" intent=":literal"><semantics><mo mathbackground="#D9D9D9" stretchy="false">↑</mo><annotation encoding="application/x-tex">\uparrow</annotation></semantics></math></span></span></td></tr>
+<tr class="ltx_tr" id="S4.T6.fig2.3.1.2">
+<td class="ltx_td ltx_align_center ltx_border_t" id="S4.T6.fig2.3.1.2.1">VA</td>
+<td class="ltx_td ltx_align_center ltx_border_r ltx_border_t" id="S4.T6.fig2.3.1.2.2">VA</td>
+<td class="ltx_td ltx_align_center ltx_border_t" id="S4.T6.fig2.3.1.2.3">96.8</td>
+<td class="ltx_td ltx_align_center ltx_border_r ltx_border_t" id="S4.T6.fig2.3.1.2.4">92.7</td>
+<td class="ltx_td ltx_align_center ltx_border_t" id="S4.T6.fig2.3.1.2.5"><span class="ltx_text" id="S4.T6.fig2.3.1.2.5.1">83.3</span></td></tr>
+<tr class="ltx_tr" id="S4.T6.fig2.3.1.3">
+<td class="ltx_td ltx_align_center" id="S4.T6.fig2.3.1.3.1">2VA</td>
+<td class="ltx_td ltx_align_center ltx_border_r" id="S4.T6.fig2.3.1.3.2">2VA</td>
+<td class="ltx_td ltx_align_center" id="S4.T6.fig2.3.1.3.3">97.3</td>
+<td class="ltx_td ltx_align_center ltx_border_r" id="S4.T6.fig2.3.1.3.4">93.2</td>
+<td class="ltx_td ltx_align_center" id="S4.T6.fig2.3.1.3.5"><span class="ltx_text" id="S4.T6.fig2.3.1.3.5.1">84.2</span></td></tr>
+<tr class="ltx_tr" id="S4.T6.fig2.3.1.4">
+<td class="ltx_td ltx_align_center ltx_border_bb" id="S4.T6.fig2.3.1.4.1">6VA</td>
+<td class="ltx_td ltx_align_center ltx_border_bb ltx_border_r" id="S4.T6.fig2.3.1.4.2">2VA</td>
+<td class="ltx_td ltx_align_center ltx_border_bb" id="S4.T6.fig2.3.1.4.3">98.3</td>
+<td class="ltx_td ltx_align_center ltx_border_bb ltx_border_r" id="S4.T6.fig2.3.1.4.4">93.8</td>
+<td class="ltx_td ltx_align_center ltx_border_bb" id="S4.T6.fig2.3.1.4.5"><span class="ltx_text" id="S4.T6.fig2.3.1.4.5.1">85.6</span></td></tr>
+</table>
+</span></div>
+</figure></div></div>
+</figure>
+<div class="ltx_para ltx_noindent" id="S4.SS5.p4">
+<p class="ltx_p" data-block="70" id="S4.SS5.p4.1">延迟消融。我们在 H200 GPU 上测量推理延迟以验证 MoE 效率。相比 DriveVLA-W0 基线（117.8 ms、85.6 PDMS），加入基于查询的 MoE 专家后，延迟显著降至 74.3 ms（原来的 63.1%），同时 PDMS 提高到 88.4。更多分析见附录 B.1。</p>
+</div>
+</section>
+<section class="ltx_subsection" id="S4.SS6">
+<h3 class="ltx_title ltx_title_subsection" data-block="71" id="tr-71">4.6 可视化</h3>
+<div class="ltx_para ltx_noindent" id="S4.SS6.p1">
+<p class="ltx_p" data-block="72" id="S4.SS6.p1.1">除优异规划性能外，DriveVLA-W0 还展现出强大的动作条件未来生成能力，表明它有潜力作为反应式仿真器。如图 5，我们显式给模型输入反事实“减速”轨迹；生成帧中，周围场景经过车辆的速度明显低于真实数据。这种控制信号与视觉动态的精确对齐证实了模型扎根于物理的理解能力。更多定性分析见附录 C，包括轨迹可视化与案例比较（图 7、8、9、10）、未来图像生成（图 13）和反事实推理（图 14）。</p>
+</div>
+<figure class="ltx_figure" id="S4.F5"><img alt="论文原图 5" class="ltx_graphics ltx_centering ltx_img_landscape" id="S4.F5.g1" src="images/figure-05.jpg"/>
+<figcaption class="ltx_caption ltx_centering" data-block="73">图 5：动作条件仿真。我们展示世界模型作为仿真器、根据控制信号生成多样未来的用途。记录中的真实车辆保持速度向前行驶；给定反事实“减速”动作后，世界模型生成车辆减速的不同视觉结果。</figcaption>
+</figure>
+</section>
+</section>
+<section class="ltx_section" id="S5">
+<h2 class="ltx_title ltx_title_section" data-block="74" id="tr-74">5 结论</h2>
+<div class="ltx_para ltx_noindent" id="S5.p1">
+<p class="ltx_p" data-block="75" id="S5.p1.1">本文将“监督不足”识别为阻碍自动驾驶 VLA 可扩展性的根本瓶颈，提出 DriveVLA-W0，以未来图像预测作为密集自监督目标解决它，并适配 VQ 和 ViT 架构。大量实验表明，相比基线，该方法不仅释放更强的数据可扩展性和泛化能力，还揭示动作解码器随规模增长的性能反转，最终由更简单的自回归模型胜出。我们的发现表明，要在追求更通用驾驶智能的过程中释放大规模数据的全部潜力，采用密集、预测式世界建模是关键一步。</p>
+</div>
+</section>
+
+<div class="ltx_pagination ltx_role_newpage"></div>
+<section class="ltx_appendix" id="Ax1">
+<h2 class="ltx_title ltx_title_appendix" data-block="76" id="tr-76">附录</h2>
+</section>
+<section class="ltx_appendix" id="A1">
+<h2 class="ltx_title ltx_title_appendix" data-block="77" id="tr-77">附录 A 总览</h2>
+<div class="ltx_para ltx_noindent" id="A1.p1">
+<p class="ltx_p" data-block="78" id="A1.p1.1">本附录提供支持正文的补充材料。B 节给出更多实验，包括详细延迟分析、生成保真度与规划性能关系研究，以及世界模型时间范围消融。C 节提供更多定性结果，包括挑战案例可视化和世界模型生成图像。D 节补充基线及训练设置的实现细节。E 节扩展讨论相关工作。F 节披露使用 LLM 辅助写作的情况。</p>
+</div>
+</section>
+<section class="ltx_appendix" id="A2">
+<h2 class="ltx_title ltx_title_appendix" data-block="79" id="tr-79">附录 B 更多实验</h2>
+<figure class="ltx_table" id="A2.T7">
+<figcaption class="ltx_caption ltx_centering" data-block="80">表 7：世界模型增强对新动作分布的泛化。该表给出图 4 的详细结果。</figcaption>
+<div class="ltx_inline-block ltx_align_center ltx_transformed_outer" id="A2.T7.4"><span class="ltx_transformed_inner">
+<table class="ltx_tabular ltx_align_middle" id="A2.T7.4.1">
+<tr class="ltx_tr" id="A2.T7.4.1.1">
+<td class="ltx_td ltx_align_left ltx_border_tt" id="A2.T7.4.1.1.1" rowspan="2"><span class="ltx_text ltx_font_bold" id="A2.T7.4.1.1.1.1">模型</span></td>
+<td class="ltx_td ltx_align_center ltx_border_r ltx_border_tt" colspan="6" id="A2.T7.4.1.1.2"><span class="ltx_text ltx_font_bold" id="A2.T7.4.1.1.2.1">NAVSIM（从头训练）</span></td>
+<td class="ltx_td ltx_align_center ltx_border_tt" colspan="6" id="A2.T7.4.1.1.3"><span class="ltx_text ltx_font_bold" id="A2.T7.4.1.1.3.1">NuPlan 预训练＋NAVSIM 微调</span></td></tr>
+<tr class="ltx_tr" id="A2.T7.4.1.2">
+<td class="ltx_td ltx_align_center ltx_border_t" id="A2.T7.4.1.2.1"><span class="ltx_text ltx_font_bold" id="A2.T7.4.1.2.1.1">NC</span> <math alttext="\uparrow" class="ltx_Math" display="inline" id="A2.T7.m1" intent=":literal"><semantics><mo stretchy="false">↑</mo><annotation encoding="application/x-tex">\uparrow</annotation></semantics></math></td>
+<td class="ltx_td ltx_align_center ltx_border_t" id="A2.T7.4.1.2.2"><span class="ltx_text ltx_font_bold" id="A2.T7.4.1.2.2.1">DAC</span> <math alttext="\uparrow" class="ltx_Math" display="inline" id="A2.T7.m2" intent=":literal"><semantics><mo stretchy="false">↑</mo><annotation encoding="application/x-tex">\uparrow</annotation></semantics></math></td>
+<td class="ltx_td ltx_align_center ltx_border_t" id="A2.T7.4.1.2.3"><span class="ltx_text ltx_font_bold" id="A2.T7.4.1.2.3.1">TTC</span> <math alttext="\uparrow" class="ltx_Math" display="inline" id="A2.T7.m3" intent=":literal"><semantics><mo stretchy="false">↑</mo><annotation encoding="application/x-tex">\uparrow</annotation></semantics></math></td>
+<td class="ltx_td ltx_align_center ltx_border_t" id="A2.T7.4.1.2.4"><span class="ltx_text ltx_font_bold" id="A2.T7.4.1.2.4.1">C.</span> <math alttext="\uparrow" class="ltx_Math" display="inline" id="A2.T7.m4" intent=":literal"><semantics><mo stretchy="false">↑</mo><annotation encoding="application/x-tex">\uparrow</annotation></semantics></math></td>
+<td class="ltx_td ltx_align_center ltx_border_t" id="A2.T7.4.1.2.5"><span class="ltx_text ltx_font_bold" id="A2.T7.4.1.2.5.1">EP</span> <math alttext="\uparrow" class="ltx_Math" display="inline" id="A2.T7.m5" intent=":literal"><semantics><mo stretchy="false">↑</mo><annotation encoding="application/x-tex">\uparrow</annotation></semantics></math></td>
+<td class="ltx_td ltx_align_center ltx_border_r ltx_border_t" id="A2.T7.4.1.2.6"><span class="ltx_text ltx_font_bold" id="A2.T7.4.1.2.6.1">PDMS</span> <math alttext="\uparrow" class="ltx_Math" display="inline" id="A2.T7.m6" intent=":literal"><semantics><mo stretchy="false">↑</mo><annotation encoding="application/x-tex">\uparrow</annotation></semantics></math></td>
+<td class="ltx_td ltx_align_center ltx_border_t" id="A2.T7.4.1.2.7"><span class="ltx_text ltx_font_bold" id="A2.T7.4.1.2.7.1">NC</span> <math alttext="\uparrow" class="ltx_Math" display="inline" id="A2.T7.m7" intent=":literal"><semantics><mo stretchy="false">↑</mo><annotation encoding="application/x-tex">\uparrow</annotation></semantics></math></td>
+<td class="ltx_td ltx_align_center ltx_border_t" id="A2.T7.4.1.2.8"><span class="ltx_text ltx_font_bold" id="A2.T7.4.1.2.8.1">DAC</span> <math alttext="\uparrow" class="ltx_Math" display="inline" id="A2.T7.m8" intent=":literal"><semantics><mo stretchy="false">↑</mo><annotation encoding="application/x-tex">\uparrow</annotation></semantics></math></td>
+<td class="ltx_td ltx_align_center ltx_border_t" id="A2.T7.4.1.2.9"><span class="ltx_text ltx_font_bold" id="A2.T7.4.1.2.9.1">TTC</span> <math alttext="\uparrow" class="ltx_Math" display="inline" id="A2.T7.m9" intent=":literal"><semantics><mo stretchy="false">↑</mo><annotation encoding="application/x-tex">\uparrow</annotation></semantics></math></td>
+<td class="ltx_td ltx_align_center ltx_border_t" id="A2.T7.4.1.2.10"><span class="ltx_text ltx_font_bold" id="A2.T7.4.1.2.10.1">C.</span> <math alttext="\uparrow" class="ltx_Math" display="inline" id="A2.T7.m10" intent=":literal"><semantics><mo stretchy="false">↑</mo><annotation encoding="application/x-tex">\uparrow</annotation></semantics></math></td>
+<td class="ltx_td ltx_align_center ltx_border_t" id="A2.T7.4.1.2.11"><span class="ltx_text ltx_font_bold" id="A2.T7.4.1.2.11.1">EP</span> <math alttext="\uparrow" class="ltx_Math" display="inline" id="A2.T7.m11" intent=":literal"><semantics><mo stretchy="false">↑</mo><annotation encoding="application/x-tex">\uparrow</annotation></semantics></math></td>
+<td class="ltx_td ltx_align_center ltx_border_t" id="A2.T7.4.1.2.12"><span class="ltx_text ltx_font_bold" id="A2.T7.4.1.2.12.1">PDMS</span> <math alttext="\uparrow" class="ltx_Math" display="inline" id="A2.T7.m12" intent=":literal"><semantics><mo stretchy="false">↑</mo><annotation encoding="application/x-tex">\uparrow</annotation></semantics></math></td></tr>
+<tr class="ltx_tr" id="A2.T7.4.1.3">
+<td class="ltx_td ltx_align_left ltx_border_t" id="A2.T7.4.1.3.1">TransFuser-50M</td>
+<td class="ltx_td ltx_align_center ltx_border_t" id="A2.T7.4.1.3.2">93.2</td>
+<td class="ltx_td ltx_align_center ltx_border_t" id="A2.T7.4.1.3.3">91.7</td>
+<td class="ltx_td ltx_align_center ltx_border_t" id="A2.T7.4.1.3.4">86.2</td>
+<td class="ltx_td ltx_align_center ltx_border_t" id="A2.T7.4.1.3.5">100.0</td>
+<td class="ltx_td ltx_align_center ltx_border_t" id="A2.T7.4.1.3.6">76.4</td>
+<td class="ltx_td ltx_align_center ltx_border_r ltx_border_t" id="A2.T7.4.1.3.7"><span class="ltx_text" id="A2.T7.4.1.3.7.1">79.2</span></td>
+<td class="ltx_td ltx_align_center ltx_border_t" id="A2.T7.4.1.3.8">96.0</td>
+<td class="ltx_td ltx_align_center ltx_border_t" id="A2.T7.4.1.3.9">93.6</td>
+<td class="ltx_td ltx_align_center ltx_border_t" id="A2.T7.4.1.3.10">90.2</td>
+<td class="ltx_td ltx_align_center ltx_border_t" id="A2.T7.4.1.3.11">100.0</td>
+<td class="ltx_td ltx_align_center ltx_border_t" id="A2.T7.4.1.3.12">80.1</td>
+<td class="ltx_td ltx_align_center ltx_border_t" id="A2.T7.4.1.3.13"><span class="ltx_text" id="A2.T7.4.1.3.13.1">83.6 <math alttext="\uparrow" class="ltx_Math" display="inline" id="A2.T7.m13" intent=":literal"><semantics><mo mathbackground="#E0F7FA" mathcolor="#2ECC71" stretchy="false">↑</mo><annotation encoding="application/x-tex">\uparrow</annotation></semantics></math><span class="ltx_text" id="A2.T7.4.1.3.13.1.1">5.5%</span></span></td></tr>
+<tr class="ltx_tr" id="A2.T7.4.1.4">
+<td class="ltx_td ltx_align_left" id="A2.T7.4.1.4.1">TransFuser-7B</td>
+<td class="ltx_td ltx_align_center" id="A2.T7.4.1.4.2">95.7</td>
+<td class="ltx_td ltx_align_center" id="A2.T7.4.1.4.3">89.1</td>
+<td class="ltx_td ltx_align_center" id="A2.T7.4.1.4.4">89.5</td>
+<td class="ltx_td ltx_align_center" id="A2.T7.4.1.4.5">100.0</td>
+<td class="ltx_td ltx_align_center" id="A2.T7.4.1.4.6">73.0</td>
+<td class="ltx_td ltx_align_center ltx_border_r" id="A2.T7.4.1.4.7"><span class="ltx_text" id="A2.T7.4.1.4.7.1">77.9</span></td>
+<td class="ltx_td ltx_align_center" id="A2.T7.4.1.4.8">93.7</td>
+<td class="ltx_td ltx_align_center" id="A2.T7.4.1.4.9">84.2</td>
+<td class="ltx_td ltx_align_center" id="A2.T7.4.1.4.10">86.3</td>
+<td class="ltx_td ltx_align_center" id="A2.T7.4.1.4.11">100.0</td>
+<td class="ltx_td ltx_align_center" id="A2.T7.4.1.4.12">67.0</td>
+<td class="ltx_td ltx_align_center" id="A2.T7.4.1.4.13"><span class="ltx_text" id="A2.T7.4.1.4.13.1">71.6 <math alttext="\downarrow" class="ltx_Math" display="inline" id="A2.T7.m14" intent=":literal"><semantics><mo mathbackground="#FFF9C4" mathcolor="#E74C3C" stretchy="false">↓</mo><annotation encoding="application/x-tex">\downarrow</annotation></semantics></math><span class="ltx_text" id="A2.T7.4.1.4.13.1.1">8.1%</span></span></td></tr>
+<tr class="ltx_tr" id="A2.T7.4.1.5">
+<td class="ltx_td ltx_align_left ltx_border_t" id="A2.T7.4.1.5.1">VLA-VQ</td>
+<td class="ltx_td ltx_align_center ltx_border_t" id="A2.T7.4.1.5.2">93.3</td>
+<td class="ltx_td ltx_align_center ltx_border_t" id="A2.T7.4.1.5.3">80.9</td>
+<td class="ltx_td ltx_align_center ltx_border_t" id="A2.T7.4.1.5.4">86.0</td>
+<td class="ltx_td ltx_align_center ltx_border_t" id="A2.T7.4.1.5.5">100.0</td>
+<td class="ltx_td ltx_align_center ltx_border_t" id="A2.T7.4.1.5.6">63.0</td>
+<td class="ltx_td ltx_align_center ltx_border_r ltx_border_t" id="A2.T7.4.1.5.7"><span class="ltx_text" id="A2.T7.4.1.5.7.1">68.7</span></td>
+<td class="ltx_td ltx_align_center ltx_border_t" id="A2.T7.4.1.5.8">90.0</td>
+<td class="ltx_td ltx_align_center ltx_border_t" id="A2.T7.4.1.5.9">76.1</td>
+<td class="ltx_td ltx_align_center ltx_border_t" id="A2.T7.4.1.5.10">82.2</td>
+<td class="ltx_td ltx_align_center ltx_border_t" id="A2.T7.4.1.5.11">100.0</td>
+<td class="ltx_td ltx_align_center ltx_border_t" id="A2.T7.4.1.5.12">56.7</td>
+<td class="ltx_td ltx_align_center ltx_border_t" id="A2.T7.4.1.5.13"><span class="ltx_text" id="A2.T7.4.1.5.13.1">62.2 <math alttext="\downarrow" class="ltx_Math" display="inline" id="A2.T7.m15" intent=":literal"><semantics><mo mathbackground="#F1F8E9" mathcolor="#E74C3C" stretchy="false">↓</mo><annotation encoding="application/x-tex">\downarrow</annotation></semantics></math><span class="ltx_text" id="A2.T7.4.1.5.13.1.1">9.5%</span></span></td></tr>
+<tr class="ltx_tr" id="A2.T7.4.1.6">
+<td class="ltx_td ltx_align_left" id="A2.T7.4.1.6.1">VLA-W0-VQ （本文）</td>
+<td class="ltx_td ltx_align_center" id="A2.T7.4.1.6.2">97.1</td>
+<td class="ltx_td ltx_align_center" id="A2.T7.4.1.6.3">90.3</td>
+<td class="ltx_td ltx_align_center" id="A2.T7.4.1.6.4">92.3</td>
+<td class="ltx_td ltx_align_center" id="A2.T7.4.1.6.5">100.0</td>
+<td class="ltx_td ltx_align_center" id="A2.T7.4.1.6.6">74.9</td>
+<td class="ltx_td ltx_align_center ltx_border_r" id="A2.T7.4.1.6.7"><span class="ltx_text" id="A2.T7.4.1.6.7.1">80.7</span></td>
+<td class="ltx_td ltx_align_center" id="A2.T7.4.1.6.8">98.3</td>
+<td class="ltx_td ltx_align_center" id="A2.T7.4.1.6.9">93.8</td>
+<td class="ltx_td ltx_align_center" id="A2.T7.4.1.6.10">94.2</td>
+<td class="ltx_td ltx_align_center" id="A2.T7.4.1.6.11">100.0</td>
+<td class="ltx_td ltx_align_center" id="A2.T7.4.1.6.12">80.0</td>
+<td class="ltx_td ltx_align_center" id="A2.T7.4.1.6.13"><span class="ltx_text" id="A2.T7.4.1.6.13.1">85.6 <math alttext="\uparrow" class="ltx_Math" display="inline" id="A2.T7.m16" intent=":literal"><semantics><mo mathbackground="#FCE4EC" mathcolor="#2ECC71" stretchy="false">↑</mo><annotation encoding="application/x-tex">\uparrow</annotation></semantics></math><span class="ltx_text" id="A2.T7.4.1.6.13.1.1">6.1%</span></span></td></tr>
+<tr class="ltx_tr" id="A2.T7.4.1.7">
+<td class="ltx_td ltx_align_left ltx_border_t" id="A2.T7.4.1.7.1">VLA-ViT</td>
+<td class="ltx_td ltx_align_center ltx_border_t" id="A2.T7.4.1.7.2">93.5</td>
+<td class="ltx_td ltx_align_center ltx_border_t" id="A2.T7.4.1.7.3">82.5</td>
+<td class="ltx_td ltx_align_center ltx_border_t" id="A2.T7.4.1.7.4">86.8</td>
+<td class="ltx_td ltx_align_center ltx_border_t" id="A2.T7.4.1.7.5">100.0</td>
+<td class="ltx_td ltx_align_center ltx_border_t" id="A2.T7.4.1.7.6">64.6</td>
+<td class="ltx_td ltx_align_center ltx_border_r ltx_border_t" id="A2.T7.4.1.7.7"><span class="ltx_text" id="A2.T7.4.1.7.7.1">70.3</span></td>
+<td class="ltx_td ltx_align_center ltx_border_t" id="A2.T7.4.1.7.8">93.3</td>
+<td class="ltx_td ltx_align_center ltx_border_t" id="A2.T7.4.1.7.9">82.8</td>
+<td class="ltx_td ltx_align_center ltx_border_t" id="A2.T7.4.1.7.10">86.9</td>
+<td class="ltx_td ltx_align_center ltx_border_t" id="A2.T7.4.1.7.11">100.0</td>
+<td class="ltx_td ltx_align_center ltx_border_t" id="A2.T7.4.1.7.12">64.7</td>
+<td class="ltx_td ltx_align_center ltx_border_t" id="A2.T7.4.1.7.13"><span class="ltx_text" id="A2.T7.4.1.7.13.1">70.6 <math alttext="\uparrow" class="ltx_Math" display="inline" id="A2.T7.m17" intent=":literal"><semantics><mo mathbackground="#F3E5F5" mathcolor="#2ECC71" stretchy="false">↑</mo><annotation encoding="application/x-tex">\uparrow</annotation></semantics></math><span class="ltx_text" id="A2.T7.4.1.7.13.1.1">0.4%</span></span></td></tr>
+<tr class="ltx_tr" id="A2.T7.4.1.8">
+<td class="ltx_td ltx_align_left ltx_border_bb" id="A2.T7.4.1.8.1">VLA-W0-ViT （本文）</td>
+<td class="ltx_td ltx_align_center ltx_border_bb" id="A2.T7.4.1.8.2">98.0</td>
+<td class="ltx_td ltx_align_center ltx_border_bb" id="A2.T7.4.1.8.3">92.6</td>
+<td class="ltx_td ltx_align_center ltx_border_bb" id="A2.T7.4.1.8.4">94.2</td>
+<td class="ltx_td ltx_align_center ltx_border_bb" id="A2.T7.4.1.8.5">100.0</td>
+<td class="ltx_td ltx_align_center ltx_border_bb" id="A2.T7.4.1.8.6">77.7</td>
+<td class="ltx_td ltx_align_center ltx_border_bb ltx_border_r" id="A2.T7.4.1.8.7"><span class="ltx_text" id="A2.T7.4.1.8.7.1">83.9</span></td>
+<td class="ltx_td ltx_align_center ltx_border_bb" id="A2.T7.4.1.8.8">98.3</td>
+<td class="ltx_td ltx_align_center ltx_border_bb" id="A2.T7.4.1.8.9">93.5</td>
+<td class="ltx_td ltx_align_center ltx_border_bb" id="A2.T7.4.1.8.10">94.8</td>
+<td class="ltx_td ltx_align_center ltx_border_bb" id="A2.T7.4.1.8.11">100.0</td>
+<td class="ltx_td ltx_align_center ltx_border_bb" id="A2.T7.4.1.8.12">79.1</td>
+<td class="ltx_td ltx_align_center ltx_border_bb" id="A2.T7.4.1.8.13"><span class="ltx_text" id="A2.T7.4.1.8.13.1">85.3 <math alttext="\uparrow" class="ltx_Math" display="inline" id="A2.T7.m18" intent=":literal"><semantics><mo mathbackground="#FFF3E0" mathcolor="#2ECC71" stretchy="false">↑</mo><annotation encoding="application/x-tex">\uparrow</annotation></semantics></math><span class="ltx_text" id="A2.T7.4.1.8.13.1.1">1.7%</span></span></td></tr>
+</table>
+</span></div>
+</figure>
+<section class="ltx_subsection" id="A2.SS1">
+<h3 class="ltx_title ltx_title_subsection" data-block="81" id="tr-81">B.1 延迟分析</h3>
+<figure class="ltx_figure" id="A2.F6"><object class="ltx_graphics ltx_centering ltx_img_landscape" data="2510.12796v2/latency_compare_baselines.svg" height="257" id="A2.F6.g1" type="image/svg+xml" width="411"></object>
+<figcaption class="ltx_caption ltx_centering" data-block="82">图 6：延迟分析。AR 专家与 VLA 基线的延迟随生成 token 数 L 线性增长，而流匹配和查询式专家保持恒定推理时间。</figcaption>
+</figure>
+<div class="ltx_para ltx_noindent" id="A2.SS1.p1">
+<p class="ltx_p" data-block="83" id="A2.SS1.p1.1">我们比较基于 MoE 的动作专家与完整 DrivingVLA-W0 骨干的推理延迟，见图 6。设置中，流匹配专家使用 10 个去噪步骤，查询式专家一次前向生成整条轨迹；AR 专家与完整 VLM 骨干类似，延迟与生成动作 token 数 L 成正比。结果清楚表明 MoE 显著加速：查询式专家最高效，恒定低延迟约 74 ms；流匹配专家延迟也恒定，但较高，约 145 ms。为理解 AR 专家性能，我们考虑平均轨迹 token 长度。NAVSIM 的轨迹平均 5.6 个 token，AR 专家用时 95 ms，明显优于完整骨干的 118 ms。内部数据集轨迹更复杂、平均 17.8 个 token，AR 专家延迟升至 170 ms，但仍远快于基线的 240 ms。分析证实，MoE 框架对实现实时部署所需的低延迟至关重要。</p>
+</div>
+</section>
+<section class="ltx_subsection" id="A2.SS2">
+<h3 class="ltx_title ltx_title_subsection" data-block="84" id="tr-84">B.2 生成保真度与规划性能的正相关</h3>
+<figure class="ltx_table ltx_align_floatright" id="A2.T8">
+<figcaption class="ltx_caption ltx_centering" data-block="85">表 8：生成保真度与规划性能的正相关。* 表示由 MoVQGAN 编码器—解码器重建的图像，作为生成质量的上界。</figcaption>
+<table class="ltx_tabular ltx_centering ltx_align_middle" id="A2.T8.6">
+<tr class="ltx_tr" id="A2.T8.6.1">
+<td class="ltx_td ltx_align_center ltx_border_r ltx_border_tt" id="A2.T8.6.1.1"><span class="ltx_text" id="A2.T8.6.1.1.1"></span> <span class="ltx_text" id="A2.T8.6.1.1.2">
+<span class="ltx_tabular ltx_align_middle" id="A2.T8.6.1.1.2.1">
+<span class="ltx_tr" id="A2.T8.6.1.1.2.1.1">
+<span class="ltx_td ltx_nopad_r ltx_align_center" id="A2.T8.6.1.1.2.1.1.1">序列设计</span></span>
+</span></span><span class="ltx_text" id="A2.T8.6.1.1.3"></span></td>
+<td class="ltx_td ltx_align_center ltx_border_r ltx_border_tt" id="A2.T8.6.1.2"><span class="ltx_text" id="A2.T8.6.1.2.1"></span> <span class="ltx_text" id="A2.T8.6.1.2.2">
+<span class="ltx_tabular ltx_align_middle" id="A2.T8.6.1.2.2.1">
+<span class="ltx_tr" id="A2.T8.6.1.2.2.1.1">
+<span class="ltx_td ltx_nopad_r ltx_align_center" id="A2.T8.6.1.2.2.1.1.1">F编号</span></span>
+</span></span> <span class="ltx_text" id="A2.T8.6.1.2.3"></span> <math alttext="\downarrow" class="ltx_Math" display="inline" id="A2.T8.m3" intent=":literal"><semantics><mo stretchy="false">↓</mo><annotation encoding="application/x-tex">\downarrow</annotation></semantics></math></td>
+<td class="ltx_td ltx_align_center ltx_border_tt" id="A2.T8.6.1.3"><span class="ltx_text" id="A2.T8.6.1.3.1"></span> <span class="ltx_text" id="A2.T8.6.1.3.2">
+<span class="ltx_tabular ltx_align_middle" id="A2.T8.6.1.3.2.1">
+<span class="ltx_tr" id="A2.T8.6.1.3.2.1.1">
+<span class="ltx_td ltx_nopad_r ltx_align_center" id="A2.T8.6.1.3.2.1.1.1">PDMS</span></span>
+</span></span> <span class="ltx_text" id="A2.T8.6.1.3.3"></span><math alttext="\uparrow" class="ltx_Math" display="inline" id="A2.T8.m4" intent=":literal"><semantics><mo stretchy="false">↑</mo><annotation encoding="application/x-tex">\uparrow</annotation></semantics></math></td></tr>
+<tr class="ltx_tr" id="A2.T8.6.2">
+<td class="ltx_td ltx_align_center ltx_border_r ltx_border_t" id="A2.T8.6.2.1">2VA</td>
+<td class="ltx_td ltx_align_center ltx_border_r ltx_border_t" id="A2.T8.6.2.2">9.847</td>
+<td class="ltx_td ltx_align_center ltx_border_t" id="A2.T8.6.2.3">84.1</td></tr>
+<tr class="ltx_tr" id="A2.T8.6.3">
+<td class="ltx_td ltx_align_center ltx_border_r" id="A2.T8.6.3.1">6VA</td>
+<td class="ltx_td ltx_align_center ltx_border_r" id="A2.T8.6.3.2">4.610</td>
+<td class="ltx_td ltx_align_center" id="A2.T8.6.3.3">85.6</td></tr>
+<tr class="ltx_tr" id="A2.T8.6.4">
+<td class="ltx_td ltx_align_center ltx_border_bb ltx_border_r" id="A2.T8.6.4.1">上界<sup class="ltx_sup" id="A2.T8.6.4.1.1">∗</sup></td>
+<td class="ltx_td ltx_align_center ltx_border_bb ltx_border_r" id="A2.T8.6.4.2">3.007</td>
+<td class="ltx_td ltx_align_center ltx_border_bb" id="A2.T8.6.4.3">-</td></tr>
+</table>
+</figure>
+<div class="ltx_para ltx_noindent" id="A2.SS2.p1">
+<p class="ltx_p" data-block="86" id="A2.SS2.p1.1">为研究世界模型生成保真度与下游规划性能的联系，我们开展如下实验。先在 NuPlan 上用不同上下文长度预训练，获得生成能力不同的两个模型：6VA 以此前五组视觉—动作对为条件，2VA 仅以一组为条件。直接评估 checkpoint 发现，6VA 的较长上下文带来更好的 FID（表 8），符合预期，说明其生成保真度更高。得到这些不同生成质量的模型后，再测试下游规划潜力：把两个 NuPlan 预训练 checkpoint 在相同设置下于 NAVSIM 微调（与表 6 最后两行一致），评估最终 PDMS。结果证实强正相关：生成保真度更高的 6VA checkpoint，微调后规划表现也更好。这提供有力证据，说明生成高质量、逼真未来图像的能力，与生成高质量轨迹的能力直接相关。</p>
+</div>
+</section>
+<section class="ltx_subsection" id="A2.SS3">
+<h3 class="ltx_title ltx_title_subsection" data-block="87" id="tr-87">B.3 消融研究</h3>
+<div class="ltx_para ltx_noindent" id="A2.SS3.p1">
+<p class="ltx_p" data-block="88" id="A2.SS3.p1.1">世界模型的时间范围。我们消融世界模型输入时间范围，寻找最优设置。使用相同 6VA 预训练 checkpoint，微调并评估三种时间范围不同的配置（表 9）：i）VA：仅用当前视觉帧，没有历史视觉上下文；ii）VAVA (1s)：当前帧加 1 秒前的一帧；iii）VAVA (4s)：当前帧加 4 秒前的一帧。VAVA (1s) 总体表现最好，PDMS 达最高的 85.6，表明它实现了时间输入的最佳权衡。VA 缺少第二帧，难以捕获环境动态；而 VAVA (4s) 两帧相距 4 秒，场景变化过大，可能使未来预测更困难。</p>
+</div>
+<figure class="ltx_table" id="A2.T9">
+<figcaption class="ltx_caption" data-block="89">表 9：世界模型输入时间间隔的消融。结果揭示明确性能权衡，1 秒间隔最优。只用当前帧（VA）缺少足够时间上下文；4 秒间隔则引入过大场景变化。</figcaption>
+<div class="ltx_inline-block ltx_align_center ltx_transformed_outer" id="A2.T9.4"><span class="ltx_transformed_inner">
+<table class="ltx_tabular ltx_align_middle" id="A2.T9.4.1">
+<tr class="ltx_tr" id="A2.T9.4.1.1">
+<td class="ltx_td ltx_align_left ltx_border_r ltx_border_tt" id="A2.T9.4.1.1.1"><span class="ltx_text ltx_font_bold" id="A2.T9.4.1.1.1.1">预训练类型</span></td>
+<td class="ltx_td ltx_align_left ltx_border_r ltx_border_tt" id="A2.T9.4.1.1.2"><span class="ltx_text ltx_font_bold" id="A2.T9.4.1.1.2.1">微调类型</span></td>
+<td class="ltx_td ltx_align_center ltx_border_r ltx_border_tt" id="A2.T9.4.1.1.3"><span class="ltx_text ltx_font_bold" id="A2.T9.4.1.1.3.1">时间间隔</span></td>
+<td class="ltx_td ltx_align_center ltx_border_tt" id="A2.T9.4.1.1.4"><span class="ltx_text ltx_font_bold" id="A2.T9.4.1.1.4.1">NC</span> <math alttext="\uparrow" class="ltx_Math" display="inline" id="A2.T9.m1" intent=":literal"><semantics><mo stretchy="false">↑</mo><annotation encoding="application/x-tex">\uparrow</annotation></semantics></math></td>
+<td class="ltx_td ltx_align_center ltx_border_r ltx_border_tt" id="A2.T9.4.1.1.5"><span class="ltx_text ltx_font_bold" id="A2.T9.4.1.1.5.1">DAC</span> <math alttext="\uparrow" class="ltx_Math" display="inline" id="A2.T9.m2" intent=":literal"><semantics><mo stretchy="false">↑</mo><annotation encoding="application/x-tex">\uparrow</annotation></semantics></math></td>
+<td class="ltx_td ltx_align_center ltx_border_tt" id="A2.T9.4.1.1.6"><span class="ltx_text ltx_font_bold" id="A2.T9.4.1.1.6.1">TTC</span> <math alttext="\uparrow" class="ltx_Math" display="inline" id="A2.T9.m3" intent=":literal"><semantics><mo stretchy="false">↑</mo><annotation encoding="application/x-tex">\uparrow</annotation></semantics></math></td>
+<td class="ltx_td ltx_align_center ltx_border_tt" id="A2.T9.4.1.1.7"><span class="ltx_text ltx_font_bold" id="A2.T9.4.1.1.7.1">Comf.</span> <math alttext="\uparrow" class="ltx_Math" display="inline" id="A2.T9.m4" intent=":literal"><semantics><mo stretchy="false">↑</mo><annotation encoding="application/x-tex">\uparrow</annotation></semantics></math></td>
+<td class="ltx_td ltx_align_center ltx_border_r ltx_border_tt" id="A2.T9.4.1.1.8"><span class="ltx_text ltx_font_bold" id="A2.T9.4.1.1.8.1">EP</span> <math alttext="\uparrow" class="ltx_Math" display="inline" id="A2.T9.m5" intent=":literal"><semantics><mo stretchy="false">↑</mo><annotation encoding="application/x-tex">\uparrow</annotation></semantics></math></td>
+<td class="ltx_td ltx_align_center ltx_border_tt" id="A2.T9.4.1.1.9"><span class="ltx_text ltx_font_bold" id="A2.T9.4.1.1.9.1">PDMS<span class="ltx_text ltx_font_medium" id="A2.T9.4.1.1.9.1.1"> <math alttext="\uparrow" class="ltx_Math" display="inline" id="A2.T9.m6" intent=":literal"><semantics><mo mathbackground="#D9D9D9" stretchy="false">↑</mo><annotation encoding="application/x-tex">\uparrow</annotation></semantics></math></span></span></td></tr>
+<tr class="ltx_tr" id="A2.T9.4.1.2">
+<td class="ltx_td ltx_align_left ltx_border_r ltx_border_t" id="A2.T9.4.1.2.1">6VA</td>
+<td class="ltx_td ltx_align_left ltx_border_r ltx_border_t" id="A2.T9.4.1.2.2">VA</td>
+<td class="ltx_td ltx_align_center ltx_border_r ltx_border_t" id="A2.T9.4.1.2.3">/</td>
+<td class="ltx_td ltx_align_center ltx_border_t" id="A2.T9.4.1.2.4">96.6</td>
+<td class="ltx_td ltx_align_center ltx_border_r ltx_border_t" id="A2.T9.4.1.2.5">92.6</td>
+<td class="ltx_td ltx_align_center ltx_border_t" id="A2.T9.4.1.2.6">91.2</td>
+<td class="ltx_td ltx_align_center ltx_border_t" id="A2.T9.4.1.2.7">100.0</td>
+<td class="ltx_td ltx_align_center ltx_border_r ltx_border_t" id="A2.T9.4.1.2.8">78.8</td>
+<td class="ltx_td ltx_align_center ltx_border_t" id="A2.T9.4.1.2.9"><span class="ltx_text" id="A2.T9.4.1.2.9.1">82.9</span></td></tr>
+<tr class="ltx_tr" id="A2.T9.4.1.3">
+<td class="ltx_td ltx_align_left ltx_border_r" id="A2.T9.4.1.3.1">6VA</td>
+<td class="ltx_td ltx_align_left ltx_border_r" id="A2.T9.4.1.3.2">2VA</td>
+<td class="ltx_td ltx_align_center ltx_border_r" id="A2.T9.4.1.3.3">4s</td>
+<td class="ltx_td ltx_align_center" id="A2.T9.4.1.3.4">97.9</td>
+<td class="ltx_td ltx_align_center ltx_border_r" id="A2.T9.4.1.3.5">93.2</td>
+<td class="ltx_td ltx_align_center" id="A2.T9.4.1.3.6">93.9</td>
+<td class="ltx_td ltx_align_center" id="A2.T9.4.1.3.7">100.0</td>
+<td class="ltx_td ltx_align_center ltx_border_r" id="A2.T9.4.1.3.8">78.3</td>
+<td class="ltx_td ltx_align_center" id="A2.T9.4.1.3.9"><span class="ltx_text" id="A2.T9.4.1.3.9.1">84.3</span></td></tr>
+<tr class="ltx_tr" id="A2.T9.4.1.4">
+<td class="ltx_td ltx_align_left ltx_border_bb ltx_border_r" id="A2.T9.4.1.4.1">6VA</td>
+<td class="ltx_td ltx_align_left ltx_border_bb ltx_border_r" id="A2.T9.4.1.4.2">2VA</td>
+<td class="ltx_td ltx_align_center ltx_border_bb ltx_border_r" id="A2.T9.4.1.4.3">1s</td>
+<td class="ltx_td ltx_align_center ltx_border_bb" id="A2.T9.4.1.4.4">98.3</td>
+<td class="ltx_td ltx_align_center ltx_border_bb ltx_border_r" id="A2.T9.4.1.4.5">93.8</td>
+<td class="ltx_td ltx_align_center ltx_border_bb" id="A2.T9.4.1.4.6">94.2</td>
+<td class="ltx_td ltx_align_center ltx_border_bb" id="A2.T9.4.1.4.7">100.0</td>
+<td class="ltx_td ltx_align_center ltx_border_bb ltx_border_r" id="A2.T9.4.1.4.8">80.0</td>
+<td class="ltx_td ltx_align_center ltx_border_bb" id="A2.T9.4.1.4.9"><span class="ltx_text" id="A2.T9.4.1.4.9.1">85.6</span></td></tr>
+</table>
+</span></div>
+</figure>
+</section>
+</section>
+<section class="ltx_appendix" id="A3">
+<h2 class="ltx_title ltx_title_appendix" data-block="90" id="tr-90">附录 C 可视化</h2>
+<section class="ltx_subsection" id="A3.SS1">
+<h3 class="ltx_title ltx_title_subsection" data-block="91" id="tr-91">C.1 规划轨迹</h3>
+<div class="ltx_para ltx_noindent" id="A3.SS1.p1">
+<p class="ltx_p" data-block="92" id="A3.SS1.p1.1">本节通过定性案例分析，更深入理解模型行为、验证关键发现，分为两方面。首先，图 7 在挑战性边缘场景中，将 DriveVLA-W0 与 VLA 基线和 TransFuser 比较，直观展示世界建模在复杂场景驾驶中的优势。其次，比较相同 VLA 骨干上的不同动作专家所生成轨迹。图 8、9、10 的可视化表明，AR 专家轨迹明显比流匹配更稳定，尤其体现在帧间一致性与避免激进行为方面。</p>
+</div>
+<figure class="ltx_figure" id="A3.F7"><img alt="论文原图 6" class="ltx_graphics ltx_centering ltx_img_landscape" id="A3.F7.g1" src="images/figure-06.jpg"/>
+<figcaption class="ltx_caption ltx_centering" data-block="93">图 7：世界建模改善复杂场景的轨迹规划。TransFuser 和 VLA 基线因场景动态预测能力弱，常在此类交互场景失败；VLA-W0 借助世界建模具备强预测能力，因而能够避免此类场景中的碰撞。</figcaption>
+</figure>
+<figure class="ltx_figure" id="A3.F8"><img alt="论文原图 7" class="ltx_graphics ltx_centering ltx_img_landscape" id="A3.F8.g1" src="images/figure-07.jpg"/>
+<figcaption class="ltx_caption ltx_centering" data-block="94">图 8：流匹配与自回归动作专家比较。流匹配专家轨迹相对不稳定，相邻帧之间发生跳变；AR 专家生成的轨迹稳定得多。</figcaption>
+</figure>
+<figure class="ltx_figure" id="A3.F9"><img alt="论文原图 8" class="ltx_graphics ltx_centering ltx_img_landscape" id="A3.F9.g1" src="images/figure-08.jpg"/>
+<figcaption class="ltx_caption ltx_centering" data-block="95">图 9：流匹配与自回归动作专家比较。流匹配专家轨迹相对不稳定，相邻帧之间发生跳变；AR 专家生成的轨迹稳定得多。</figcaption>
+</figure>
+<figure class="ltx_figure" id="A3.F10"><img alt="论文原图 9" class="ltx_graphics ltx_centering ltx_img_landscape" id="A3.F10.g1" src="images/figure-09.jpg"/>
+<figcaption class="ltx_caption ltx_centering" data-block="96">图 10：流匹配与自回归动作专家比较。流匹配专家轨迹相对不稳定，可能超出可行驶区域；AR 专家生成的轨迹稳定得多。</figcaption>
+</figure>
+</section>
+<section class="ltx_subsection" id="A3.SS2">
+<h3 class="ltx_title ltx_title_subsection" data-block="97" id="tr-97">C.2 失败案例</h3>
+<div class="ltx_para ltx_noindent" id="A3.SS2.p1">
+<p class="ltx_p" data-block="98" id="A3.SS2.p1.1">为平衡呈现模型表现并识别改进方向，我们分析评估中的代表性失败案例，将其分为指令歧义和动态预测错误两大类。如图 11，粗粒度导航指令可能让模型在 Y 形路口等复杂道路拓扑中犹豫不决；图 12 则突出展示在高交互场景中预测来车等精细动态目标的挑战。</p>
+</div>
+<figure class="ltx_figure" id="A3.F11"><img alt="论文原图 10" class="ltx_graphics ltx_centering ltx_img_landscape" id="A3.F11.g1" src="images/figure-10.jpg"/>
+<figcaption class="ltx_caption ltx_centering" data-block="99">图 11：失败分析——驾驶指令的歧义。该失败模式源于粗粒度导航指令：在 Y 形路口，模型收到通用“直行”命令，但分叉道路拓扑使它既不明确对应左支，也不明确对应右支。模型因而未能选定有效车道，犹豫地直驶进入岔口区域（红色预测轨迹）。这突出 NAVSIM 的一个局限：离散指令集仅有简单左转/直行/右转，粒度不足以消除复杂几何中的歧义。注意：为忠实呈现模型可获取的视觉信息，全部展示图像均从 MoVQGAN token 重建，并非原始 RGB 帧。</figcaption>
+</figure>
+<figure class="ltx_figure" id="A3.F12"><img alt="论文原图 11" class="ltx_graphics ltx_centering ltx_img_landscape" id="A3.F12.g1" src="images/figure-11.jpg"/>
+<figcaption class="ltx_caption ltx_centering" data-block="100">图 12：失败分析——动态目标预测。世界模型虽能泛化到多数动态场景，但在复杂路口预测多个目标时仍有困难。此案例中，它未能预见未来帧出现的对向车辆（见“以真实轨迹为条件”一行）。因此，规划器未意识到潜在冲突，错误执行左转。这表明精细动态目标建模是值得研究的方向。注意：为忠实呈现模型可获取的视觉信息，全部展示图像均从 MoVQGAN token 重建，而非原始 RGB 帧。</figcaption>
+</figure>
+</section>
+<section class="ltx_subsection" id="A3.SS3">
+<h3 class="ltx_title ltx_title_subsection" data-block="101" id="tr-101">C.3 未来图像生成</h3>
+<div class="ltx_para ltx_noindent" id="A3.SS3.p1">
+<p class="ltx_p" data-block="102" id="A3.SS3.p1.1">我们的世界模型同时具备较高视觉保真度和较强动作一致性。如图 13，它可在多样、挑战性的场景中生成逼真合理的图像。更重要的是，这些视觉预测与模型规划过程紧密耦合。</p>
+</div>
+<figure class="ltx_figure" id="A3.F13">
+<div class="ltx_flex_figure">
+<div class="ltx_flex_cell ltx_flex_size_1"><img alt="论文原图 12" class="ltx_graphics ltx_centering ltx_figure_panel ltx_img_landscape" id="A3.F13.g1" src="images/figure-12.jpg"/></div><div class="ltx_flex_break"></div><div class="ltx_flex_cell ltx_flex_size_1"><img alt="论文原图 13" class="ltx_graphics ltx_centering ltx_figure_panel ltx_img_landscape" id="A3.F13.g2" src="images/figure-13.jpg"/></div></div>
+<figcaption class="ltx_caption ltx_centering" data-block="103">图 13：未来图像生成。世界模型展现出强生成保真度，在复杂路口、密集交通等多样挑战场景中，生成视觉逼真且符合上下文的未来。</figcaption>
+</figure>
+</section>
+<section class="ltx_subsection" id="A3.SS4">
+<h3 class="ltx_title ltx_title_subsection" data-block="104" id="tr-104">C.4 反事实推理</h3>
+<div class="ltx_para ltx_noindent" id="A3.SS4.p1">
+<p class="ltx_p" data-block="105" id="A3.SS4.p1.1">本节研究模型根据假设动作合成其他未来的反事实推理能力。如图 14，尽管真实轨迹是直行，以“右转”动作为条件仍会生成逼真的驶离道路图像。这证实模型捕获了内在场景几何，而非仅记忆训练轨迹。</p>
+</div>
+<figure class="ltx_figure" id="A3.F14">
+<div class="ltx_flex_figure">
+<div class="ltx_flex_cell ltx_flex_size_1"><img alt="论文原图 14" class="ltx_graphics ltx_centering ltx_figure_panel ltx_img_landscape" id="A3.F14.g1" src="images/figure-14.jpg"/></div><div class="ltx_flex_break"></div><div class="ltx_flex_cell ltx_flex_size_1"><img alt="论文原图 15" class="ltx_graphics ltx_centering ltx_figure_panel ltx_img_landscape" id="A3.F14.g2" src="images/figure-15.jpg"/></div></div>
+<figcaption class="ltx_caption ltx_centering" data-block="106">图 14：反事实推理。在路边输入反事实“右转”动作作为条件，世界模型生成逼真视频，车辆偏离真实轨迹并驶离道路。这验证模型学到了场景内在几何，而非只是记忆训练数据。</figcaption>
+</figure>
+</section>
+</section>
+<section class="ltx_appendix" id="A4">
+<h2 class="ltx_title ltx_title_appendix" data-block="107" id="tr-107">附录 D 更多实现细节</h2>
+<div class="ltx_para ltx_noindent" id="A4.p1">
+<p class="ltx_p" data-block="108" id="A4.p1.1">TransFuser。为保持设置一致，我们采用 Latent TransFuser，用 BEV 潜在查询替换 LiDAR 分支的真实传感器特征。相机分支提供主要语义和外观特征，潜在 BEV 分支提供可学习全局查询锚点；二者通过跨模态交叉注意力对齐互补。这样，Latent TransFuser 保留 BEV 的全局几何先验，在纯视觉设置下实现稳定融合与规划。为突出容量权衡，我们实现轻量 ResNet-34 变体（TransFuser-50MB）和大型 DINOv3 ViT-7B 变体（TransFuser-7B）。具体而言，输入是单张前视 RGB 图像 <math alttext="\mathbf{I}" class="ltx_Math" display="inline" id="A4.p1.m1" intent=":literal"><semantics><mi>𝐈</mi><annotation encoding="application/x-tex">\mathbf{I}</annotation></semantics></math> 和尺寸为 <math alttext="H{\times}W" class="ltx_Math" display="inline" id="A4.p1.m3" intent=":literal"><semantics><mrow><mi>H</mi><mo lspace="0.222em" rspace="0.222em">×</mo><mi>W</mi></mrow><annotation encoding="application/x-tex">H{\times}W</annotation></semantics></math> 的潜在 BEV 查询张量 <math alttext="\mathbf{Q}_{\text{bev}}" class="ltx_Math" display="inline" id="A4.p1.m2" intent=":literal"><semantics><msub><mi>𝐐</mi><mtext>bev</mtext></msub><annotation encoding="application/x-tex">\mathbf{Q}_{\text{bev}}</annotation></semantics></math>。经图像编码器（ResNet-34 或 DINOv3）及 BEV 潜在编码器后，获得 <math alttext="\mathbf{F}_{\text{img}}" class="ltx_Math" display="inline" id="A4.p1.m4" intent=":literal"><semantics><msub><mi>𝐅</mi><mtext>img</mtext></msub><annotation encoding="application/x-tex">\mathbf{F}_{\text{img}}</annotation></semantics></math>、<math alttext="\mathbf{F}_{\text{bev}}" class="ltx_Math" display="inline" id="A4.p1.m5" intent=":literal"><semantics><msub><mi>𝐅</mi><mtext>bev</mtext></msub><annotation encoding="application/x-tex">\mathbf{F}_{\text{bev}}</annotation></semantics></math>；随后通过多尺度交叉注意力对齐融合，得到表征 <math alttext="\mathbf{F}_{\text{fuse}}" class="ltx_Math" display="inline" id="A4.p1.m6" intent=":literal"><semantics><msub><mi>𝐅</mi><mtext>fuse</mtext></msub><annotation encoding="application/x-tex">\mathbf{F}_{\text{fuse}}</annotation></semantics></math>。规划头根据 <math alttext="\mathbf{F}_{\text{fuse}}" class="ltx_Math" display="inline" id="A4.p1.m9" intent=":literal"><semantics><msub><mi>𝐅</mi><mtext>fuse</mtext></msub><annotation encoding="application/x-tex">\mathbf{F}_{\text{fuse}}</annotation></semantics></math> 预测 <math alttext="K" class="ltx_Math" display="inline" id="A4.p1.m7" intent=":literal"><semantics><mi>K</mi><annotation encoding="application/x-tex">K</annotation></semantics></math> 个未来路径点 <math alttext="\{\hat{\mathbf{p}}_{t+1},\ldots,\hat{\mathbf{p}}_{t+K}\}" class="ltx_Math" display="inline" id="A4.p1.m8" intent=":literal"><semantics><mrow><mo stretchy="false">{</mo><msub><mover accent="true"><mi>𝐩</mi><mo>^</mo></mover><mrow><mi>t</mi><mo>+</mo><mn>1</mn></mrow></msub><mo>,</mo><mi mathvariant="normal">…</mi><mo>,</mo><msub><mover accent="true"><mi>𝐩</mi><mo>^</mo></mover><mrow><mi>t</mi><mo>+</mo><mi>K</mi></mrow></msub><mo stretchy="false">}</mo></mrow><annotation encoding="application/x-tex">\{\hat{\mathbf{p}}_{t+1},\ldots,\hat{\mathbf{p}}_{t+K}\}</annotation></semantics></math>。〔译注：“TransFuser-50MB”为本段原文写法。〕</p>
+</div>
+</section>
+<section class="ltx_appendix" id="A5">
+<h2 class="ltx_title ltx_title_appendix" data-block="109" id="tr-109">附录 E 更多相关工作</h2>
+<div class="ltx_para ltx_noindent" id="A5.p1">
+<p class="ltx_p" data-block="110" id="A5.p1.1">深度学习的规模定律。Kaplan et al. (2020) 首次系统展示，预训练损失随模型规模、数据集规模和计算成本呈幂律缩放。随后 Chinchilla（Hoffmann et al., 2022）指出许多语言模型训练不足，提出计算最优方案：模型规模与 token 数应按比例扩大。计算机视觉中，Zhai et al. (2022) 用稳定训练方案刻画 ViT 规模规律；ViT-22B（Dehghani et al., 2023）将 ViT 扩至 22B 参数，验证可预测的多任务改善。Lin et al. (2025) 大规模研究机器人模仿学习的数据扩展，发现增加环境、物体多样性带来接近幂律的增益和更好的零样本泛化。自动驾驶中，STR（Sun et al., 2023）展示大型轨迹模型在预测与规划中持续随规模改善；Baniodeh et al. (2025) 在大驾驶数据集上报告联合运动预测与规划的幂律提升。端到端驾驶中，Naumann et al. (2025) 观察到训练数据扩展带来开放环与闭环指标近似对数线性提升；Zheng et al. (2024b) 也在大规模模仿学习研究中观察到数据扩展的幂律改善。但 Zheng et al. (2024b) 仅分析传统稀疏动作监督范式中的规模行为。相较之下，我们首次研究世界建模提供的自监督信号如何重塑这些规模定律。</p>
+</div>
+</section>
+<section class="ltx_appendix" id="A6">
+<h2 class="ltx_title ltx_title_appendix" data-block="111" id="tr-111">附录 F 大语言模型的使用</h2>
+<div class="ltx_para ltx_noindent" id="A6.p1">
+<p class="ltx_p" data-block="112" id="A6.p1.1">本文稿使用大语言模型（LLM）润色写作。</p>
+</div>
+</section>
+</article><p class="notice">译注：所选原文未设置独立 Limitations/Ethics 章节；没有缺译此类章节。局限分析见「关键解释」。</p><script src="vendor/katex.min.js"></script><script src="vendor/auto-render.min.js"></script><script>renderMathInElement(document.body,{delimiters:[{left:"$$",right:"$$",display:true},{left:"$",right:"$",display:false}],throwOnError:false})</script></body></html>

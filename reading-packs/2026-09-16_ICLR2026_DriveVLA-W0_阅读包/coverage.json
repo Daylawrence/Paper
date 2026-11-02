@@ -1,0 +1,793 @@
+[
+  {
+    "block": 0,
+    "type": "h1",
+    "source": "DriveVLA-W0: World Models Amplify Data Scaling Law in Autonomous Driving",
+    "translation": "DriveVLA-W0：世界模型增强自动驾驶中的数据规模定律",
+    "status": "translated"
+  },
+  {
+    "block": 1,
+    "type": "h6",
+    "source": "Abstract",
+    "translation": "摘要",
+    "status": "translated"
+  },
+  {
+    "block": 2,
+    "type": "p",
+    "source": "Scaling Vision-Language-Action (VLA) models on large-scale data offers a promising path to achieving a more generalized driving intelligence.\nHowever, VLA models are limited by a “supervision deficit”: the vast model capacity is supervised by sparse, low-dimensional actions, leaving much of their representational power underutilized.\nTo remedy this, we propose DriveVLA-W0 , a training paradigm that employs world modeling to predict future images.\nThis task generates a dense, self-supervised signal that compels the model to learn the underlying dynamics of the driving environment.\nWe showcase the paradigm’s versatility by instantiating it for two dominant VLA archetypes: an autoregressive world model for VLAs that use discrete visual tokens, and a diffusion world model for those operating on continuous visual features.\nBuilding on the rich representations learned from world modeling, we introduce a lightweight action expert to address the inference latency for real-time deployment.\nExtensive experiments on the NAVSIM v1/v2 benchmark and a 680x larger in-house dataset demonstrate that DriveVLA-W0 significantly outperforms BEV and VLA baselines.\nCrucially, it amplifies the data scaling law, showing that performance gains accelerate as the training dataset size increases.",
+    "translation": "在大规模数据上扩展 Vision-Language-Action（VLA，视觉—语言—动作）模型，为实现更通用的驾驶智能提供了有前景的路径。然而，VLA 模型受到“监督不足（supervision deficit）”的限制：巨大的模型容量仅由稀疏、低维动作监督，导致相当一部分表征能力未被充分利用。为解决这一问题，我们提出 DriveVLA-W0，一种通过世界建模预测未来图像的训练范式。该任务产生密集的自监督信号，迫使模型学习驾驶环境的内在动力学。我们分别针对两类主流 VLA 架构实例化该范式，展示其通用性：对于使用离散视觉 token 的 VLA，采用自回归世界模型；对于使用连续视觉特征的 VLA，采用扩散世界模型。基于世界建模学到的丰富表征，我们引入轻量动作专家，解决实时部署中的推理延迟问题。在 NAVSIM v1/v2 基准及规模大 680 倍的内部数据集上进行的大量实验表明，DriveVLA-W0 显著优于 BEV 和 VLA 基线。关键的是，它增强了数据规模定律，表明随着训练集扩大，性能增益会加速增长。",
+    "status": "translated"
+  },
+  {
+    "block": 3,
+    "type": "figcaption",
+    "source": "Figure 1: World modeling as a catalyst for VLA data scalability. (a): Unlike standard VLAs trained solely on action supervision, our DriveVLA-W0 is trained to predict both future actions and visual scenes.\n(b): This world modeling task provides a dense source of supervision, enabling our model to better harness the benefits of large-scale data.",
+    "translation": "图 1：世界建模是 VLA 数据可扩展性的催化剂。(a) 与仅用动作监督训练的标准 VLA 不同，DriveVLA-W0 同时学习预测未来动作与视觉场景。(b) 世界建模任务提供密集监督来源，使模型更好地利用大规模数据。",
+    "status": "translated"
+  },
+  {
+    "block": 4,
+    "type": "h2",
+    "source": "1 Introduction",
+    "translation": "1 引言",
+    "status": "translated"
+  },
+  {
+    "block": 5,
+    "type": "p",
+    "source": "The promise of scaling laws ( Kaplan et al., 2020 ; Zhai et al., 2022 ; Baniodeh et al., 2025 ; Dehghani et al., 2023 ) presents an attractive path toward more generalized driving intelligence, with the hope that petabytes of driving data can be harnessed to train powerful foundation models.\nIn the current landscape, two dominant paradigms exist.\nOn one side are specialized models ( Hu et al., 2022 ; Jiang et al., 2023 ) centered around Bird’s-Eye-View (BEV) representations ( Li et al., 2022 ; Huang et al., 2021 ) .\nThese models are built upon carefully designed geometric priors, which, while effective for driving-specific tasks, make it less straightforward to leverage non-driving datasets. In addition, their relatively compact architectures may constrain their potential for large-scale data scalability.\nIn response, Vision-Language-Action (VLA) models ( Fu et al., 2025 ; Li et al., 2025b ; Zhou et al., 2025c ) have emerged as a promising alternative. By leveraging large-scale Vision-Language Models (VLMs) ( Wang et al., 2024b ; Bai et al., 2025 ) pretrained on internet-scale data, VLAs possess a significantly larger model size and a greater intrinsic potential for scaling.",
+    "translation": "规模定律（Kaplan et al., 2020；Zhai et al., 2022；Baniodeh et al., 2025；Dehghani et al., 2023）为更通用的驾驶智能提供了一条有吸引力的路径：有望利用 PB 级驾驶数据训练强大的基础模型。目前主要存在两类范式。一类是围绕 Bird’s-Eye-View（BEV，鸟瞰视图）表征（Li et al., 2022；Huang et al., 2021）构建的专用模型（Hu et al., 2022；Jiang et al., 2023）。它们依赖精心设计的几何先验，这些先验虽对驾驶任务有效，却使非驾驶数据的利用不够直接；此外，相对紧凑的架构可能限制其在大规模数据上的扩展潜力。相应地，VLA 模型（Fu et al., 2025；Li et al., 2025b；Zhou et al., 2025c）成为有前景的替代方案。借助在互联网规模数据上预训练的大型 Vision-Language Model（VLM，视觉语言模型）（Wang et al., 2024b；Bai et al., 2025），VLA 拥有明显更大的模型规模和更强的内在扩展潜力。",
+    "status": "translated"
+  },
+  {
+    "block": 6,
+    "type": "p",
+    "source": "However, this scaling potential is largely unrealized due to a critical challenge: the immense model size of VLA models is met with extremely sparse supervisory signals. The standard paradigm involves fine-tuning these VLM models solely on expert actions. This tasks the model with mapping high-dimensional sensory inputs to a few low-dimensional control signals (e.g., waypoints). This creates a severe “ supervision deficit ”.\nThis deficit prevents the model from learning rich world representations, a fundamental limitation that cannot be overcome by simply increasing the volume of action-only training data.\nIn fact, we observe that without sufficient supervision, large VLA models can even underperform smaller, specialized BEV models.",
+    "translation": "然而，这种扩展潜力很大程度上尚未实现，原因在于一个关键挑战：VLA 巨大的模型规模面对的是极其稀疏的监督信号。标准范式仅用专家动作微调 VLM，要求模型把高维传感器输入映射为少量低维控制信号（如路径点），造成严重的“监督不足”。这阻碍模型学习丰富的世界表征，是单纯增加仅动作训练数据量无法克服的根本局限。实际上，我们观察到监督不充分时，大型 VLA 甚至不如更小的专用 BEV 模型。",
+    "status": "translated"
+  },
+  {
+    "block": 7,
+    "type": "p",
+    "source": "To address this supervision deficit, we harness the power of world modeling ( Li et al., 2024a ; Wang et al., 2025 ; Cen et al., 2025 ; Chen et al., 2024 ) , integrating it as a dense self-supervised objective to supplement the sparse action signal.\nBy tasking the model with predicting future images, we generate a dense and rich supervisory signal at every timestep.\nThis objective forces the model to learn the underlying dynamics of the environment and build a rich, predictive world representation.\nTo validate the effectiveness of our approach, we implement it across the two dominant VLA architectural families, which are primarily differentiated by their visual representation: discrete tokens versus continuous features.\nFor VLAs that represent images as discrete visual tokens, world modeling is a natural extension.\nWe propose an autoregressive world model to predict the sequence of discrete visual tokens of future images.\nFor VLAs that operate on continuous features, this task is more challenging as they lack a visual vocabulary, making a direct next-token prediction approach infeasible.\nTo bridge this gap, we introduce a diffusion world model that generates future image pixels conditioned on the vision and action features produced at the current frame.",
+    "translation": "为解决监督不足，我们利用世界建模（Li et al., 2024a；Wang et al., 2025；Cen et al., 2025；Chen et al., 2024），将它作为密集自监督目标，补充稀疏动作信号。通过要求模型预测未来图像，我们在每个时间步产生密集、丰富的监督信号，迫使模型学习环境内在动力学，构建丰富且具预测性的世界表征。为验证方法有效性，我们在两大 VLA 架构族上实现它；二者主要区别是使用离散 token 还是连续特征表示视觉。对将图像表示为离散视觉 token 的 VLA，世界建模是自然扩展，我们提出自回归世界模型，预测未来图像的离散视觉 token 序列。对使用连续特征的 VLA，这项任务更困难，因为它没有视觉词表，无法直接采用下一 token 预测。为弥补这一缺口，我们引入扩散世界模型，依据当前帧产生的视觉与动作特征，生成未来图像像素。",
+    "status": "translated"
+  },
+  {
+    "block": 8,
+    "type": "p",
+    "source": "We validate our world modeling approach across multiple data scales, from academic benchmarks to a massive in-house dataset. First, experiments scaling at academic benchmarks reveal that world modeling is crucial for generalization , as it learns robust visual patterns rather than overfitting to dataset-specific action patterns. To study true scaling laws, we then leverage a massive 70M-frame in-house dataset, as Figure 1 shows. This confirms our central hypothesis: world modeling amplifies the data scaling law.\nThis advantage stems from the dense visual supervision provided by future frame prediction, creating a qualitative gap that cannot be closed by purely scaling the quantity of action-only data.\nFinally, to enable real-time deployment, we introduce a lightweight, MoE-based Action Expert. This expert decouples action generation from the large VLA backbone, reducing inference latency to just 63.1% of the baseline VLA and creating an efficient testbed to study different action decoders at a massive scale. This reveals a compelling reversal of performance trends from smaller to larger data scales. While complex flow-matching decoders often hold an advantage on small datasets, we find that this relationship inverts at a massive scale, where the simpler autoregressive decoder emerges as the top performer.\nOur work makes three primary contributions:",
+    "translation": "我们在从学术基准到大规模内部数据集的多个数据规模上验证世界建模方法。首先，学术基准上的扩展实验表明，世界建模对泛化至关重要：它学习稳健的视觉模式，而非过拟合数据集特有的动作模式。随后，我们利用包含 7000 万帧的内部数据集研究真正的规模定律，如图 1 所示。这证实了我们的核心假设：世界建模增强数据规模定律。该优势源于未来帧预测提供的密集视觉监督，形成了一种无法仅靠扩大动作监督数据数量来弥合的质的差距。最后，为实现实时部署，我们引入基于 Mixture-of-Experts（MoE，混合专家）的轻量动作专家。它将动作生成与大型 VLA 骨干解耦，使推理延迟降至基线的 63.1%，也为大规模研究不同动作解码器提供高效试验平台。实验揭示从小数据到大数据时性能趋势发生了显著反转：复杂的流匹配解码器在小数据集上往往占优，但在大规模数据下，简单的自回归解码器表现最好。本文有三项主要贡献：",
+    "status": "translated"
+  },
+  {
+    "block": 9,
+    "type": "p",
+    "source": "We identify the “supervision deficit” as a critical bottleneck for scaling VLAs and propose DriveVLA-W0 , a paradigm that uses world modeling to provide a dense, self-supervised learning signal from visual prediction.",
+    "translation": "我们将“监督不足”识别为制约 VLA 扩展的关键瓶颈，提出 DriveVLA-W0，通过世界建模从视觉预测中获得密集自监督学习信号。",
+    "status": "translated"
+  },
+  {
+    "block": 10,
+    "type": "p",
+    "source": "Our experiments reveal two key scaling advantages of world modeling. First, it enhances generalization across domains with differing action distributions by learning transferable visual representations. Second, on a massive 70M-frame dataset, it amplifies the data scaling law, providing a benefit that simply scaling up action-only supervision cannot achieve.",
+    "translation": "实验揭示世界建模的两个关键规模优势。第一，它通过学习可迁移视觉表征，增强跨动作分布不同领域的泛化。第二，在 7000 万帧的大数据集上，它增强数据规模定律，提供了单纯扩大动作监督数据无法获得的收益。",
+    "status": "translated"
+  },
+  {
+    "block": 11,
+    "type": "p",
+    "source": "We introduce a lightweight MoE-based Action Expert that reduces inference latency to 63.1% of the baseline. Using this expert as a testbed, we uncover a compelling scaling law reversal for action decoders: simpler autoregressive models surpass more complex flow-matching ones at a massive scale, inverting the performance trend seen on smaller datasets.",
+    "translation": "我们引入轻量 MoE 动作专家，使推理延迟降至基线的 63.1%。以它为试验平台，我们揭示动作解码器的规模规律反转：简单自回归模型在大规模数据上超越更复杂的流匹配模型，与小数据集观察到的趋势相反。",
+    "status": "translated"
+  },
+  {
+    "block": 12,
+    "type": "h2",
+    "source": "2 Related Work",
+    "translation": "2 相关工作",
+    "status": "translated"
+  },
+  {
+    "block": 13,
+    "type": "p",
+    "source": "VLAs in Autonomous Driving. The development of VLMs in autonomous driving has progressed through three main stages, evolving from focusing on interpretation to integrated end-to-end VLA architectures.\nThe first stage, language-based scene interpretation models, focused on enhancing interpretability. Models like DriveGPT4 ( Xu et al., 2024 ) used Large Language Models (LLMs) to generate scene explanations and high-level maneuver suggestions, but without producing directly executable actions ( Chen et al., 2025 ; Zhou et al., 2025b ) .\nThe second stage, modular language-to-action frameworks, aimed to connect high-level commands with low-level control. These approaches ( Zhou et al., 2025a ; Yuan et al., 2024 ; Zhang et al., 2025 ; Arai et al., 2025 ; Gao et al., 2025 ) utilize multi-stage pipelines where modules are connected via non-differentiable interfaces, such as discrete textual commands, which prevent gradient back-propagation.\nThe current frontier is End-to-End VLAs ( Renz et al., 2025 ; Renz et al., 2024 ; Jiang et al., 2025 ; Hwang et al., 2024 ; Yang et al., 2025 ; Zeng et al., 2025 ) , which employ a unified architecture to directly map sensor inputs to trajectories.\nWithin this paradigm, DriveMoE ( Yang et al., 2025 ) introduced a Mixture-of-Experts (MoE) architecture, where an action decoder is serially connected after a VLM backbone.\nReCogDrive ( Li et al., 2025b ) integrates a VLM with a diffusion planner trained via imitation and reinforcement learning to bridge the language-action gap. AutoVLA ( Zhou et al., 2025c ) tokenizes trajectories into action primitives, enabling a single autoregressive model to learn adaptive reasoning and planning. We follow this paradigm and propose an end-to-end VLA.",
+    "translation": "自动驾驶中的 VLA。自动驾驶 VLM 的发展经历了三个主要阶段，从侧重解释逐步走向集成式端到端 VLA 架构。第一阶段是基于语言的场景解释模型，重点在可解释性。DriveGPT4（Xu et al., 2024）等使用大语言模型生成场景说明和高层机动建议，但不产生可直接执行的动作（Chen et al., 2025；Zhou et al., 2025b）。第二阶段是模块化语言到动作框架，旨在连接高层指令与底层控制。这些方法（Zhou et al., 2025a；Yuan et al., 2024；Zhang et al., 2025；Arai et al., 2025；Gao et al., 2025）采用多阶段流程，模块间通过离散文本指令等不可微接口连接，阻断梯度反传。目前的前沿是端到端 VLA（Renz et al., 2025；Renz et al., 2024；Jiang et al., 2025；Hwang et al., 2024；Yang et al., 2025；Zeng et al., 2025），用统一架构直接把传感器输入映射为轨迹。在此范式中，DriveMoE（Yang et al., 2025）引入 MoE 架构，将动作解码器串接在 VLM 骨干后。ReCogDrive（Li et al., 2025b）把 VLM 与通过模仿和强化学习训练的扩散规划器结合，弥合语言—动作差距。AutoVLA（Zhou et al., 2025c）将轨迹 token 化为动作基元，使单个自回归模型学习自适应推理和规划。我们遵循该范式，提出端到端 VLA。",
+    "status": "translated"
+  },
+  {
+    "block": 14,
+    "type": "p",
+    "source": "World Models in Driving and Robotics Research on world models typically follows two distinct philosophies: utilizing them as data synthesizers for simulation, or employing them as an auxiliary objective for representation learning. The first stream focuses on generation , aiming to synthesize high-quality driving data. Prominent works like GAIA-1 ( Hu et al., 2023 ) , DrivingGPT ( Chen et al., 2024 ) , and Doe-1 ( Zheng et al., 2024a ) generate future images or multi-modal tokens to create realistic scenarios, while Copilot4D ( Zhang et al., 2023 ) specifically predicts future discrete visual tokens.\nConversely, the second stream leverages world modeling as a self-supervised objective to enhance representation learning. While VaVAM ( Bartoccioni et al., 2025 ) demonstrates the value of generative video pretraining, it lacks action conditioning. Addressing this, UniVLA ( Wang et al., 2025 ) and WorldVLA ( Cen et al., 2025 ) incorporate actions into autoregressive prediction to learn robust policies. In autonomous driving, LAW ( Li et al., 2024a ) pioneers this paradigm using a latent world model. Distinct from LAW’s latent prediction, our work supervises the model to predict future images , providing a richer and more direct dense learning signal for the VLA backbone.",
+    "translation": "驾驶和机器人中的世界模型。世界模型研究通常遵循两类不同思路：用作仿真数据合成器，或用作表征学习的辅助目标。第一类注重生成，旨在合成高质量驾驶数据。GAIA-1（Hu et al., 2023）、DrivingGPT（Chen et al., 2024）、Doe-1（Zheng et al., 2024a）等生成未来图像或多模态 token，构造逼真场景；Copilot4D（Zhang et al., 2023）则专门预测未来离散视觉 token。第二类利用世界建模作为自监督目标来增强表征学习。VaVAM（Bartoccioni et al., 2025）展示了生成式视频预训练的价值，但缺少动作条件。对此，UniVLA（Wang et al., 2025）和 WorldVLA（Cen et al., 2025）将动作加入自回归预测，学习稳健策略。在自动驾驶领域，LAW（Li et al., 2024a）率先以潜在世界模型探索该范式。与 LAW 预测潜在表征不同，我们监督模型预测未来图像，为 VLA 骨干提供更丰富、更直接的密集学习信号。",
+    "status": "translated"
+  },
+  {
+    "block": 15,
+    "type": "h2",
+    "source": "3 Methodology",
+    "translation": "3 方法",
+    "status": "translated"
+  },
+  {
+    "block": 16,
+    "type": "p",
+    "source": "Our methodology unfolds in three key steps. First, we establish a VLA Baseline to demonstrate the challenges of sparse action-only supervision. Second, we enhance this baseline with World Modeling , our primary contribution, which provides dense self-supervision. Building on this, we tackle the inference bottleneck by introducing a lightweight, MoE-based Action Expert , ensuring our powerful model achieves real-time performance.",
+    "translation": "我们的方法分为三个关键步骤。首先建立 VLA 基线，展示稀疏、仅动作监督带来的挑战。其次，以核心贡献世界建模增强基线，提供密集自监督。在此基础上，引入基于 MoE 的轻量动作专家解决推理瓶颈，确保强大模型具备实时性能。",
+    "status": "translated"
+  },
+  {
+    "block": 17,
+    "type": "figcaption",
+    "source": "Figure 2: The architecture of DriveVLA-W0 , which achieves world modeling in two ways: (a) an AR World Model that predicts discrete visual tokens, and (b) a Diffusion World Model that denoises latent representations conditioned on multimodal inputs.",
+    "translation": "图 2：DriveVLA-W0 的架构，通过两种方式实现世界建模：(a) 预测离散视觉 token 的自回归（AR）世界模型；(b) 以多模态输入为条件，对潜在表征去噪的扩散世界模型。",
+    "status": "translated"
+  },
+  {
+    "block": 18,
+    "type": "h3",
+    "source": "3.1 VLA Baseline",
+    "translation": "3.1 VLA 基线",
+    "status": "translated"
+  },
+  {
+    "block": 19,
+    "type": "p",
+    "source": "Our Vision-Language-Action (VLA) baseline processes sequences of language instructions ( L t L_{t} ), front-view images ( V t V_{t} ), and past actions ( A t − 1 A_{t-1} ). To ensure broad applicability, we build variants on the two dominant VLM paradigms: VLA (VQ) , which quantizes images into discrete visual tokens for an Emu3-style backbone, and VLA (ViT) , which extracts continuous features for a Qwen2.5-VL-style backbone.",
+    "translation": "我们的 VLA 基线处理由语言指令（ L t L_{t} ）、前视图像（ V t V_{t} ）和历史动作（ A t − 1 A_{t-1} ）组成的序列。为保证广泛适用性，我们基于两类主流 VLM 构建变体：VLA (VQ) 把图像量化为离散视觉 token，使用 Emu3 风格骨干；VLA (ViT) 提取连续特征，使用 Qwen2.5-VL 风格骨干。",
+    "status": "translated"
+  },
+  {
+    "block": 20,
+    "type": "p",
+    "source": "Input Tokenization. High-level driving language instructions ( L t L_{t} ) are processed using the VLM’s native tokenizer. For past actions, we use the FAST tokenizer ( Pertsch et al., 2025 ) to convert continuous waypoint trajectories into a sequence of discrete tokens, denoted A t − 1 A_{t-1} .",
+    "translation": "输入 token 化。高层驾驶语言指令（ L t L_{t} ）使用 VLM 原生 tokenizer 处理。对于历史动作，我们使用 FAST tokenizer（Pertsch et al., 2025）将连续路径点轨迹转换为离散 token 序列，记为 A t − 1 A_{t-1} 。",
+    "status": "translated"
+  },
+  {
+    "block": 21,
+    "type": "p",
+    "source": "VLM Backbone. At each timestep t t , we form a deeply interleaved input sequence S t S_{t} by concatenating multimodal chunks over a history of H H steps following Wang et al. (2025) ; Fan et al. (2025) : S t = [ L t − H , V t − H , A t − H − 1 , … , L t , V t , A t − 1 ] S_{t}=[L_{t-H},V_{t-H},A_{t-H-1},\\dots,L_{t},V_{t},A_{t-1}] .\nThis sequence is processed autoregressively by our VLM backbone, for which we select two representative models: Emu3 (8B) ( Wang et al., 2024b ) to handle discrete visual representations and Qwen2.5-VL (7B) ( Bai et al., 2025 ) for continuous features, using a causal attention mask.\nThe VLM backbone outputs the final-layer hidden states, which are then split according to their respective modalities into language ( F t L F_{t}^{L} ), vision ( F t V F_{t}^{V} ), and action ( F t A F_{t}^{A} ) features.",
+    "translation": "VLM 骨干。在每个时刻 t t ，遵循 Wang et al. (2025) 和 Fan et al. (2025)，将 H H 步历史中的多模态片段拼接为深度交错输入序列 S t S_{t} ： S t = [ L t − H , V t − H , A t − H − 1 , … , L t , V t , A t − 1 ] S_{t}=[L_{t-H},V_{t-H},A_{t-H-1},\\dots,L_{t},V_{t},A_{t-1}] 。VLM 骨干使用因果注意力掩码，自回归地处理该序列。我们选择两个代表模型：Emu3 (8B)（Wang et al., 2024b）处理离散视觉表征，Qwen2.5-VL (7B)（Bai et al., 2025）处理连续特征。骨干输出最后一层隐藏状态，再按模态分别拆为语言（ F t L F_{t}^{L} ）、视觉（ F t V F_{t}^{V} ）和动作（ F t A F_{t}^{A} ）特征。",
+    "status": "translated"
+  },
+  {
+    "block": 22,
+    "type": "p",
+    "source": "Action Prediction. For training, we optimize the model to predict the ground-truth action token sequence A t = ( a 1 , … , a M ) A_{t}=(a_{1},\\dots,a_{M}) using a standard cross-entropy loss:",
+    "translation": "动作预测。训练时，我们用标准交叉熵损失优化模型，使其预测真实动作 token 序列 A t = ( a 1 , … , a M ) A_{t}=(a_{1},\\dots,a_{M}) ：",
+    "status": "translated"
+  },
+  {
+    "block": 23,
+    "type": "p",
+    "source": "During inference, the trained model then autoregressively generates a sequence of action tokens conditioned on the context S t S_{t} . These tokens are subsequently converted back into a continuous waypoint trajectory by the FAST detokenizer ( Pertsch et al., 2025 ) .",
+    "translation": "推理时，训练好的模型以上下文 S t S_{t} 为条件，自回归生成动作 token 序列；再由 FAST detokenizer（Pertsch et al., 2025）将其还原为连续路径点轨迹。",
+    "status": "translated"
+  },
+  {
+    "block": 24,
+    "type": "h3",
+    "source": "3.2 World Modeling",
+    "translation": "3.2 世界建模",
+    "status": "translated"
+  },
+  {
+    "block": 25,
+    "type": "p",
+    "source": "Prior VLA pipelines typically only supervise the model’s actions. This yields a sparse supervisory signal, compressing high-dimensional sensory inputs into a few low-dimensional control signals and results in a “supervision deficit”. To address this, we introduce world modeling as a powerful self-supervised objective. We implement the world model differently for our two VLA paradigms.\nFor VLAs equipped with a discrete visual vocabulary, we formulate the world model as a next-token prediction task, creating our AR World Model . Conversely, for VLAs that operate on continuous visual features, we introduce a Diffusion World Model to generate future images in a continuous latent space.",
+    "translation": "既有 VLA 流程通常只监督动作，产生稀疏监督信号：高维传感器输入被压缩成少量低维控制信号，形成“监督不足”。为此，我们引入世界建模作为强大的自监督目标，并针对两类 VLA 分别实现。对具备离散视觉词表的 VLA，把世界模型表述为下一 token 预测，形成自回归世界模型；对使用连续视觉特征的 VLA，引入扩散世界模型，在连续潜在空间生成未来图像。",
+    "status": "translated"
+  },
+  {
+    "block": 26,
+    "type": "p",
+    "source": "AR World Model. Our AR World Model predicts the current visual scene by autoregressively generating its sequence of discrete visual tokens, conditioned on past observations and actions (Figure 2 (a)).",
+    "translation": "自回归世界模型。我们的 AR 世界模型以历史观察和动作为条件，自回归生成当前视觉场景的离散视觉 token 序列，进而预测当前场景（图 2(a)）。",
+    "status": "translated"
+  },
+  {
+    "block": 27,
+    "type": "p",
+    "source": "Training. The model learns to autoregressively generate the sequence of visual tokens for the current image, V t = ( v 1 , … , v N ) V_{t}=(v_{1},\\dots,v_{N}) , conditioned on the preceding context S < V t S_{<V_{t}} . The process is optimized by minimizing the next-token prediction loss",
+    "translation": "训练。以此前的上下文 S < V t S_{<V_{t}} 为条件，模型学习自回归生成当前图像的视觉 token 序列 V t = ( v 1 , … , v N ) V_{t}=(v_{1},\\dots,v_{N}) 。优化目标是最小化下一 token 预测损失：",
+    "status": "translated"
+  },
+  {
+    "block": 28,
+    "type": "p",
+    "source": "We refer to this complete framework as DriveVLA-W0 (VQ) . It is trained jointly by optimizing a weighted sum of the action and AR world model losses: ℒ Total = ℒ Action + α ​ ℒ WM-AR \\mathcal{L}_{\\text{Total}}=\\mathcal{L}_{\\text{Action}}+\\alpha\\mathcal{L}_{\\text{WM-AR}} , where α \\alpha is a balancing coefficient.",
+    "translation": "我们将这一完整框架称为 DriveVLA-W0 (VQ)。它通过动作损失与 AR 世界模型损失的加权和联合训练： ℒ Total = ℒ Action + α ​ ℒ WM-AR \\mathcal{L}_{\\text{Total}}=\\mathcal{L}_{\\text{Action}}+\\alpha\\mathcal{L}_{\\text{WM-AR}} ，其中 α \\alpha 是平衡系数。",
+    "status": "translated"
+  },
+  {
+    "block": 29,
+    "type": "p",
+    "source": "Inference. While the explicit generation of visual tokens is typically bypassed during inference to ensure low latency, this capability remains valuable for visualization purposes. To generate an image, the model autoregressively samples a sequence of visual tokens, which are then passed to the MoVQGAN ( Zheng et al., 2022 ) decoder to render the final image I ^ t \\hat{I}_{t} .",
+    "translation": "推理。为保证低延迟，驾驶推理通常跳过显式视觉 token 生成，但该能力仍可用于可视化。生成图像时，模型自回归采样视觉 token 序列，再通过 MoVQGAN（Zheng et al., 2022）解码器渲染最终图像 I ^ t \\hat{I}_{t} 。",
+    "status": "translated"
+  },
+  {
+    "block": 30,
+    "type": "p",
+    "source": "Diffusion World Model. Unlike the VQ-based counterpart, our VLA (ViT) model lacks a discrete visual vocabulary suitable for next-token prediction.\nWe therefore introduce a Diffusion World Model, which instead provides dense supervision by training a latent diffusion model ( Rombach et al., 2021 ; Wang et al., 2024a ) to generate future images conditioned on the VLA’s rich output features ( F t V , F t A F_{t}^{V},F_{t}^{A} ) as Figure 2 shows.\nThis choice to predict the future frame ( 𝐈 t + 1 \\mathbf{I}_{t+1} ) is critical: since the model is conditioned on all present features simultaneously, predicting the future is necessary to learn predictive dynamics rather than simply performing a reconstruction task.",
+    "translation": "扩散世界模型。不同于 VQ 版本，VLA (ViT) 没有适合下一 token 预测的离散视觉词表。因此，我们引入扩散世界模型，通过训练潜在扩散模型（Rombach et al., 2021；Wang et al., 2024a），以 VLA 丰富的输出特征（ F t V , F t A F_{t}^{V},F_{t}^{A} ）为条件生成未来图像，提供密集监督（图 2）。选择预测未来帧（ 𝐈 t + 1 \\mathbf{I}_{t+1} ）至关重要：模型同时以全部当前特征为条件，因此必须预测未来，才能学习预测性动力学，而非仅执行重建。",
+    "status": "translated"
+  },
+  {
+    "block": 31,
+    "type": "p",
+    "source": "Training. This framework learns to predict the future visual scene ( 𝐈 t + 1 \\mathbf{I}_{t+1} ) conditioned on the VLA’s current visual and action features ( F t V F_{t}^{V} and F t A F_{t}^{A} ). Following the standard latent diffusion setup, the model is trained to denoise a noised version of the future image’s latent representation. This is optimized via an MSE objective",
+    "translation": "训练。该框架以 VLA 当前视觉与动作特征（ F t V F_{t}^{V} 、 F t A F_{t}^{A} ）为条件，学习预测未来视觉场景（ 𝐈 t + 1 \\mathbf{I}_{t+1} ）。遵循标准潜在扩散设置，训练模型对未来图像潜在表征的加噪版本去噪，使用 MSE（均方误差）目标优化：",
+    "status": "translated"
+  },
+  {
+    "block": 32,
+    "type": "p",
+    "source": "where z t + 1 z_{t+1} is the latent of the future image 𝐈 t + 1 \\mathbf{I}_{t+1} , ϵ ∼ 𝒩 ⁡ ( 0 , 𝐈 ) \\epsilon\\sim\\mathcal{N}(0,\\mathbf{I}) is sampled Gaussian noise, k k is a random diffusion timestep, and ϵ ^ \\hat{\\epsilon} is the denoiser network trained to predict the noise from the noised latent z t + 1 , k z_{t+1,k} .\nWe term this overall framework DriveVLA-W0 (ViT) . It is trained end-to-end by optimizing a joint objective that combines the action prediction loss and the diffusion world model loss: ℒ Total = ℒ Action + β ​ ℒ WM-Diff \\mathcal{L}_{\\text{Total}}=\\mathcal{L}_{\\text{Action}}+\\beta\\mathcal{L}_{\\text{WM-Diff}} , where β \\beta is a balancing coefficient.",
+    "translation": "其中 z t + 1 z_{t+1} 是未来图像 𝐈 t + 1 \\mathbf{I}_{t+1} 的潜在表征， ϵ ∼ 𝒩 ⁡ ( 0 , 𝐈 ) \\epsilon\\sim\\mathcal{N}(0,\\mathbf{I}) 是采样的高斯噪声， k k 是随机扩散时间步， ϵ ^ \\hat{\\epsilon} 是去噪网络，它从带噪潜变量 z t + 1 , k z_{t+1,k} 中预测噪声。我们将整体框架称为 DriveVLA-W0 (ViT)。通过联合目标结合动作预测与扩散世界模型损失，进行端到端训练： ℒ Total = ℒ Action + β ​ ℒ WM-Diff \\mathcal{L}_{\\text{Total}}=\\mathcal{L}_{\\text{Action}}+\\beta\\mathcal{L}_{\\text{WM-Diff}} ，其中 β \\beta 为平衡系数。",
+    "status": "translated"
+  },
+  {
+    "block": 33,
+    "type": "p",
+    "source": "Inference. As with the AR model, the diffusion process is bypassed during driving inference to ensure real-time performance. For qualitative analysis, future frames can be generated by running the reverse diffusion process, starting from random noise and conditioning on the features F t V F_{t}^{V} and F t A F_{t}^{A} to produce a predicted image I ^ t + 1 \\hat{I}_{t+1} .",
+    "translation": "推理。与 AR 模型一样，驾驶推理跳过扩散过程以保证实时性能。进行定性分析时，可以从随机噪声开始，以特征 F t V F_{t}^{V} 、 F t A F_{t}^{A} 为条件执行反向扩散，产生预测的未来图像 I ^ t + 1 \\hat{I}_{t+1} 。",
+    "status": "translated"
+  },
+  {
+    "block": 34,
+    "type": "h3",
+    "source": "3.3 Action Expert",
+    "translation": "3.3 动作专家",
+    "status": "translated"
+  },
+  {
+    "block": 35,
+    "type": "p",
+    "source": "MoE Architecture. ( Black et al., ; Intelligence et al., 2025 ) While our large VLA backbone excels at representation learning, its size is prohibitive for real-time control. To address this, we introduce a lightweight action expert (500M) that operates alongside the main VLA Expert (our full VLA backbone) in a Mixture-of-Experts (MoE) architecture.\nThe Action Expert shares a similar transformer block structure with the VLA Expert but uses a much smaller hidden dimension. This architectural similarity enables a deep and efficient fusion of information via a Joint Attention mechanism as Figure 3 (a) shows. In this setup, both experts first compute their respective Query, Key, and Value matrices. These matrices are then concatenated along the token sequence dimension to create a single set of inputs for a Joint Attention operation",
+    "translation": "MoE 架构。（Black et al.；Intelligence et al., 2025）大型 VLA 骨干擅长表征学习，但其规模妨碍实时控制。为此，我们引入 500M 参数的轻量动作专家，与主 VLA 专家（完整 VLA 骨干）在 MoE 架构中并行工作。动作专家的 Transformer 块结构与 VLA 专家相似，但隐藏维度小得多。这种结构相似性通过 Joint Attention（联合注意力）实现深度、高效的信息融合，如图 3(a)。两个专家先各自计算 Query、Key、Value 矩阵，再沿 token 序列维拼接为联合注意力的输入：",
+    "status": "translated"
+  },
+  {
+    "block": 36,
+    "type": "p",
+    "source": "The resulting attention output is then split and routed back to each corresponding expert as Figure 3 shows. This approach allows for a tight, symmetric integration of the VLA’s rich representations and the Action Expert’s specialized context within a single, efficient computation.",
+    "translation": "随后将注意力输出拆分，送回各自专家，如图 3。这使 VLA 丰富表征与动作专家专用上下文，能在一次高效计算中紧密、对称地整合。",
+    "status": "translated"
+  },
+  {
+    "block": 37,
+    "type": "p",
+    "source": "This efficient MoE architecture also serves as an ideal test bed for systematically investigating three distinct action decoding strategies: a query-based , an autoregressive , and a flow matching expert. A key commonality among these variants is the prefilling of the previous action’s features ( A t − 1 A_{t-1} ), which provides a strong temporal prior for the current decision.",
+    "translation": "该高效 MoE 架构也为系统研究三种动作解码策略提供理想平台：基于查询、自回归和流匹配专家。这些变体的一个共同点，是预填充前一动作的特征（ A t − 1 A_{t-1} ），为当前决策提供强时序先验。",
+    "status": "translated"
+  },
+  {
+    "block": 38,
+    "type": "figcaption",
+    "source": "Figure 3: (a) Our Mixture-of-Experts (MoE) architecture pairs a large VLA Expert with a lightweight Action Expert for efficient inference. (b-d) This framework serves as a testbed for comparing three action decoding schemes: query-based, autoregressive, and flow matching.",
+    "translation": "图 3：(a) MoE 架构把大型 VLA 专家与轻量动作专家配对，实现高效推理。(b–d) 该框架用于比较三种动作解码方案：基于查询、自回归、流匹配。",
+    "status": "translated"
+  },
+  {
+    "block": 39,
+    "type": "p",
+    "source": "Query-based Action Expert. This expert employs a set of learnable action queries that interact with the VLA’s multimodal context via joint attention. The resulting updated queries are then projected by an MLP head to directly regress the continuous waypoint trajectory. The model is optimized by minimizing the L1 distance between the predicted and ground-truth trajectories.",
+    "translation": "基于查询的动作专家。该专家使用一组可学习动作查询，通过联合注意力与 VLA 多模态上下文交互。更新后的查询由 MLP 头投影，直接回归连续路径点轨迹。模型以预测轨迹与真实轨迹间的 L1 距离最小化为目标。",
+    "status": "translated"
+  },
+  {
+    "block": 40,
+    "type": "p",
+    "source": "Autoregressive Action Expert. This expert generates actions by autoregressively predicting a sequence of discrete tokens. Its training objective and formulation are identical to those used for our VLA Baseline (described in Section 3.1 ), minimizing a standard cross-entropy loss.",
+    "translation": "自回归动作专家。该专家通过自回归预测离散 token 序列来生成动作。其训练目标与表述和第 3.1 节的 VLA 基线相同，即最小化标准交叉熵损失。",
+    "status": "translated"
+  },
+  {
+    "block": 41,
+    "type": "p",
+    "source": "Flow Matching Action Expert. In contrast to the discrete nature of the autoregressive approach, we also implement a continuous action generation method based on flow matching. This method learns a conditional vector field, v ϕ v_{\\phi} , that defines a direct “path” from a simple noise distribution to the complex distribution of real-world driving actions. During training, we define a simple straight-line trajectory between a random noise sample and a ground-truth action ( Liu et al., 2022 ) . The model is then optimized via a mean squared error loss to predict a vector field v ϕ v_{\\phi} that aligns with this trajectory at each point, conditioned on the multimodal context 𝐜 t \\mathbf{c}_{t} . For inference, we simply start with a new noise sample and follow the learned vector field for a fixed number of steps using a numerical ODE solver. This process deterministically transforms the noise into a precise, continuous action that lies on the learned data manifold.",
+    "translation": "流匹配动作专家。不同于离散的自回归方法，我们还实现了基于流匹配的连续动作生成。该方法学习条件向量场 v ϕ v_{\\phi} ，定义从简单噪声分布到复杂真实驾驶动作分布的直接“路径”。训练时，在随机噪声样本与真实动作之间定义简单直线路径（Liu et al., 2022）；随后用均方误差损失优化模型，使其以多模态上下文 𝐜 t \\mathbf{c}_{t} 为条件，在每个位置预测与路径对齐的向量场 v ϕ v_{\\phi} 。推理时，从新噪声样本开始，使用数值 ODE 求解器，沿学到的向量场走固定步数，将噪声确定性地转成位于已学数据流形上的精确连续动作。",
+    "status": "translated"
+  },
+  {
+    "block": 42,
+    "type": "h2",
+    "source": "4 Experiment",
+    "translation": "4 实验",
+    "status": "translated"
+  },
+  {
+    "block": 43,
+    "type": "figcaption",
+    "source": "Table 1: Comparison with state-of-the-art methods on the NAVSIM v1. NC: no at-fault collision.\nDAC: drivable area compliance.\nTTC: time-to-collision.\nC.: comfort.\nEP: ego progress.\nPDMS: the predictive driver model score.\nAbbreviations: 1x Cam (single front-view camera), Nx Cam (surround-view cameras), L (LiDAR). ∗ : Using the query-based action expert.\n†: Using the query-based action expert with multiple trajectory anchors following Li et al. (2024b) .\n‡: Using the AR action expert with the best-of-N (N=6) strategy following Zhou et al. (2025c) .",
+    "translation": "表 1：在 NAVSIM v1 上与最先进方法比较。NC：无责任碰撞；DAC：可行驶区域合规；TTC：碰撞时间；C.：舒适度；EP：自车进度；PDMS：预测驾驶员模型分数。缩写：1x Cam 为单个前视相机，Nx Cam 为环视相机，L 为 LiDAR。*：使用基于查询的动作专家。†：遵循 Li et al. (2024b)，使用带多轨迹锚点的查询动作专家。‡：遵循 Zhou et al. (2025c)，使用 AR 动作专家与 best-of-N（N=6）策略。",
+    "status": "translated"
+  },
+  {
+    "block": 44,
+    "type": "figcaption",
+    "source": "Table 2: Comparison with state-of-the-art methods on the NAVSIM v2 with extended metrics. NC: No at-fault Collision.\nDAC: Drivable Area Compliance.\nDDC: Driving Direction Compliance.\nTLC: Traffic Light Compliance.\nEP: Ego Progress.\nTTC: Time to Collision.\nLK: Lane Keeping.\nHC: History Comfort.\nEC: Extended Comfort.\nEPDMS: Extended Predictive Driver Model Score.",
+    "translation": "表 2：在采用扩展指标的 NAVSIM v2 上与最先进方法比较。NC：无责任碰撞；DAC：可行驶区域合规；DDC：行驶方向合规；TLC：交通灯合规；EP：自车进度；TTC：碰撞时间；LK：车道保持；HC：历史舒适度；EC：扩展舒适度；EPDMS：扩展预测驾驶员模型分数。",
+    "status": "translated"
+  },
+  {
+    "block": 45,
+    "type": "h3",
+    "source": "4.1 Datasets",
+    "translation": "4.1 数据集",
+    "status": "translated"
+  },
+  {
+    "block": 46,
+    "type": "p",
+    "source": "NAVSIM. We use the NAVSIM ( Dauner et al., 2024 ) benchmark derived from OpenScene ( Contributors, 2023 ) , for evaluating performance in safety-critical scenarios.",
+    "translation": "NAVSIM。我们使用由 OpenScene（Contributors, 2023）衍生的 NAVSIM（Dauner et al., 2024）基准，评估安全关键场景中的性能。",
+    "status": "translated"
+  },
+  {
+    "block": 47,
+    "type": "p",
+    "source": "NAVSIM v1 metrics include No at-fault\nCollision (NC), Drivable Area Compliance (DAC), Time-To-Collision (TTC), Comfort (C.), and Ego Progress (EP). NAVSIM uses the Predictive Driver Model Score (PDMS) to evaluate model performance: P ​ D ​ M ​ S = N ​ C × D ​ A ​ C × 5 × E ​ P + 5 × T ​ T ​ C + 2 × C . 12 PDMS=NC\\times DAC\\times\\frac{5\\times EP+5\\times TTC+2\\times C.}{12} .",
+    "translation": "NAVSIM v1 指标包括无责任碰撞（NC）、可行驶区域合规（DAC）、碰撞时间（TTC）、舒适度（C.）和自车进度（EP）。NAVSIM 使用预测驾驶员模型分数（PDMS）评估模型性能： P ​ D ​ M ​ S = N ​ C × D ​ A ​ C × 5 × E ​ P + 5 × T ​ T ​ C + 2 × C . 12 PDMS=NC\\times DAC\\times\\frac{5\\times EP+5\\times TTC+2\\times C.}{12} 。",
+    "status": "translated"
+  },
+  {
+    "block": 48,
+    "type": "p",
+    "source": "NAVSIM v2 ( Cao et al., 2025 ) includes several components, categorized as penalties or weighted subscores. Key metrics are No at-fault Collision (NC), Drivable Area Compliance (DAC), Driving Direction Compliance (DDC), Traffic Light Compliance (TLC), Ego Progress (EP), Time to Collision (TTC), Lane Keeping (LK), History Comfort (HC), and Extended Comfort (EC). NAVSIM v2 uses the Extended Predictive Driver Model Score (EPDMS) to evaluate model performance: EPDMS = NC × DAC × DDC × TLC × 5 × EP + 5 × TTC + 2 × LK + 2 × HC + 2 × EC 16 \\text{EPDMS}=\\text{NC}\\times\\text{DAC}\\times\\text{DDC}\\times\\text{TLC}\\times\\frac{5\\times\\text{EP}+5\\times\\text{TTC}+2\\times\\text{LK}+2\\times\\text{HC}+2\\times\\text{EC}}{16} .",
+    "translation": "NAVSIM v2（Cao et al., 2025）包含被分为惩罚项与加权子分数的多个组成部分。关键指标是无责任碰撞（NC）、可行驶区域合规（DAC）、行驶方向合规（DDC）、交通灯合规（TLC）、自车进度（EP）、碰撞时间（TTC）、车道保持（LK）、历史舒适度（HC）和扩展舒适度（EC）。它使用扩展预测驾驶员模型分数（EPDMS）评估性能： EPDMS = NC × DAC × DDC × TLC × 5 × EP + 5 × TTC + 2 × LK + 2 × HC + 2 × EC 16 \\text{EPDMS}=\\text{NC}\\times\\text{DAC}\\times\\text{DDC}\\times\\text{TLC}\\times\\frac{5\\times\\text{EP}+5\\times\\text{TTC}+2\\times\\text{LK}+2\\times\\text{HC}+2\\times\\text{EC}}{16} 。",
+    "status": "translated"
+  },
+  {
+    "block": 49,
+    "type": "p",
+    "source": "In-house Dataset. To test data scalability beyond academic benchmarks, we use a massive in-house dataset for training and evaluation.\nOur training set contains 70 million frames from over 1 million unique clips .\nIt is curated to be diverse and balanced across a wide spectrum of driving scenarios, while being significantly enriched with challenging and safety-critical events.\nThe test set comprises 100 challenging scenarios.\nWe evaluate trajectory using the Average Displacement Error (ADE) over a 3-second, 6-waypoint future trajectory (2 Hz), and safety using a Collision Rate.\nWe compute our Collision Rate using the same methodology as the No at-fault Collision (NC) metric from the NAVSIM benchmark.",
+    "translation": "内部数据集。为检验超出学术基准的数据可扩展性，我们使用大规模内部数据集训练和评估。训练集含 7000 万帧，来自超过 100 万个不重复片段，经过整理以保证广泛驾驶场景的多样性与平衡性，并显著增加挑战性、安全关键事件的比例。测试集包含 100 个挑战场景。轨迹评估使用未来 3 秒、6 路径点（2 Hz）的平均位移误差（ADE）；安全性使用碰撞率，计算方法与 NAVSIM 的无责任碰撞（NC）指标相同。",
+    "status": "translated"
+  },
+  {
+    "block": 50,
+    "type": "h3",
+    "source": "4.2 Implementation Details",
+    "translation": "4.2 实现细节",
+    "status": "translated"
+  },
+  {
+    "block": 51,
+    "type": "p",
+    "source": "Two-stage Training Paradigm. Our model is trained via a two-stage paradigm designed to first learn rich world representations and then specialize in action generation.\nIn the first stage, we pretrain the VLA backbone utilizing the 6VA sequence configuration. The model is optimized with a joint objective, combining both the world model loss and the action prediction loss.\nIn the second stage, we integrate the model with Action Expert.\nThe VLA backbone now processes a 2VA input sequence.\nWhile we do not freeze the VLA backbone, the model is only supervised by the action loss from the action expert part.",
+    "translation": "两阶段训练范式。模型采用两阶段训练：先学习丰富世界表征，再专门学习动作生成。第一阶段以 6VA 序列配置预训练 VLA 骨干，用世界模型损失与动作预测损失的联合目标优化。第二阶段接入动作专家，骨干改为处理 2VA 输入序列。我们不冻结 VLA 骨干，但模型仅由动作专家部分的动作损失监督。",
+    "status": "translated"
+  },
+  {
+    "block": 52,
+    "type": "p",
+    "source": "NAVSIM. For experiments on the NAVSIM benchmark, models are pretrained on NuPlan ( Caesar et al., 2021 ) for 8k steps and then fine-tuned on NAVSIM for 4k steps, processing 256x144 images.\nThe training is conducted on 8 NVIDIA L20 GPUs with a global batch size of 48.\nWe used the AdamW optimizer with a cosine learning rate schedule, an initial learning rate of 2 ​ e − 4 2e-4 , and bfloat16 mixed-precision.\nFor our ablation studies, we select DriveVLA-W0 (VQ) as the default model due to its architectural simplicity.",
+    "translation": "NAVSIM。基准实验中，模型先在 NuPlan（Caesar et al., 2021）预训练 8k 步，再在 NAVSIM 微调 4k 步，图像分辨率为 256×144。训练使用 8 张 NVIDIA L20、全局 batch size 48，AdamW 优化器、余弦学习率调度、初始学习率 2e-4，以及 bfloat16 混合精度。消融实验默认选用架构较简单的 DriveVLA-W0 (VQ)。",
+    "status": "translated"
+  },
+  {
+    "block": 53,
+    "type": "p",
+    "source": "In-house Dataset. For our large-scale experiments on the in-house dataset, models are pretrained for 50k steps and fine-tuned for 30k steps using the same data.\nThis training utilized a cluster of 64 GPUs with a global batch size of 256. The optimizer and learning rate schedule remained identical to the NAVSIM setup.",
+    "translation": "内部数据集。大规模内部实验使用相同数据预训练 50k 步、微调 30k 步；使用 64 张 GPU 的集群，全局 batch size 256。优化器和学习率调度与 NAVSIM 设置相同。",
+    "status": "translated"
+  },
+  {
+    "block": 54,
+    "type": "p",
+    "source": "Re-implemented TransFuser. To provide a solid baseline for our in-house dataset, we adapt and re-implement the well-known TransFuser ( Prakash et al., 2021 ) architecture.\nFor a fair comparison with our single-camera setup, we modify Latent-TransFuser (an image-only variant of TransFuser) to process a single front-view image instead of its original multi-view input. To investigate the impact of model size, we implement two versions: a 50M-parameter model and a 7B-parameter model. The smaller TransFuser-50M uses a standard ResNet-34 backbone. The larger TransFuser-7B employs a ViT-7B backbone, initialized with pretrained weights from DINOv3 ( Siméoni et al., 2025 ) .",
+    "translation": "重新实现的 TransFuser。为内部数据集提供强基线，我们改造并重新实现著名的 TransFuser（Prakash et al., 2021）架构。为与单相机设置公平比较，我们将仅图像版 Latent-TransFuser 从多视图输入改成单个前视图。为研究模型规模影响，我们实现 50M 与 7B 两个版本：较小的 TransFuser-50M 使用标准 ResNet-34；较大的 TransFuser-7B 使用 ViT-7B 骨干，以 DINOv3（Siméoni et al., 2025）预训练权重初始化。",
+    "status": "translated"
+  },
+  {
+    "block": 55,
+    "type": "h3",
+    "source": "4.3 Comparison with State-of-the-art Methods",
+    "translation": "4.3 与最先进方法比较",
+    "status": "translated"
+  },
+  {
+    "block": 56,
+    "type": "p",
+    "source": "As presented in Table 1 and Table 2 , DriveVLA-W0 establishes a new state-of-the-art on the NAVSIM benchmark by surpassing top-performing methods across different architectural paradigms, including the BEV-based WoTE ( Li et al., 2025a ) and the VLA-based AutoVLA ( Zhou et al., 2025c ) .\nNotably, our model achieves this top performance using only a single front-view camera, surpassing competitors that rely on richer sensor suites combining multi-view cameras and LiDAR.\nThis superior performance is attributed to the powerful, dense supervision from our world modeling objective, which enables the model to learn a more effective feature representation.",
+    "translation": "如表 1、表 2 所示，DriveVLA-W0 超越不同架构范式中的领先方法，包括基于 BEV 的 WoTE（Li et al., 2025a）和基于 VLA 的 AutoVLA（Zhou et al., 2025c），在 NAVSIM 上达到新的最先进水平。特别是，本模型仅用单个前视相机，就超过了使用多相机加 LiDAR 等更丰富传感器配置的竞争方法。这种优异表现归功于世界建模目标提供的强大密集监督，使模型学到更有效的特征表征。",
+    "status": "translated"
+  },
+  {
+    "block": 57,
+    "type": "h3",
+    "source": "4.4 World Models Amplify Data Scaling Law",
+    "translation": "4.4 世界模型增强数据规模定律",
+    "status": "translated"
+  },
+  {
+    "block": 58,
+    "type": "figcaption",
+    "source": "Figure 4: World modeling unlocks generalization with data scaling. Our world model turns pretraining from a detriment for sparse-supervision baselines ( red arrows) into a benefit for our VLA-W0s ( green arrows), enabling positive knowledge transfer across datasets with similar visuals (b) but different action distributions (a). Figure (a) is from Dauner et al. (2024) .",
+    "translation": "图 4：世界建模随数据扩展释放泛化能力。对稀疏监督基线，预训练带来负面影响（红箭头）；世界模型则使 VLA-W0 从预训练获益（绿箭头），在视觉相似（b）但动作分布不同（a）的数据集间实现正向知识迁移。图（a）来自 Dauner et al. (2024)。",
+    "status": "translated"
+  },
+  {
+    "block": 59,
+    "type": "p",
+    "source": "World modeling unlocks generalization with data scaling. To test generalization across differing action distributions, we evaluate models by pretraining on the large-scale NuPlan dataset and then fine-tuning on NAVSIM, a smaller benchmark focused on challenging, long-tail maneuvers. This setup creates a significant domain shift in the action space while the visual domain remains similar, posing a challenge for knowledge transfer.\nAs shown in Figure 4 and Table 7 , world modeling is crucial for effective transfer. We observe two opposing trends: 1) Baseline models that rely solely on sparse action supervision often suffer from pretraining. For instance, TransFuser-7B and our VLA (VQ) baseline show significant performance degradation (red arrows). This is due to overfitting to NuPlan’s action distribution, which creates a detrimental prior that hinders adaptation to NAVSIM’s corner cases. 2) Our VLA-W0 models consistently benefit from pretraining. By forcing the model to predict future visual frames, the world modeling encourages the learning of transferable visual representations of the environment.\nThese transferable visual representations lead to superior generalization.",
+    "translation": "世界建模随数据扩展释放泛化能力。为测试不同动作分布间的泛化，我们先在大规模 NuPlan 预训练，再在聚焦挑战性长尾机动的小型基准 NAVSIM 微调。该设置的视觉域仍相似，但动作空间存在明显域偏移，给知识迁移带来挑战。如图 4、表 7 所示，世界建模对有效迁移至关重要。我们观察到两种相反趋势：1）仅依赖稀疏动作监督的基线常因预训练受损，例如 TransFuser-7B 与 VLA (VQ) 基线显著下降（红箭头），因为过拟合 NuPlan 动作分布形成了不利先验，妨碍适应 NAVSIM 边缘场景；2）VLA-W0 始终从预训练获益。要求模型预测未来视觉帧，促使它学习可迁移的环境视觉表征，从而获得更强泛化能力。",
+    "status": "translated"
+  },
+  {
+    "block": 60,
+    "type": "p",
+    "source": "World modeling outperforms action-only supervision with data scaling. We investigate data scalability by training models on three data scales (70k, 700k, and 70M frames).\nTo cleanly ablate the impact of our world modeling paradigm, we conduct these experiments directly on the base VLA models, excluding the action experts.\nAs shown in Table 3 , the world model is critical for unlocking the benefits of large-scale data.\nWhile baseline models that rely on sparse action supervision quickly show performance saturation, our DriveVLA-W0 models demonstrate sustained improvement. The impact is most pronounced at the 70M-frame scale. Here, adding world modeling substantially boosts performance, improving the VQ model’s ADE by 28.8% and the ViT model’s collision rate by 15.9%. This demonstrates that even with a massive volume of training data, action-only supervision cannot replicate the qualitative advantage provided by our dense world model objective.",
+    "translation": "随数据扩展，世界建模优于仅动作监督。我们在三种数据规模（70k、700k、70M 帧）上训练模型，研究数据可扩展性。为清晰消融世界建模范式的作用，这些实验直接在基础 VLA 上进行，不使用动作专家。如表 3，世界模型是释放大数据收益的关键。仅依赖稀疏动作监督的基线很快饱和，而 DriveVLA-W0 持续改善。在 70M 帧时效果最明显：加入世界建模后，VQ 模型的 ADE 改善 28.8%，ViT 模型碰撞率改善 15.9%。这表明，即使有海量训练数据，仅动作监督也无法复制密集世界模型目标带来的质的优势。〔译注：这里原文写 70k、700k、70M；图 1 的横轴为 700K、7M、70M，原文如此。〕",
+    "status": "translated"
+  },
+  {
+    "block": 61,
+    "type": "figcaption",
+    "source": "Table 3: World modeling outperforms action-only supervision with data scaling. Unlike baseline models that plateau early under sparse supervision, our VLA-W0 models show consistent improvement.",
+    "translation": "表 3：随数据扩展，世界建模优于仅动作监督。不同于稀疏监督下过早进入平台期的基线，VLA-W0 持续改善。",
+    "status": "translated"
+  },
+  {
+    "block": 62,
+    "type": "p",
+    "source": "Action experts reverse performance with data scaling. Our comparison of action expert on NAVSIM (100k frames) and in-house dataset (70M frames) reveals a striking performance reversal, driven by a trade-off between prediction precision and modeling capacity .\nAs shown in Table 4 , on the small-scale NAVSIM dataset, continuous decoders like query-based and flow matching excel. Here, the trajectory distribution is simple. The higher precision gives these experts an edge over the discrete autoregressive approach, which is hindered by quantization error.\nHowever, on our massive dataset, modeling a vastly more complex trajectory distribution becomes the dominant challenge. In this high-data regime, the autoregressive decoder’s strong modeling capacity and sample-efficient, teacher-forced training allow it to scale most effectively. Conversely, the query-based expert faces a representational bottleneck, and the flow matching expert proves too sample-inefficient to converge on the complex data manifold, leading to the observed performance reversal.",
+    "translation": "动作专家的性能随数据扩展发生反转。比较 NAVSIM（100k 帧）与内部数据集（70M 帧）上的动作专家，发现由预测精度和建模能力权衡所驱动的明显反转。如表 4，小规模 NAVSIM 上轨迹分布简单，查询式与流匹配等连续解码器表现出色：较高精度使它们优于受量化误差影响的离散自回归方法。但在大数据集上，主要挑战变为建模远更复杂的轨迹分布。此时，自回归解码器强大的建模能力及样本高效的 teacher-forced（教师强制）训练，使其最能有效扩展。相比之下，查询专家遇到表征瓶颈；流匹配专家则因样本效率过低，无法在复杂数据流形上收敛，从而出现上述性能反转。",
+    "status": "translated"
+  },
+  {
+    "block": 63,
+    "type": "figcaption",
+    "source": "Table 4: Action experts reverse performance with data scaling. For each dataset, all three experts are initialized from an identical pretrained VLA model. Notably, the query-based expert that performs best on the small-scale data is surpassed by the autoregressive expert at the larger scale, highlighting a clear performance reversal.",
+    "translation": "表 4：动作专家性能随数据扩展反转。对每个数据集，三种专家都从相同预训练 VLA 初始化。小数据表现最好的查询式专家，在更大规模时被自回归专家超越，呈现清晰的性能反转。",
+    "status": "translated"
+  },
+  {
+    "block": 64,
+    "type": "h3",
+    "source": "4.5 Ablation Study",
+    "translation": "4.5 消融研究",
+    "status": "translated"
+  },
+  {
+    "block": 65,
+    "type": "p",
+    "source": "The following two world model ablations are conducted without the action experts.",
+    "translation": "下面两项世界模型消融均不使用动作专家。",
+    "status": "translated"
+  },
+  {
+    "block": 66,
+    "type": "p",
+    "source": "Vision-Only vs. Vision-Action Sequence As shown in Table 6 , pretraining with an interleaved vision-action sequence ( 6VA ) yields substantial gains over a baseline pretrained with only a vision loss ( 6V ), improving the PDMS score from 84.1 to 85.6. This demonstrates that grounding visual predictions in corresponding ego actions is crucial. This conditioning compels the model to learn the environment’s underlying causal dynamics, as it must predict the specific visual outcome of an action rather than a generic or ambiguous future.",
+    "translation": "纯视觉与视觉—动作序列。如表 6，使用交错视觉—动作序列（6VA）预训练，相比仅用视觉损失预训练（6V）的基线显著改善，PDMS 从 84.1 升至 85.6。这说明让视觉预测以相应自车动作为依据至关重要：它要求模型预测特定动作导致的视觉结果，而非泛化、模糊的未来，促使模型学习环境内在的因果动力学。〔译注：正文引用表 6；纯视觉/视觉—动作对比的实际表题是表 5，原文如此。〕",
+    "status": "translated"
+  },
+  {
+    "block": 67,
+    "type": "p",
+    "source": "Ablation on Sequence Length We ablate the pretraining sequence length using three configurations: VA , 2VA , and 6VA . Table 6 reveals a clear trend where performance scales with temporal context, with the longest sequence ( 6VA ) achieving the best results. This highlights that a longer context window is critical for learning complex, long-horizon environmental dynamics, as it enables the model to better capture temporal dependencies for planning.",
+    "translation": "序列长度消融。我们用 VA、2VA、6VA 三种配置消融预训练序列长度。表 6 揭示明确趋势：性能随时序上下文扩展而提升，最长 6VA 表现最好。这表明更长上下文窗口对学习复杂、长时域环境动力学至关重要，因为它能更好捕获规划所需的时间依赖。",
+    "status": "translated"
+  },
+  {
+    "block": 68,
+    "type": "figcaption",
+    "source": "Table 5: Ablation study on vision-only vs. vision-action sequence design.",
+    "translation": "表 5：纯视觉与视觉—动作序列设计的消融研究。",
+    "status": "translated"
+  },
+  {
+    "block": 69,
+    "type": "figcaption",
+    "source": "Table 6: Ablation study on varying the sequence length.",
+    "translation": "表 6：不同序列长度的消融研究。",
+    "status": "translated"
+  },
+  {
+    "block": 70,
+    "type": "p",
+    "source": "Ablation on Latency We validate the efficiency of MoE architecture by measuring inference latency on an H200 GPU. Compared to the baseline DriveVLA-W0 ( 117.8ms latency, 85.6 PDMS), the addition of our query-based MoE expert significantly cuts the latency to 74.3ms (just 63.1% of the original) while simultaneously boosting performance to 88.4 PDMS. More analysis is shown in Appendix B.1 .",
+    "translation": "延迟消融。我们在 H200 GPU 上测量推理延迟以验证 MoE 效率。相比 DriveVLA-W0 基线（117.8 ms、85.6 PDMS），加入基于查询的 MoE 专家后，延迟显著降至 74.3 ms（原来的 63.1%），同时 PDMS 提高到 88.4。更多分析见附录 B.1。",
+    "status": "translated"
+  },
+  {
+    "block": 71,
+    "type": "h3",
+    "source": "4.6 Visualization",
+    "translation": "4.6 可视化",
+    "status": "translated"
+  },
+  {
+    "block": 72,
+    "type": "p",
+    "source": "Beyond achieving superior planning performance, DriveVLA-W0 exhibits strong capabilities in action-conditioned future generation, highlighting its potential as a reactive simulator. As illustrated in Figure 5 , we explicitly condition the model on a counterfactual “decelerate” trajectory. The resulting frames show the surrounding scene flowing past the vehicle at a noticeably reduced rate compared to the ground truth. This precise alignment between control signals and visual dynamics confirms the model’s grounded physical understanding. For further qualitative analysis, including trajectory visualization and case comparisons (Figures 7 , 8 , 9 , 10 ), future image generation (Figure 13 ), and counterfactual reasoning (Figure 14 ), please refer to Appendix C .",
+    "translation": "除优异规划性能外，DriveVLA-W0 还展现出强大的动作条件未来生成能力，表明它有潜力作为反应式仿真器。如图 5，我们显式给模型输入反事实“减速”轨迹；生成帧中，周围场景经过车辆的速度明显低于真实数据。这种控制信号与视觉动态的精确对齐证实了模型扎根于物理的理解能力。更多定性分析见附录 C，包括轨迹可视化与案例比较（图 7、8、9、10）、未来图像生成（图 13）和反事实推理（图 14）。",
+    "status": "translated"
+  },
+  {
+    "block": 73,
+    "type": "figcaption",
+    "source": "Figure 5: Action-Conditioned Simulation. We demonstrate the utility of our world model as a simulator capable of generating diverse futures based on control signals. In the recorded ground truth, the ego vehicle maintains speed and drives forward. By conditioning the model on a counterfactual \"decelerate\" action, the world model generates a distinct visual outcome where the vehicle slows down.",
+    "translation": "图 5：动作条件仿真。我们展示世界模型作为仿真器、根据控制信号生成多样未来的用途。记录中的真实车辆保持速度向前行驶；给定反事实“减速”动作后，世界模型生成车辆减速的不同视觉结果。",
+    "status": "translated"
+  },
+  {
+    "block": 74,
+    "type": "h2",
+    "source": "5 Conclusion",
+    "translation": "5 结论",
+    "status": "translated"
+  },
+  {
+    "block": 75,
+    "type": "p",
+    "source": "In this work, we identified the “supervision deficit” as a fundamental bottleneck hindering the scalability of Vision-Language-Action models in autonomous driving. We proposed DriveVLA-W0, a paradigm that remedies this issue by employing future image prediction as a dense, self-supervised objective, tailored for both VQ- and ViT-based architectures. Our extensive experiments demonstrate that this approach not only unlocks superior data scalability and generalization compared to baselines, but also reveals a compelling performance reversal among action decoders at scale, where simpler autoregressive models ultimately prevail. Ultimately, our findings suggest that embracing dense, predictive world modeling is a crucial step toward realizing the full potential of large-scale data in the pursuit of a more generalized driving intelligence.",
+    "translation": "本文将“监督不足”识别为阻碍自动驾驶 VLA 可扩展性的根本瓶颈，提出 DriveVLA-W0，以未来图像预测作为密集自监督目标解决它，并适配 VQ 和 ViT 架构。大量实验表明，相比基线，该方法不仅释放更强的数据可扩展性和泛化能力，还揭示动作解码器随规模增长的性能反转，最终由更简单的自回归模型胜出。我们的发现表明，要在追求更通用驾驶智能的过程中释放大规模数据的全部潜力，采用密集、预测式世界建模是关键一步。",
+    "status": "translated"
+  },
+  {
+    "block": 76,
+    "type": "h2",
+    "source": "Appendix",
+    "translation": "附录",
+    "status": "translated"
+  },
+  {
+    "block": 77,
+    "type": "h2",
+    "source": "Appendix A Overall",
+    "translation": "附录 A 总览",
+    "status": "translated"
+  },
+  {
+    "block": 78,
+    "type": "p",
+    "source": "In this appendix, we provide supplementary materials to support the main paper.\n§ B presents additional experiments, including a detailed latency analysis, a study on the correlation between generative fidelity and planning performance, and an ablation on the world model’s time horizon.\nWe offer further qualitative results in § C , with visualizations of challenging case studies and images generated by our world model.\nMore implementation details for our baselines and training setup are provided in § D .\nAn expanded discussion of related work is available in § E .\nWe disclose our use of LLMs for writing assistance in § F .",
+    "translation": "本附录提供支持正文的补充材料。B 节给出更多实验，包括详细延迟分析、生成保真度与规划性能关系研究，以及世界模型时间范围消融。C 节提供更多定性结果，包括挑战案例可视化和世界模型生成图像。D 节补充基线及训练设置的实现细节。E 节扩展讨论相关工作。F 节披露使用 LLM 辅助写作的情况。",
+    "status": "translated"
+  },
+  {
+    "block": 79,
+    "type": "h2",
+    "source": "Appendix B More Experiments",
+    "translation": "附录 B 更多实验",
+    "status": "translated"
+  },
+  {
+    "block": 80,
+    "type": "figcaption",
+    "source": "Table 7: World model enhances generalization to new action distributions. This table presents the detailed result of Figure 4 .",
+    "translation": "表 7：世界模型增强对新动作分布的泛化。该表给出图 4 的详细结果。",
+    "status": "translated"
+  },
+  {
+    "block": 81,
+    "type": "h3",
+    "source": "B.1 Latency Analysis",
+    "translation": "B.1 延迟分析",
+    "status": "translated"
+  },
+  {
+    "block": 82,
+    "type": "figcaption",
+    "source": "Figure 6: Latency analysis. The latency of the AR expert and the VLA baseline scale linearly with the number of generated tokens L, while the flow matching and query-based experts maintain a constant inference time.",
+    "translation": "图 6：延迟分析。AR 专家与 VLA 基线的延迟随生成 token 数 L 线性增长，而流匹配和查询式专家保持恒定推理时间。",
+    "status": "translated"
+  },
+  {
+    "block": 83,
+    "type": "p",
+    "source": "We analyze the inference latency of our MoE-based action experts against the full DrivingVLA-W0 backbone, with results shown in Figure 6 . In our setup, the flow matching expert is configured to use 10 denoising steps, while the query-based expert generates the full trajectory in a single forward pass. The latency of the AR expert, similar to the full VLM backbone, is proportional to the number of generated action tokens L.\nThe results clearly demonstrate that the MoE architecture provides a substantial acceleration.\nThe query-based expert is the most efficient, maintaining a constant low latency of approximately 74ms.\nThe flow matching expert also has a constant latency, albeit higher at around 145ms.\nTo contextualize the AR expert’s performance, we consider the average trajectory token length. On the NAVSIM dataset, where trajectories average 5.6 tokens, the AR expert is highly efficient at 95ms, significantly outperforming the full backbone (118ms). For the more complex trajectories in our in-house dataset, which average 17.8 tokens, the AR expert’s latency increases to 170ms, but it remains much faster than the baseline’s 240ms.\nThis analysis confirms that our MoE framework is critical for achieving the low-latency performance required for real-time deployment.",
+    "translation": "我们比较基于 MoE 的动作专家与完整 DrivingVLA-W0 骨干的推理延迟，见图 6。设置中，流匹配专家使用 10 个去噪步骤，查询式专家一次前向生成整条轨迹；AR 专家与完整 VLM 骨干类似，延迟与生成动作 token 数 L 成正比。结果清楚表明 MoE 显著加速：查询式专家最高效，恒定低延迟约 74 ms；流匹配专家延迟也恒定，但较高，约 145 ms。为理解 AR 专家性能，我们考虑平均轨迹 token 长度。NAVSIM 的轨迹平均 5.6 个 token，AR 专家用时 95 ms，明显优于完整骨干的 118 ms。内部数据集轨迹更复杂、平均 17.8 个 token，AR 专家延迟升至 170 ms，但仍远快于基线的 240 ms。分析证实，MoE 框架对实现实时部署所需的低延迟至关重要。",
+    "status": "translated"
+  },
+  {
+    "block": 84,
+    "type": "h3",
+    "source": "B.2 Positive Correlation Between Generative Fidelity and Planning Performance",
+    "translation": "B.2 生成保真度与规划性能的正相关",
+    "status": "translated"
+  },
+  {
+    "block": 85,
+    "type": "figcaption",
+    "source": "Table 8: Positive Correlation Between Generative Fidelity and Planning Performance. ∗ : indicates the images reconstructed by the MoVQGAN encoder-decoder, which serves as an upper bound for generative quality.",
+    "translation": "表 8：生成保真度与规划性能的正相关。* 表示由 MoVQGAN 编码器—解码器重建的图像，作为生成质量的上界。",
+    "status": "translated"
+  },
+  {
+    "block": 86,
+    "type": "p",
+    "source": "To investigate the link between a world model’s generative fidelity and its downstream planning performance, we conduct this experiment. First, we establish two models with different generative capabilities by pretraining them on NuPlan with varying context lengths: a 6VA model conditioned on five prior vision-action pairs, and a 2VA model conditioned on just one. As expected, evaluating these checkpoints directly shows that the 6VA model’s longer context yields a superior FID score (Table 8 ), confirming its higher generative fidelity.\nWith these models of varying generative quality established, we then test their potential for downstream planning. We fine-tune both NuPlan-pretrained checkpoints on NAVSIM under an identical setting (the same as the bottom two rows in Table 6 ) and evaluate their final PDMS scores.\nThe results confirm a strong positive correlation: the 6VA checkpoint, which had superior generative fidelity, also achieves higher planning performance after fine-tuning. This provides compelling evidence that the model’s ability to generate high-quality, realistic future images is directly linked to its capacity for producing high-quality trajectories.",
+    "translation": "为研究世界模型生成保真度与下游规划性能的联系，我们开展如下实验。先在 NuPlan 上用不同上下文长度预训练，获得生成能力不同的两个模型：6VA 以此前五组视觉—动作对为条件，2VA 仅以一组为条件。直接评估 checkpoint 发现，6VA 的较长上下文带来更好的 FID（表 8），符合预期，说明其生成保真度更高。得到这些不同生成质量的模型后，再测试下游规划潜力：把两个 NuPlan 预训练 checkpoint 在相同设置下于 NAVSIM 微调（与表 6 最后两行一致），评估最终 PDMS。结果证实强正相关：生成保真度更高的 6VA checkpoint，微调后规划表现也更好。这提供有力证据，说明生成高质量、逼真未来图像的能力，与生成高质量轨迹的能力直接相关。",
+    "status": "translated"
+  },
+  {
+    "block": 87,
+    "type": "h3",
+    "source": "B.3 Ablation Study",
+    "translation": "B.3 消融研究",
+    "status": "translated"
+  },
+  {
+    "block": 88,
+    "type": "p",
+    "source": "The Time Horizon of World Model We conduct an ablation study to identify the optimal temporal horizon for our world model’s input. Using a shared 6VA -pretrained checkpoint, we fine-tune and evaluate three configurations that differ in their temporal input range, as shown in Table 9 :\ni) VA : Uses only the current visual frame, providing no historical visual context.\nii) VAVA (1s) : Uses the current frame and a second frame from 1 second in the past.\niii) VAVA (4s) : Uses the current frame and a second frame from 4 seconds in the past.\nThe VAVA (1s) configuration achieves the best overall performance, reaching the highest PDMS score of 85.6. This suggests an optimal trade-off in the temporal input.\nThe VA setting, lacking a second visual frame, struggles to capture the environment’s dynamic information.\nConversely, the 4-second interval in the VAVA (4s) setting introduces excessive scene variation between the two distant frames, which likely makes the future prediction task more challenging for the model.",
+    "translation": "世界模型的时间范围。我们消融世界模型输入时间范围，寻找最优设置。使用相同 6VA 预训练 checkpoint，微调并评估三种时间范围不同的配置（表 9）：i）VA：仅用当前视觉帧，没有历史视觉上下文；ii）VAVA (1s)：当前帧加 1 秒前的一帧；iii）VAVA (4s)：当前帧加 4 秒前的一帧。VAVA (1s) 总体表现最好，PDMS 达最高的 85.6，表明它实现了时间输入的最佳权衡。VA 缺少第二帧，难以捕获环境动态；而 VAVA (4s) 两帧相距 4 秒，场景变化过大，可能使未来预测更困难。",
+    "status": "translated"
+  },
+  {
+    "block": 89,
+    "type": "figcaption",
+    "source": "Table 9: Ablation on the temporal interval for world model inputs. The results reveal a clear performance trade-off, with a 1-second interval being optimal. Using only the current frame (VA) lacks sufficient temporal context, while a 4-second interval introduces excessive scene variation.",
+    "translation": "表 9：世界模型输入时间间隔的消融。结果揭示明确性能权衡，1 秒间隔最优。只用当前帧（VA）缺少足够时间上下文；4 秒间隔则引入过大场景变化。",
+    "status": "translated"
+  },
+  {
+    "block": 90,
+    "type": "h2",
+    "source": "Appendix C Visualization",
+    "translation": "附录 C 可视化",
+    "status": "translated"
+  },
+  {
+    "block": 91,
+    "type": "h3",
+    "source": "C.1 Planning Trajectory",
+    "translation": "C.1 规划轨迹",
+    "status": "translated"
+  },
+  {
+    "block": 92,
+    "type": "p",
+    "source": "In this section, we provide a qualitative case analysis to offer deeper insights into our model’s behavior and validate our key findings. Our analysis is twofold. First, as shown in Figure 7 , we compare our DriveVLA-W0 against baseline models (VLA baseline and TransFuser) in a challenging corner case to visually demonstrate the benefits of world modeling for navigating complex scenarios.\nSecond, we compare the trajectories generated by different action experts built upon the same VLA backbone. The subsequent visualizations in Figure 8 , 9 , 10 reveal that the AR expert generates markedly more stable trajectories than the flow-matching approach , particularly in terms of inter-frame consistency and avoiding aggressive maneuvers.",
+    "translation": "本节通过定性案例分析，更深入理解模型行为、验证关键发现，分为两方面。首先，图 7 在挑战性边缘场景中，将 DriveVLA-W0 与 VLA 基线和 TransFuser 比较，直观展示世界建模在复杂场景驾驶中的优势。其次，比较相同 VLA 骨干上的不同动作专家所生成轨迹。图 8、9、10 的可视化表明，AR 专家轨迹明显比流匹配更稳定，尤其体现在帧间一致性与避免激进行为方面。",
+    "status": "translated"
+  },
+  {
+    "block": 93,
+    "type": "figcaption",
+    "source": "Figure 7: World modeling improves trajectory planning in complex scenarios. TransFuser and VLA baseline often fail in such interaction scenarios due to their weak ability to predict scene dynamics. However, with the support of world modeling, VLA-W0 possesses strong predictive capabilities, thereby avoiding collision in this type of scenario.",
+    "translation": "图 7：世界建模改善复杂场景的轨迹规划。TransFuser 和 VLA 基线因场景动态预测能力弱，常在此类交互场景失败；VLA-W0 借助世界建模具备强预测能力，因而能够避免此类场景中的碰撞。",
+    "status": "translated"
+  },
+  {
+    "block": 94,
+    "type": "figcaption",
+    "source": "Figure 8: Comparison of flow matching and autoregressive action expert. The trajectory generated by the flow matching action expert is relatively unstable , with jumps occurring between adjacent frames, while the AR action expert generates much more stable trajectories.",
+    "translation": "图 8：流匹配与自回归动作专家比较。流匹配专家轨迹相对不稳定，相邻帧之间发生跳变；AR 专家生成的轨迹稳定得多。",
+    "status": "translated"
+  },
+  {
+    "block": 95,
+    "type": "figcaption",
+    "source": "Figure 9: Comparison of flow matching and autoregressive action expert. The trajectory generated by the flow matching action expert is relatively unstable , with jumps occurring between adjacent frames, while the AR action expert generates much more stable trajectories.",
+    "translation": "图 9：流匹配与自回归动作专家比较。流匹配专家轨迹相对不稳定，相邻帧之间发生跳变；AR 专家生成的轨迹稳定得多。",
+    "status": "translated"
+  },
+  {
+    "block": 96,
+    "type": "figcaption",
+    "source": "Figure 10: Comparison of flow matching and autoregressive action expert. The trajectory generated by the flow matching action expert is relatively unstable, and it may go beyond the drivable area. The AR action expert generates much more stable trajectories.",
+    "translation": "图 10：流匹配与自回归动作专家比较。流匹配专家轨迹相对不稳定，可能超出可行驶区域；AR 专家生成的轨迹稳定得多。",
+    "status": "translated"
+  },
+  {
+    "block": 97,
+    "type": "h3",
+    "source": "C.2 Failure Case",
+    "translation": "C.2 失败案例",
+    "status": "translated"
+  },
+  {
+    "block": 98,
+    "type": "p",
+    "source": "To provide a balanced view of our model’s performance and identify directions for future improvement, we analyze representative failure cases encountered during evaluation. We categorize these failures into two primary types: instruction ambiguity and dynamic prediction errors . As illustrated in Figure 11 , coarse-grained navigation commands can lead to indecision in complex road topologies (e.g., Y-junctions). Additionally, Figure 12 highlights the challenge of predicting fine-grained dynamic objects (e.g., oncoming vehicles) in high-interaction scenarios.",
+    "translation": "为平衡呈现模型表现并识别改进方向，我们分析评估中的代表性失败案例，将其分为指令歧义和动态预测错误两大类。如图 11，粗粒度导航指令可能让模型在 Y 形路口等复杂道路拓扑中犹豫不决；图 12 则突出展示在高交互场景中预测来车等精细动态目标的挑战。",
+    "status": "translated"
+  },
+  {
+    "block": 99,
+    "type": "figcaption",
+    "source": "Figure 11: Failure case analysis: ambiguity in driving commands. We illustrate a failure mode stemming from the ambiguity of coarse-grained navigation instructions. In this Y-shaped intersection, the model receives a generic “go straight” command. Due to the splitting road topology, this instruction is ambiguous, as it maps clearly to neither the left nor the right branch. Consequently, the model fails to commit to a valid lane, hesitantly driving straight into the fork area (as shown by the predicted red trajectory). This highlights a limitation in the current NAVSIM benchmark, where the discrete command set (restricted to simple Turn Left/Straight/Right) lacks the granularity to resolve ambiguities in complex geometries. Note: To faithfully represent the visual information available to the model, all displayed images are reconstructions from the MoVQGAN tokens , rather than raw RGB frames.",
+    "translation": "图 11：失败分析——驾驶指令的歧义。该失败模式源于粗粒度导航指令：在 Y 形路口，模型收到通用“直行”命令，但分叉道路拓扑使它既不明确对应左支，也不明确对应右支。模型因而未能选定有效车道，犹豫地直驶进入岔口区域（红色预测轨迹）。这突出 NAVSIM 的一个局限：离散指令集仅有简单左转/直行/右转，粒度不足以消除复杂几何中的歧义。注意：为忠实呈现模型可获取的视觉信息，全部展示图像均从 MoVQGAN token 重建，并非原始 RGB 帧。",
+    "status": "translated"
+  },
+  {
+    "block": 100,
+    "type": "figcaption",
+    "source": "Figure 12: Failure case analysis: dynamic object prediction. While our world model generalizes well to most dynamic scenes, it faces challenges in predicting multiple objects at complex intersections . In this specific case, the world model fails to anticipate the emergence of oncoming vehicles in the future frames (as reflected in the Cond. on GT Traj). Consequently, the planner, unaware of the potential conflict, incorrectly executes a left turn. This highlights the modeling of fine-grained dynamic objects as a valuable direction for future research. Note: To faithfully represent the visual information available to the model, all displayed images are reconstructions from the MoVQGAN tokens , rather than raw RGB frames.",
+    "translation": "图 12：失败分析——动态目标预测。世界模型虽能泛化到多数动态场景，但在复杂路口预测多个目标时仍有困难。此案例中，它未能预见未来帧出现的对向车辆（见“以真实轨迹为条件”一行）。因此，规划器未意识到潜在冲突，错误执行左转。这表明精细动态目标建模是值得研究的方向。注意：为忠实呈现模型可获取的视觉信息，全部展示图像均从 MoVQGAN token 重建，而非原始 RGB 帧。",
+    "status": "translated"
+  },
+  {
+    "block": 101,
+    "type": "h3",
+    "source": "C.3 Future Image Generation",
+    "translation": "C.3 未来图像生成",
+    "status": "translated"
+  },
+  {
+    "block": 102,
+    "type": "p",
+    "source": "Our world model demonstrates both high visual fidelity and strong action consistency .\nAs shown in Figure 13 , it generates realistic and plausible images across diverse and challenging scenarios.\nMore importantly, these visual predictions are tightly coupled with the model’s planning process.",
+    "translation": "我们的世界模型同时具备较高视觉保真度和较强动作一致性。如图 13，它可在多样、挑战性的场景中生成逼真合理的图像。更重要的是，这些视觉预测与模型规划过程紧密耦合。",
+    "status": "translated"
+  },
+  {
+    "block": 103,
+    "type": "figcaption",
+    "source": "Figure 13: Future image generation. Our world model demonstrates strong generative fidelity, producing visually realistic and contextually plausible futures across diverse and challenging scenarios, including complex intersections and dense traffic.",
+    "translation": "图 13：未来图像生成。世界模型展现出强生成保真度，在复杂路口、密集交通等多样挑战场景中，生成视觉逼真且符合上下文的未来。",
+    "status": "translated"
+  },
+  {
+    "block": 104,
+    "type": "h3",
+    "source": "C.4 Counterfactual Reasoning",
+    "translation": "C.4 反事实推理",
+    "status": "translated"
+  },
+  {
+    "block": 105,
+    "type": "p",
+    "source": "This section investigates the model’s capability for counterfactual reasoning, synthesizing alternative futures based on hypothetical actions. As shown in Figure 14 , conditioning the model on a \"turn right\" action generates realistic off-road imagery despite the ground truth being straight. This confirms that the model captures the underlying scene geometry rather than merely memorizing training trajectories.",
+    "translation": "本节研究模型根据假设动作合成其他未来的反事实推理能力。如图 14，尽管真实轨迹是直行，以“右转”动作为条件仍会生成逼真的驶离道路图像。这证实模型捕获了内在场景几何，而非仅记忆训练轨迹。",
+    "status": "translated"
+  },
+  {
+    "block": 106,
+    "type": "figcaption",
+    "source": "Figure 14: Counterfactual reasoning. By conditioning on a counterfactual \"turn right\" action at the roadside, our world model generates realistic video sequences where the vehicle deviates from the ground truth trajectory and drives off-road. This validates that the model has learned the underlying scene geometry rather than simply memorizing the training data.",
+    "translation": "图 14：反事实推理。在路边输入反事实“右转”动作作为条件，世界模型生成逼真视频，车辆偏离真实轨迹并驶离道路。这验证模型学到了场景内在几何，而非只是记忆训练数据。",
+    "status": "translated"
+  },
+  {
+    "block": 107,
+    "type": "h2",
+    "source": "Appendix D More Implementation Details",
+    "translation": "附录 D 更多实现细节",
+    "status": "translated"
+  },
+  {
+    "block": 108,
+    "type": "p",
+    "source": "TransFuser For consistency of the setting, we adopt Latent TransFuser , which replaces the LiDAR branch’s real sensor features with BEV latent queries. The camera branch supplies the primary semantic and appearance features, while the latent BEV branch provides learnable global query anchors; the two are aligned and made complementary via cross-modal cross-attention. In this way, Latent TransFuser retains the global geometric priors of the BEV view and achieves stable fusion and planning performance under a vision-only setup. We instantiate two image backbones to highlight capacity trade-offs: a lightweight ResNet-34 variant ( TransFuser-50MB ) and a large DINOv3 ViT-7B variant ( TransFuser-7B ). Concretely, the inputs are single front-view RGB image 𝐈 \\mathbf{I} and a latent BEV query tensor 𝐐 bev \\mathbf{Q}_{\\text{bev}} of size H × W H{\\times}W . After an image encoder (ResNet-34 or DINOv3) and a BEV latent encoder, we obtain 𝐅 img \\mathbf{F}_{\\text{img}} and 𝐅 bev \\mathbf{F}_{\\text{bev}} , which are then aligned and fused through a multi-scale cross-attention module to produce the fused representation 𝐅 fuse \\mathbf{F}_{\\text{fuse}} .\nA planning head predicts K K future waypoints { 𝐩 ^ t + 1 , … , 𝐩 ^ t + K } \\{\\hat{\\mathbf{p}}_{t+1},\\ldots,\\hat{\\mathbf{p}}_{t+K}\\} based on 𝐅 fuse \\mathbf{F}_{\\text{fuse}} .",
+    "translation": "TransFuser。为保持设置一致，我们采用 Latent TransFuser，用 BEV 潜在查询替换 LiDAR 分支的真实传感器特征。相机分支提供主要语义和外观特征，潜在 BEV 分支提供可学习全局查询锚点；二者通过跨模态交叉注意力对齐互补。这样，Latent TransFuser 保留 BEV 的全局几何先验，在纯视觉设置下实现稳定融合与规划。为突出容量权衡，我们实现轻量 ResNet-34 变体（TransFuser-50MB）和大型 DINOv3 ViT-7B 变体（TransFuser-7B）。具体而言，输入是单张前视 RGB 图像 𝐈 \\mathbf{I} 和尺寸为 H × W H{\\times}W 的潜在 BEV 查询张量 𝐐 bev \\mathbf{Q}_{\\text{bev}} 。经图像编码器（ResNet-34 或 DINOv3）及 BEV 潜在编码器后，获得 𝐅 img \\mathbf{F}_{\\text{img}} 、 𝐅 bev \\mathbf{F}_{\\text{bev}} ；随后通过多尺度交叉注意力对齐融合，得到表征 𝐅 fuse \\mathbf{F}_{\\text{fuse}} 。规划头根据 𝐅 fuse \\mathbf{F}_{\\text{fuse}} 预测 K K 个未来路径点 { 𝐩 ^ t + 1 , … , 𝐩 ^ t + K } \\{\\hat{\\mathbf{p}}_{t+1},\\ldots,\\hat{\\mathbf{p}}_{t+K}\\} 。〔译注：“TransFuser-50MB”为本段原文写法。〕",
+    "status": "translated"
+  },
+  {
+    "block": 109,
+    "type": "h2",
+    "source": "Appendix E More Related Work",
+    "translation": "附录 E 更多相关工作",
+    "status": "translated"
+  },
+  {
+    "block": 110,
+    "type": "p",
+    "source": "Scaling Laws in Deep Learning. Kaplan et al. (2020) were the first to systematically demonstrate that pretraining loss scales as a power law with model size, dataset size, and computational cost.\nChinchilla ( Hoffmann et al., 2022 ) then showed many LMs were undertrained and derived a compute-optimal prescription that scales model size and tokens proportionally. In computer vision, Zhai et al. (2022) charted ViT scaling law with stable training recipes, and ViT-22B ( Dehghani et al., 2023 ) scaled ViTs to 22B parameters, verifying predictable multi-task improvements. Lin et al. (2025) conducted a large-scale study of imitation-learning data scaling in robotics, and found near–power-law gains from increasing environmental and object diversity with improved zero-shot generalization. In autonomous driving, STR ( Sun et al., 2023 ) shows large trajectory models scale steadily in both prediction and planning, and Baniodeh et al. (2025) reported power-law improvements for joint motion forecasting and planning with large driving datasets.\nFor end-to-end driving, Naumann et al. (2025) observe roughly log-linear gains in both open- and closed-loop metrics as training data scale increases. Zheng et al. (2024b) also observe power-law improvements from data scaling in a large-scale imitation learning study.\nHowever, Zheng et al. (2024b) exclusively analyzes scaling behavior within the conventional paradigm of sparse action supervision.\nOur work, in contrast, provides the first study of how these scaling laws are reshaped by the self-supervised signals provided by world modeling.",
+    "translation": "深度学习的规模定律。Kaplan et al. (2020) 首次系统展示，预训练损失随模型规模、数据集规模和计算成本呈幂律缩放。随后 Chinchilla（Hoffmann et al., 2022）指出许多语言模型训练不足，提出计算最优方案：模型规模与 token 数应按比例扩大。计算机视觉中，Zhai et al. (2022) 用稳定训练方案刻画 ViT 规模规律；ViT-22B（Dehghani et al., 2023）将 ViT 扩至 22B 参数，验证可预测的多任务改善。Lin et al. (2025) 大规模研究机器人模仿学习的数据扩展，发现增加环境、物体多样性带来接近幂律的增益和更好的零样本泛化。自动驾驶中，STR（Sun et al., 2023）展示大型轨迹模型在预测与规划中持续随规模改善；Baniodeh et al. (2025) 在大驾驶数据集上报告联合运动预测与规划的幂律提升。端到端驾驶中，Naumann et al. (2025) 观察到训练数据扩展带来开放环与闭环指标近似对数线性提升；Zheng et al. (2024b) 也在大规模模仿学习研究中观察到数据扩展的幂律改善。但 Zheng et al. (2024b) 仅分析传统稀疏动作监督范式中的规模行为。相较之下，我们首次研究世界建模提供的自监督信号如何重塑这些规模定律。",
+    "status": "translated"
+  },
+  {
+    "block": 111,
+    "type": "h2",
+    "source": "Appendix F Use of LLMs",
+    "translation": "附录 F 大语言模型的使用",
+    "status": "translated"
+  },
+  {
+    "block": 112,
+    "type": "p",
+    "source": "Large Language Models (LLMs) are employed to polish the writing in this manuscript.",
+    "translation": "本文稿使用大语言模型（LLM）润色写作。",
+    "status": "translated"
+  }
+]

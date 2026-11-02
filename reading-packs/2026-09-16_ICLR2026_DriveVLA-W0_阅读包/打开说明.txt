@@ -1,0 +1,8 @@
+DriveVLA-W0: World Models Amplify Data Scaling Law in Autonomous Driving｜按新提示词重制版
+
+1. 请先完整解压整个 ZIP，不要在压缩软件内直接打开。
+2. 双击 index.html。无需服务器，file:// 可离线阅读。
+3. 顶部只有“原文 / 译文 / 关键解释”三个选项。左侧目录随选项更新；右侧独立滚动并保存各选项阅读位置。
+4. paper.pdf、pages、译文、解释、公式、图表均可离线查看。论文与 GitHub 外链需要联网。
+5. translation.html 和 algorithms.html 是独立检查版本；中文简报 PDF 为 2026-09-16_ICLR2026_DriveVLA-W0_按新提示词重制版.pdf。
+6. 本次阅读版本为 arXiv:2510.12796v2，会议身份为 ICLR 2026。来源授权与改动见 LICENSE-来源与改动.txt。

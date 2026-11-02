@@ -1,0 +1,19 @@
+{
+  "date": "2026-09-16",
+  "conf": "ICLR2026",
+  "short": "DriveVLA-W0",
+  "arxiv": "2510.12796v2",
+  "pdf": "drive.pdf",
+  "pages": 22,
+  "repo": "BraveGroup/DriveVLA-W0",
+  "sha": "a55766ce46ee55d9035b93816e57b8d933166482",
+  "license": "by",
+  "title": "DriveVLA-W0: World Models Amplify Data Scaling Law in Autonomous Driving",
+  "stem": "2026-09-16_ICLR2026_DriveVLA-W0_阅读包",
+  "folder": "/Users/yangsiyu/Documents/Codex/2026-09-18/referenced-chatgpt-conversation-this-is-an/outputs/2026-09-16_ICLR2026_DriveVLA-W0_阅读包",
+  "brief": "2026-09-16_ICLR2026_DriveVLA-W0_按新提示词重制版.pdf",
+  "original_pdf_sha256": "f5c200f838546b9c62ff35d38c21f788ef2db2adab919d6db58ec180c55e4823",
+  "packaged_pdf_sha256": "ec6ef8d07ffac4e7076f92eefa0a369a7c0a0a33fffbea3ac06610e1e6e19637",
+  "brief_pdf_sha256": "6098ddbc75da3305ad3097941ea1506ad6bfd5329aadba0ae224de38822d6633",
+  "validation": "static_offline_and_archive_integrity_passed"
+}

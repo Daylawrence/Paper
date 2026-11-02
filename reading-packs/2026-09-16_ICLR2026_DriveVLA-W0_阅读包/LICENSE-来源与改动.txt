@@ -1,0 +1,4 @@
+DriveVLA-W0: World Models Amplify Data Scaling Law in Autonomous Driving
+原作者名单完整保留于 paper.pdf。来源：https://arxiv.org/abs/2510.12796v2
+授权：CC BY 4.0 https://creativecommons.org/licenses/by/4.0/
+本包含非官方中文翻译、缩放的原图与重新压缩的 PDF 图像；正文、页数和数值不变。中文翻译及解释按同一许可提供，不暗示原作者认可。
