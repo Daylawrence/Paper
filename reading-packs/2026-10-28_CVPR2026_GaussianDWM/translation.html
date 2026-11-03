@@ -110,24 +110,77 @@
 
 <section id="conclusion"><h2>5. 结论</h2><p>本文提出 GaussianDWM，以语言增强的 3D Gaussian 作为统一世界表示，把驾驶场景理解与多模态生成连接起来。世界 tokenizer 提供显式空间—语义对应，任务感知采样解决 Gaussian 数量与 LLM 上下文长度之间的冲突，双条件生成器则把高层世界知识和低层几何控制结合起来。实验支持其在多任务理解与多个新视角/未来生成设置中的有效性。</p><p>局限包括：构建每个场景的语言 Gaussian 有额外离线成本；系统依赖上游 3DGS/CLIP/SAM 与相机标定质量；长时动态、罕见交互和开放环生成误差仍可能累积；训练需要较大算力；统一指标改善不意味着规划安全性已得到闭环验证。</p></section>
 
-<section id="supp-a"><h2>补充材料 A. 概览</h2><p>补充材料给出数据处理、训练细节、Gaussian 加载策略、参数效率、世界知识注入、额外消融与定性结果。其目标是解释如何把论文中的 3D 语义表示、QA 数据和 RGB-D 生成流程落到可训练系统中。</p></section>
+<section id="supp-a"><h2>补充材料 A. 概览</h2>
+<p>补充材料首先说明如何利用大规模 nuScenes 数据集构建 3DGS 数据，以及用于轨迹预测的 caption 数据集；随后在 C、D 节提供实现、训练和消融细节；最后在 E 节展示跨数据集的扩展实验。补充材料中的公式编号 (1)–(5) 与主论文独立编号，以下统一标为「补充公式」以避免混淆。</p>
 
+</section>
 <section id="supp-b"><h2>补充材料 B. 数据集细节</h2>
-<h3>数据处理与语言标签收集</h3><p>作者从 nuScenes 处理 800 个场景，使用多视图图像和相机信息构建 Gaussian 场景。语言场先提取 SAM 分层区域与 CLIP 特征，再以场景级自动编码器压缩。自动编码器的重建目标为：</p>
-<div class="formula">L<sub>ae</sub>=Σ<sub>t=1</sub><sup>T</sup>d<sub>ae</sub>(Ψ(E(F(v))),F(v)). （S4）</div>
-<p>之后，3D 语言 Gaussian 在压缩的场景特定 latent 空间内学习，而不是直接拟合 512 维 CLIP 空间：</p>
-<div class="formula">L<sub>lang</sub>=Σ<sub>l∈{s,p,w}</sub>Σ<sub>t=1</sub><sup>T</sup>d<sub>lang</sub>(F<sup>lₜ</sup>(v),H<sup>lₜ</sup>(v)). （S5）</div>
-<p>s、p、w 表示不同层级/尺度的语义监督，d 是距离函数。场景级先验使语言维度从 512 压到 3，显著降低 Gaussian 存储和读取成本。</p>
-<h3>QA 数据格式</h3><p>每条 QA 样本记录场景/帧索引、任务类别、问题—答案对、图像路径、所需相机视角和 Gaussian 特征路径。为符合 Qwen-VL 的训练范式，Gaussian 注释及 &lt;gauss&gt; 占位放在指令开头。RDP 问题可询问目标距离，2D/3D grounding 返回 bounding box，规划问题返回驾驶动作。</p>
-<h3>轨迹数据生成</h3><p>空间生成问题例如“向左平移 2 m 后生成视图”，LLM 先预测目标相机位姿，点云投影得到稀疏低层条件。时间生成问题例如“预测 1 秒后的场景”，LLM 预测未来相机轨迹，同样投影为生成条件。每个视频片段取 10 帧：前 4 帧是提示，后 6 帧是预测目标；所有轨迹变换到第 5 帧 ego 坐标系。</p></section>
+<p>为优化三维 Gaussian 的参数，首先将它们渲染到二维图像平面，并使用基于 tile 的光栅化器提高效率。作为各向异性三维 Gaussian 的集合，每个基元 G(x) 由均值 μ∈ℝ³ 与协方差矩阵 Σ 描述：</p>
+<div class="formula" data-latex="G(x)=\exp\left(-\frac12(x-\mu)^\top\Sigma^{-1}(x-\mu)\right)"><span class="formula-rendered">G(x) = exp[−½(x−μ)ᵀΣ⁻¹(x−μ)]</span><span class="formula-number">(S1, 补充)</span></div>
+<p>对 Gaussian 的颜色渲染使用前向 alpha compositing；每个基元的颜色为 cᵢ，alpha 为 αᵢ，索引按射线的遮挡顺序排列。渲染到像素 v 的颜色为：</p>
+<div class="formula" data-latex="C(v)=\sum_{i\in\mathcal N}c_i\alpha_i\prod_{j=1}^{i-1}(1-\alpha_j)"><span class="formula-rendered">C(v) = ∑ᵢ∈𝒩 cᵢαᵢ∏ⱼ₌₁ⁱ⁻¹(1−αⱼ)</span><span class="formula-number">(S2, 补充)</span></div>
+<p>为保留光栅化效率，同样按该合成机制渲染 Gaussian 的语言特征：</p>
+<div class="formula" data-latex="F(v)=\sum_{i\in\mathcal N}f_i\alpha_i\prod_{j=1}^{i-1}(1-\alpha_j)"><span class="formula-rendered">F(v) = ∑ᵢ∈𝒩 fᵢαᵢ∏ⱼ₌₁ⁱ⁻¹(1−αⱼ)</span><span class="formula-number">(S3, 补充)</span></div>
+<p>作者为 nuScenes [2] 构建首个面向室外城市场景的大规模三维 Gaussian 数据集，包含从原始 nuScenes 序列处理得到的 800 个场景，目的是使 LLM 可以利用具有高质量几何和外观信息的 Gaussian 表示进行可泛化的三维场景理解。</p>
+<h3>数据处理（Dataset Processing）</h3>
+<p>部分场景的帧间重叠很少，或存在严重运动模糊，无法获得准确的 3DGS 重建。因此，作者删除重建质量未达标准的图像或整个场景。nuScenes 提供高质量 LiDAR 点云，作者使用聚合后的 LiDAR 点初始化场景，而不是采用常规 3DGS 流水线中的 COLMAP，以避免大场景下的明显几何误差。对于具有深度监督的数据，还添加深度损失以提高几何保真度；优化结束后再根据 PSNR 过滤重建场景，筛选出可用于预训练的数据。</p>
+<h3>语言标签收集与训练（Language Label Collection and Training）</h3>
+<p>语言标签收集的目标是建立三维语言配对数据，为每个 Gaussian 基元附加丰富的语言特征 fᵢ。作者在 LangSplat [6] 基础上构建 3DGS 语言场，利用 CLIP 特征和 SAM [4] 提取的分层语义。对于像素 v，语言渲染 F(v) 及其 alpha 定义与补充公式（S3）相同，且 αᵢ=oᵢGᵢ²ᴰ(v)：oᵢ 是不透明度，Gᵢ²ᴰ 是投影到二维后的 Gaussian 响应。</p>
+<p>每个环境通常需要数百万个 Gaussian 才能表示其几何和外观。CLIP 的语言嵌入维数为 512；如果为每个 Gaussian 直接存储/学习 512 维特征，将显著增加计算和内存成本。为此，作者引入场景级语言自动编码器 E，将 CLIP 特征 F(v)∈ℝᴰ 映射成 H(v)=E(F(v))∈ℝᵈ，其中 d 远小于 D；设置 D=512、d=3。训练时，解码器 Ψ 用于重构 CLIP 语言特征，目标为：</p>
+<div class="formula" data-latex="\mathcal L_{\mathrm{ae}}=\sum_{t=1}^T d_{\mathrm{ae}}\big(\Psi(E(F(v))),F(v)\big)"><span class="formula-rendered">𝓛ₐₑ = ∑ₜ₌₁ᵀ dₐₑ(Ψ(E(F(v))), F(v))</span><span class="formula-number">(S4, 补充)</span></div>
+<p>自动编码器训练后，作者把所有 CLIP 嵌入变换到场景专属的低维潜在空间 H(v)。随后，三维语言 Gaussian 直接学习这一场景专属 latent 特征，而不是学习完整 512 维 CLIP 向量。场景先验使内存开销明显下降；语言 Gaussian 的优化目标为：</p>
+<div class="formula" data-latex="\mathcal L_{\mathrm{lang}}=\sum_{l\in\{s,p,w\}}\sum_{t=1}^T d_{\mathrm{lang}}\big(F_t^l(v),H_t^l(v)\big)"><span class="formula-rendered">𝓛ₗₐₙg = ∑ₗ∈{s,p,w} ∑ₜ₌₁ᵀ dₗₐₙg(Fₜˡ(v),Hₜˡ(v))</span><span class="formula-number">(S5, 补充)</span></div>
+<p>其中 d_lang(·) 是三维语言 Gaussian 所使用的距离函数。为把 Gaussian token 注入输入查询，作者专门重建 QA 数据集。为了符合 Qwen-VL 的训练形式，所有三维 Gaussian token 注释均被放在指令开头。</p>
+<h3>QA 数据结构与样例</h3>
+<p>补充材料展示了包含 token、scene_token、scene_idx、frame_idx、category、task、conversations、image、views 与 gauss 等字段的样例。示例任务 rdp 为二维感知信息：输入的前视相机目标框为 (14,219)–(37,248)，用户询问它与自车的距离，模型回答 38.7 米。原文保留了 &lt;gauss&gt;、&lt;CAM_FRONT&gt;、&lt;box&gt; 等提示标记。</p>
+<p><strong>摘录示意，仅保留可可靠读取的字段与数字，非作者原始 JSON 的完整逐字复制。原始 token 哈希、image 路径及分行格式请以 PDF 图中原例为准。</strong></p><pre><code>{
+  &quot;scene_idx&quot;: 2,
+  &quot;frame_idx&quot;: 0,
+  &quot;category&quot;: &quot;2D_perception_infos&quot;,
+  &quot;task&quot;: &quot;rdp&quot;,
+  &quot;conversations&quot;: [
+    {&quot;from&quot;: &quot;human&quot;, &quot;value&quot;: &quot;based on &lt;gauss&gt;, ... &lt;CAM_FRONT&gt; &lt;box&gt;(14,219),(37,248)&lt;/box&gt; ...?&quot;},
+    {&quot;from&quot;: &quot;gpt&quot;, &quot;value&quot;: &quot;38.7 meters is the distance from the ego car to it&quot;}
+  ],
+  &quot;views&quot;: [&quot;CAM_FRONT&quot;],
+  &quot;gauss&quot;: [&quot;gauss/output-full-6v/2_CAM_FRONT/langsplat_3/per_frame/00000.pth&quot;]
+}</code></pre>
+<h3>轨迹数据生成（Trajectory Dataset Generation）</h3>
+<p>生成器同时支持空间与时间方向的场景生成。空间生成的查询通常是「生成向左平移 2 米后的视图」；LLM 先推断目标相机位姿，然后把点云投影到该位姿，得到扩散生成器使用的低层稀疏条件。时间生成则可询问「预测 1 秒后的场景」；LLM 执行轨迹预测，直接输出未来相机位姿，再基于该位姿进行点云投影，以得到时间生成所需的稀疏引导。</p>
+<p>为了让 LLM 具备未来轨迹预测能力，作者构建以轨迹为中心的 QA 数据集。每个视频片段抽取 10 帧：前 4 帧作为提示，后 6 帧作为预测目标；全部轨迹统一到第 5 帧自车坐标系。附录原始轨迹样例为嵌套 [PT, [x,y,z,qx,qy,qz,qw],…] 格式。由于在线 PDF 双栏提取将其中若干数字拆开并交错，当前不擅自重组全部坐标；对应原例的逐数字核验仍待完成。</p>
 
+</section>
 <section id="supp-c"><h2>补充材料 C. 实现细节</h2>
-<h3>三阶段训练</h3><p>第一阶段训练 Gaussian tokenizer、投影器和采样模块并接入 LLM；LLM 用 LoRA 微调。第二阶段依次训练低分辨率 RGB、低分辨率 RGB-D 和高分辨率 RGB-D 生成器。第三阶段端到端联合优化全部组件，强化理解与生成的一致性。</p>
-<h3>Gaussian 场景加载</h3><p>需要环视信息的 QA 加载六个摄像头视角的 Gaussian，并沿 token 维拼接；单视角问题只加载对应视角的 Gaussian。这样既保持统一输入接口，也避免把无关视角全部塞入上下文。</p>
-<h3>训练日程与参数效率</h3><p>不同任务按收敛难度使用不同 epoch 数。第一阶段可训练参数只占总参数的 0.45%，LoRA 阶段占 0.79%；大部分语言和视觉骨干保持冻结，主要训练投影、采样、融合与低秩适配器。</p>
-<h3>世界知识注入</h3><p>自然语言 caption 经预训练文本编码器生成逐 token 的 Etext∈Rᴸˣᴰ；参考帧产生 Eimg。系统为不同模态增加类型嵌入并拼接 Eenc=[Eimg;Etext]+Etype，作为生成网络多层 cross-attention 的 encoder hidden states。逐词 token 保留物体类别、属性与动作，比单个 pooled 向量更适合选择性注意；低层 RGB/depth 保留局部结构，高层文本提供场景语义与常识。</p></section>
+<h3>三阶段训练流水线</h3>
+<p>第一阶段独立训练 Gaussian Tokenizer、投影器与采样策略，然后将它们与 LLM 整合进行联合微调。LLM 采用 LoRA 微调；该阶段的训练使用 16 张 NVIDIA A100 GPU。第二阶段训练多模态生成模块：先训练低分辨率（224×400）RGB 视频生成模型，再扩展成低分辨率 RGB-D，最后通过混合帧长策略训练高分辨率（424×800）RGB-D 视频生成器；使用 simulation-free rectified flow 与 v-prediction 损失 [3]。最终进行端到端联合优化，使场景理解与生成相互一致。</p>
+<h3>三维 Gaussian 场景加载策略</h3>
+<p>每条 QA 样本面向特定关键帧，但可用相机视角数量因场景而异，加载方式由 QA 所关联的 Gaussian 特征类型决定。对于需要全景信息的样本，加载全部六个环视相机对应的 Gaussian，并在 token 维度拼接成统一场景 token 集合；对于单视角问题，只加载对应视角的 Gaussian，不进行多视角拼接。这种方式可以适配不同 QA 数据格式，同时保持对语言模型输入的一致封装。</p>
+<h3>训练日程与参数效率</h3>
+<p>各任务所需 epoch 数量随任务难度和收敛特征而不同，因此区域描述与感知（RDP）、二维视觉定位、三维视觉定位及规划任务均采用各自适合的训练轮数。在第一阶段，训练参数主要集中于 Gaussian Tokenizer、投影器及采样模块，仅占模型参数总量的 0.45%。使用 LoRA 微调时，可训练参数约占总参数量的 0.79%。作者由此指出，这一方案在保持较低可训练参数比例的同时取得较强性能。</p>
+<h3>世界知识注入（World Knowledge Injection）</h3>
+<p>框架通过文本条件编码路径将世界知识注入生成模型。预训练语言模型把自然语言 caption 编码为语义 token 序列，用作扩散 UNet 的高层条件。首先对 caption 进行分词，再经基于 CLIP 的文本编码器得到上下文化的嵌入 E_text∈ℝᴸˣᴰ，其中每个 token 可以代表物体类别、属性或动作等语义单元。与把全部语义压缩到一个全局向量的 pooled 表示相比，逐 token 嵌入保留了更细的词级结构，使扩散模型能够选择性地关注描述中的相关部分。</p>
+<p>为把文本知识纳入生成过程，将文本 token 与参考帧提取的图像 token 拼接；进一步为每个 token 加上可学习的类型嵌入，让模型在交叉注意力中区分视觉与语言内容。组合序列 E_enc=[E_img;E_text]+E_type 作为 encoder hidden states，送入扩散 UNet，在多个层中通过 cross-attention 融合世界知识与空间特征。</p>
+<p>经此机制，UNet 学习将局部视觉结构与全局文本语义联系起来，利用物体身份、场景上下文和常识先验指导新视角生成。文本编码器由大规模文本图像预训练形成的世界知识可以经条件分支注入，而无需改动底层 UNet 架构；最终结合 RGB/深度 latent 提供的低层几何与文本条件交叉注意力提供的高层语义，以改善结构一致性和语义可控性。</p>
 
-<section id="supp-d"><h2>补充材料 D. 消融实验</h2><table><tr><th>采样</th><th>Gaussian token</th><th>平均↑</th></tr><tr><td>Top-k + Uniform + Cross</td><td>128</td><td>58.15</td></tr><tr><td>Top-k + Uniform + Cross</td><td>512</td><td>58.26</td></tr><tr><td>Top-k + Uniform</td><td>4096</td><td>56.92</td></tr><tr><td>Top-k + Uniform + Cross</td><td>4096</td><td>57.70</td></tr></table><p>512 token 达到最优平均分，说明 learned sampling 能用八分之一 token 捕获关键内容。世界知识/Gaussian 消融在 30 个 nuScenes 场景上显示：无两者时 ±4 m FID 为 21.79；加入世界知识后为 19.02；再加入 Gaussian 后为 18.91。语义帮助在大偏移时更明显。</p></section>
+</section>
+<section id="supp-d"><h2>补充材料 D. 消融实验</h2>
+<p>作者在补充表 1 中进一步评估采样模块，重点比较基于 cross-attention 的采样与均匀/Top-k 基线，以及不同 Gaussian token 数量的影响；补充表 3 进一步研究世界知识和 Gaussian 表示对生成性能的影响。</p>
+<p class="table-caption">补充表 1：不同采样策略及 Gaussian token 数量的消融。作者报告带 Cross-Attention 的 512-token 模型平均分最高（58.26），高于使用 4096 token 的稠密基线（56.92）。所有数值照原表列出。</p><table><thead><tr><th>采样方式</th><th>Gaussian token</th><th>BLEU</th><th>ROUGE-L</th><th>CIDEr</th><th>2DVG mAP</th><th>2DVG F1</th><th>2DVG mIoU</th><th>3DVG Pr</th><th>3DVG mAP</th><th>3DVG F1</th><th>Plan Acc</th><th>Avg.↑</th></tr></thead><tbody><tr><td>Top-k + Uniform + Cross</td><td>128</td><td>68.27</td><td>80.95</td><td>78.73</td><td>34.79</td><td>40.30</td><td>71.79</td><td>51.41</td><td>54.01</td><td>32.81</td><td>68.43</td><td>58.15</td></tr><tr><td>Top-k + Uniform + Cross</td><td>512</td><td>68.37</td><td>81.00</td><td>79.22</td><td>34.95</td><td>40.39</td><td>71.85</td><td>51.30</td><td>54.07</td><td>32.87</td><td>68.52</td><td>58.26</td></tr><tr><td>Top-k + Uniform</td><td>4096</td><td>66.17</td><td>79.07</td><td>77.06</td><td>33.89</td><td>39.31</td><td>71.37</td><td>51.16</td><td>52.87</td><td>32.05</td><td>66.27</td><td>56.92</td></tr><tr><td>Top-k + Uniform + Cross</td><td>4096</td><td>68.20</td><td>80.90</td><td>78.93</td><td>34.50</td><td>40.00</td><td>71.57</td><td>51.20</td><td>53.59</td><td>32.53</td><td>65.60</td><td>57.70</td></tr></tbody></table>
+<p>结果说明：学习式相关性采样可以利用显著更少的 token 捕获重要空间信息。表中 4096-token Cross 策略平均 57.70，低于 512-token Cross 策略的 58.26，因此不应将 token 数量的增加与性能改善简单画等号。</p>
 
-<section id="supp-e"><h2>补充材料 E. 扩展实验</h2><p>OmniDrive 数据集上，GaussianDWM 与 GPT-4o、LLaVA-OV、OmniDrive 和 HERMES 比较。理解指标为 METEOR 0.395、ROUGE-L 0.341、CIDEr 0.712。METEOR/ROUGE-L 最高，但 CIDEr 低于 separated unification 的 0.745 和 HERMES 的 0.741，因此应逐指标阅读，不能把表述简化为“所有指标第一”。</p><p>补充材料还展示六视角 3D Gaussian 问答、2D/3D bounding box、规划动作，以及空间/时间 RGB-D 生成案例。定性结果说明同一世界表示能支撑理解和生成；但这些案例不是闭环驾驶复现，也不能替代真实交通安全评测。</p><figure><img src="images/supplement.jpg" alt="补充定性结果"><figcaption>补充图：六视角理解和时间生成示例。问题、定位结果、规划回答及生成帧均来自论文报告。</figcaption></figure></section>
+</section>
+<section id="supp-e"><h2>补充材料 E. 扩展实验</h2>
+<h3>OmniDrive 场景理解结果</h3>
+<p>作者进一步在 OmniDrive [7] 上评测模型，并与 GPT-4o [1]、LLaVA-OV [5]、OmniDrive [7]、Hermes [8] 等基线比较。原文文字称「各项指标均达到 SOTA」；但补充表 2 中 GaussianDWM 的 CIDEr 为 0.712，低于 Separated unification 的 0.745 和 HERMES 的 0.741。译者仅忠实记录这一原文表述与表格间的不一致，不将其改写为「所有指标第一」。</p>
+<p class="table-caption">补充表 2：OmniDrive 数据集的场景理解结果。前五项为纯理解模型，后三项为统一理解与生成模型；原表缺失值显示为横线。</p><table><thead><tr><th>模型</th><th>会议/来源</th><th>LLM参数</th><th>METEOR↑</th><th>ROUGE-L↑</th><th>CIDEr↑</th></tr></thead><tbody><tr><td>GPT-4o</td><td>—</td><td>—</td><td>—</td><td>0.223</td><td>0.244</td></tr><tr><td>LLaVA-OV</td><td>arXiv 2024</td><td>7B</td><td>—</td><td>0.221</td><td>0.284</td></tr><tr><td>OmniDrive</td><td>CVPR 2025</td><td>7B</td><td>0.380</td><td>0.326</td><td>0.686</td></tr><tr><td>OmniDrive-2D</td><td>CVPR 2025</td><td>7B</td><td>0.383</td><td>0.325</td><td>0.671</td></tr><tr><td>OmniDrive-BEV</td><td>CVPR 2025</td><td>7B</td><td>0.356</td><td>0.278</td><td>0.595</td></tr><tr><td>Separated unification</td><td>—</td><td>1.8B</td><td>0.384</td><td>0.327</td><td>0.745</td></tr><tr><td>HERMES</td><td>ICCV 2025</td><td>1.8B</td><td>0.384</td><td>0.327</td><td>0.741</td></tr><tr><td>GaussianDWM</td><td>—</td><td>8B</td><td>0.395</td><td>0.341</td><td>0.712</td></tr></tbody></table>
+<h3>世界知识及 Gaussian 消融</h3>
+<p>作者进一步比较包含与不包含世界知识的生成器，并分析 Gaussian 表示如何影响世界知识表达及最终生成效果。实验使用 nuScenes 中 30 个场景的子集。随着视点平移增大，世界知识带来的改进总体更明显，但各项 FVD 指标并非单调改善。</p>
+<p class="table-caption">补充表 3：世界知识和 Gaussian 消融。列出 ±1、±2、±4 米平移下的 FID/FVD；越小越好。</p><table><thead><tr><th>世界知识</th><th>Gaussian</th><th>±1m FID↓</th><th>±1m FVD↓</th><th>±2m FID↓</th><th>±2m FVD↓</th><th>±4m FID↓</th><th>±4m FVD↓</th></tr></thead><tbody><tr><td>×</td><td>×</td><td>11.44</td><td>42.22</td><td>14.75</td><td>71.98</td><td>21.79</td><td>137.31</td></tr><tr><td>✓</td><td>×</td><td>11.30</td><td>41.63</td><td>13.96</td><td>70.45</td><td>19.02</td><td>151.19</td></tr><tr><td>✓</td><td>✓</td><td>11.28</td><td>41.62</td><td>13.95</td><td>70.70</td><td>18.91</td><td>150.05</td></tr></tbody></table>
+<p>以 ±4 m FID 为例：两者均不使用时为 21.79；使用世界知识而不使用 Gaussian 时降至 19.02；两者都使用时为 18.91。相应 FVD 为 137.31、151.19、150.05，说明加入条件并未在该偏移的 FVD 上优于无条件基线，应分别分析 FID 与 FVD。</p>
+<h3>额外定性结果与图注</h3>
+<p>补充图 1：场景理解与场景生成的定性结果。从上到下依次展示当前场景的多视图输入、三维 Gaussian 椭球、场景理解输出，以及空间和时间方向的场景生成。图中的任务示例包括：识别前视行人并返回二维框、识别右前摄像头车辆、回答自车应如何行动（示例回答「左转」），并展示文本动作条件下的未来时间帧。</p>
+<p>补充图 2：雨天场景的理解与生成定性结果。示例包含：在左前摄像头检测车辆并返回多个二维框、在右前摄像头返回车辆三维框、回答「直行」、解释目标为「停放的车辆」、预测停放车辆将保持静止，以及回答移动车辆可能接近自车。下方展示参考视角及 +1 m、+2 m 的空间生成结果。</p>
+<figure><img src="images/supplement.jpg" alt="补充材料图"><figcaption>补充材料定性结果图（仓库现有图像）。图内原始英文问题、框坐标、模型答复和时间帧应与官方 PDF 中的补充图 1、2 一并核对；该图片本身尚未独立证明覆盖两张完整原图。</figcaption></figure>
+</section>
+
 </article>
