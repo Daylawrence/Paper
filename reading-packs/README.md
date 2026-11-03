@@ -1,5 +1,12 @@
 # 论文阅读包（展开 Markdown / PDF 优先）
 
+## 2026-11-04：GaussianDWM 网页迁移及译文扩充（仍在修复）
+
+已使用 [DriveVLA-W0 已上传真实模板](2026-09-16_ICLR2026_DriveVLA-W0_%E9%98%85%E8%AF%BB%E5%8C%85/) 中的实际 CSS/JS/HTML 为 GaussianDWM 迁移暖米色/深绿色/金色网页样式及三选项、左目录、右独立滚动、分选项记忆交互。翻译从先前概述扩展至主文引言、相关工作、完整方法（公式1–5）、实验与四张主表、结论及致谢，并补充附录A–E/公式S1–S5与三张补充实验表。**未完成严格逐段核验**：表1若干专用检测器行、图4、完整轨迹数据和图中文字仍有缺口；完整 KaTeX/离线视觉校验未通过，中文简报PDF及ZIP未同步本次文字内容。原有2026-11-02 ZIP仍是**过期备份**，不是最新HTML/Markdown完整包。GaussianDWM状态继续 repairing。
+
+最新直接阅读：[完整目录](2026-10-28_CVPR2026_GaussianDWM/) · [翻译Markdown（仍待校对）](2026-10-28_CVPR2026_GaussianDWM/translation.md) · [关键解释Markdown](2026-10-28_CVPR2026_GaussianDWM/algorithms.md) · [逐节覆盖与缺口](2026-10-28_CVPR2026_GaussianDWM/coverage.md) · [原文PDF](2026-10-28_CVPR2026_GaussianDWM/paper.pdf)。未部署并核实GitHub Pages；普通GitHub网页不运行index.html，若需网页交互请clone后本地打开。保留优先处理本篇，历史问题包未验收完成前不推荐新论文。
+
+
 ## 2026-11-02 修复进度：GaussianDWM 原文与远端完整性已恢复
 
 保留原制作日期 **2026-10-28**；实际修复与远端验收日期 **2026-11-02**。继续**先修复历史旧包，暂停新论文推荐与上传**。[修复队列](repair-queue.json)。
