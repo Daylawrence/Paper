@@ -1,1 +1,20 @@
-const main=document.getElementById('main'),toc=document.getElementById('toc');const positions={original:0,translation:0,algorithms:0};let current='original';function targets(v){return v==='original'?[...document.querySelectorAll('#original .paper-page')]:[...document.querySelectorAll('#'+v+' section')];}function build(v){toc.innerHTML='';targets(v).forEach((el,i)=>{const a=document.createElement('a');a.href='#';a.textContent=v==='original'?'第 '+String(i+1).padStart(2,'0')+' 页':(el.querySelector('h2')?.textContent||'章节 '+(i+1));a.onclick=e=>{e.preventDefault();main.scrollTo({top:el.offsetTop-18,behavior:'smooth'});};toc.appendChild(a);});}function sw(v){positions[current]=main.scrollTop;document.querySelectorAll('.view,.tab').forEach(x=>x.classList.remove('active'));document.getElementById(v).classList.add('active');document.querySelector('[data-view="'+v+'"]').classList.add('active');current=v;build(v);requestAnimationFrame(()=>main.scrollTop=positions[v]||0);}document.querySelectorAll('.tab').forEach(b=>b.onclick=()=>sw(b.dataset.view));build('original');
+(()=>{"use strict";
+const main=document.querySelector(".layout main"),tabs=[...document.querySelectorAll("[data-tab]")],panels=[...document.querySelectorAll(".panel")],toc=document.getElementById("toc");
+if(!main||!toc||!panels.length)return;
+const key="paper-reader:"+(document.body.dataset.paper||"GaussianDWM");
+const memory={};const get=k=>{try{return window.localStorage.getItem(k)}catch(_){return memory[k]??null}},set=(k,v)=>{memory[k]=String(v);try{window.localStorage.setItem(k,String(v))}catch(_){}};
+let current="original",started=false;
+const allowed=["original","translation","explanation"];
+function save(){set(key+":"+current,String(main.scrollTop))}
+function makeToc(){toc.textContent="";const panel=document.getElementById(current);
+const nodes=current==="original"?[...panel.querySelectorAll(".paper-page")]:[...panel.querySelectorAll("h1,h2,h3")];
+nodes.forEach((el,n)=>{if(!el.id)el.id=current+"-section-"+n;const a=document.createElement("a");a.href="#"+el.id;a.className=el.tagName==="H3"?"level-3":"";a.textContent=current==="original"?"第 "+(n+1)+" 页":(el.textContent||"").replace(/\s+/g," ").trim().slice(0,88);a.addEventListener("click",e=>{e.preventDefault();el.scrollIntoView({block:"start",behavior:"smooth"})});toc.appendChild(a)})}
+function show(name){if(!allowed.includes(name)||!document.getElementById(name))name="original";
+if(started)save();current=name;
+tabs.forEach(b=>{const on=b.dataset.tab===name;b.classList.toggle("active",on);b.setAttribute("aria-selected",String(on))});
+panels.forEach(p=>p.classList.toggle("active",p.id===name));
+set(key+":tab",name);makeToc();const previous=Number(get(key+":"+name));requestAnimationFrame(()=>main.scrollTop=Number.isFinite(previous)?Math.max(0,previous):0);started=true}
+tabs.forEach(b=>b.addEventListener("click",()=>show(b.dataset.tab)));
+let queued=false;main.addEventListener("scroll",()=>{if(queued)return;queued=true;requestAnimationFrame(()=>{save();queued=false})},{passive:true});
+window.addEventListener("pagehide",save);show(get(key+":tab")||"original");
+})();
