@@ -239,6 +239,14 @@
     "source_pdf_path": "reading-packs/2026-10-28_CVPR2026_GaussianDWM/paper.pdf",
     "source_pdf_bytes": 17452487,
     "source_pdf_sha256": "c6558bba56cb29b00c8ad7e3a04572614ea6ec21650e08b1ab7416ba0edacb5a",
-    "source_pdf_git_blob_sha": "4367f7541a3eb3d207ec2de10cc4f46fe1991617"
+    "source_pdf_git_blob_sha": "4367f7541a3eb3d207ec2de10cc4f46fe1991617",
+    "last_content_repair_date": "2026-11-04",
+    "format_template_directory": "reading-packs/2026-09-16_ICLR2026_DriveVLA-W0_阅读包",
+    "coverage_path": "reading-packs/2026-10-28_CVPR2026_GaussianDWM/coverage.md",
+    "manifest_path": "reading-packs/2026-10-28_CVPR2026_GaussianDWM/manifest.json",
+    "translation_review_status": "expanded 2026-11-04; pending exact paragraph, table1 specialized detectors, full trajectory example and figure4 verification",
+    "reader_review_status": "DriveVLA-W0 CSS and interaction migration; file:// browser and offline math render verification pending",
+    "optional_zip_status": "verified 2026-11-02 but stale: HTML and translation changed 2026-11-04; do not use as latest version",
+    "pdf_brief_sync_status": "older version: new translation not yet merged into brief"
   }
 ]
