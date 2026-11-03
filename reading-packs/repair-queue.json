@@ -1,5 +1,5 @@
 {
-  "updated_date": "2026-11-02",
+  "updated_date": "2026-11-04",
   "policy": "GaussianDWM first until completed; then oldest uncompleted historical item, one paper per run; do not resume new recommendations while pending items exist",
   "total_packs": 14,
   "pending": 14,
@@ -10,8 +10,19 @@
       "directory": "reading-packs/2026-10-28_CVPR2026_GaussianDWM",
       "original_date": "2026-10-28",
       "legacy_status": "repairing",
-      "repair_status": "official_source_and_remote_verified_translation_pending",
-      "new_standard_completed": false
+      "repair_status": "2026-11-04_translation_substantially_expanded_reader_template_migrated_remaining_quality_and_offline_verification",
+      "new_standard_completed": false,
+      "last_repair_date": "2026-11-04",
+      "pending_items": [
+        "table1_specialist_detector_cells",
+        "supplement_trajectory_sample",
+        "figure4",
+        "full_paragraph_source_alignment",
+        "offline_math_browser_validation",
+        "pdf_brief_sync",
+        "optional_zip_stale",
+        "final_remote_manifest_verification"
+      ]
     },
     {
       "priority": 2,
