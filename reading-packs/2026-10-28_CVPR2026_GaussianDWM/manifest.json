@@ -22,9 +22,9 @@
       "sha256": "b6ecfe55a11deeb032a7d4e4398de3fca3466183c4aa8791a23786763fe452e1"
     },
     "app.js": {
-      "bytes": 1080,
-      "git_blob_sha": "4593fb77404d9c10b44f3da5166464b59fb8e7ac",
-      "sha256": "0df9f4e06351be9bee463b956d74e9b8704539726f1a84be4363fa0001a15823"
+      "bytes": 2057,
+      "git_blob_sha": "1bbee1015ce32daf58c5e824f83082f0579ba6ca",
+      "sha256": "e5dabe10d9d3a2915bf0545f5ac23583f453b9f4c94ff02be3cf4ccc6515b01e"
     },
     "images/figure1.jpg": {
       "bytes": 87381,
@@ -47,9 +47,9 @@
       "sha256": "13be908267f2a0fb60a72ad48c56162c28e9e13923ae3cd3fab3363a2f0245d1"
     },
     "index.html": {
-      "bytes": 41236,
-      "git_blob_sha": "0a79a31c2a8c079e5d7066949699c01fb59e3fa3",
-      "sha256": "6f9ad53b0c2b447034edb46f864c990966588ccbbe7db6a29048e952f514d2af"
+      "bytes": 72142,
+      "git_blob_sha": "0d7b91a06a79252f90a472ae86edc5cea2a886fa",
+      "sha256": "4e2ec76974360eccd3556186e85c1892e09c0c4605c0e674da85a24830cb3be0"
     },
     "pages/page-01.jpg": {
       "bytes": 190812,
@@ -152,19 +152,19 @@
       "sha256": "c6558bba56cb29b00c8ad7e3a04572614ea6ec21650e08b1ab7416ba0edacb5a"
     },
     "style.css": {
-      "bytes": 2894,
-      "git_blob_sha": "06fe21f5660550dcbecb00f3c17647652a6a495b",
-      "sha256": "5268601e350e5bddabc8dbf501dab8ab9427bcc5065202467cc2cb61c7485f85"
+      "bytes": 4772,
+      "git_blob_sha": "1c1c1fa99e0aba589ed27f0ea972a965fce22272",
+      "sha256": "bd20c1c34025984e1ab582cb2a752eb207093cce7f6cb785ea79d9d8ef4f7c18"
     },
     "translation.html": {
-      "bytes": 18981,
-      "git_blob_sha": "2d48b0ca4273e064489c40583022eca1a3781614",
-      "sha256": "189aed34dd2b7ba9c23d0d5686c68771407c4e7fd6e198e15199758f24bd5734"
+      "bytes": 49850,
+      "git_blob_sha": "e9c56a3cdb3a32303953dce51ea1bd2abcafbd8e",
+      "sha256": "d445d39e240bb3b9585087617dcfff65fb1ea9c75d178696034c736ca4c07613"
     },
     "translation.md": {
-      "bytes": 16868,
-      "git_blob_sha": "4c01230f23c01b03eda8e4d7aed55dd539ed4830",
-      "sha256": "6b4b6ed76474eac77c46c31002e7087c17703e115a87abfb6851a6016581ea83"
+      "bytes": 43003,
+      "git_blob_sha": "5c0e88053ea34f6052f61f0828acc084a9492a54",
+      "sha256": "e25747ccdbf148b913d296354f7998239f4529787e7d0c5b63801aa40a03e328"
     },
     "vendor/README.txt": {
       "bytes": 84,
@@ -175,14 +175,30 @@
       "bytes": 713,
       "git_blob_sha": "12cc98cb6979ac33e381fbff6dcbab3ebee2b93b",
       "sha256": "0efda3a1e1ff211942fe371fc6ec593f22255a6c26bd64c93e241e2c7a50c689"
+    },
+    "coverage.md": {
+      "bytes": 2220,
+      "git_blob_sha": "3505dfbbec277b9e720cbc7ffacc77296514cf3b",
+      "sha256": "890d7c20d73383f0aa77456c6026982088d1d60eab605ca5c70fe767e52d5da3"
+    },
+    "coverage.html": {
+      "bytes": 1843,
+      "git_blob_sha": "bcdac0a011ef73a2099c6235bbaab93ee7975ac0",
+      "sha256": "3e02a9a34fd801c6e464b80e89ecef681de3967affc58bea435861426a4145af"
     }
   },
-  "file_count": 34,
-  "last_content_repair_date": "2026-11-02",
+  "file_count": 36,
+  "last_content_repair_date": "2026-11-04",
   "source_pdf": "CVPR 2026 official 12-page main + 7-page supplement",
   "official_source_sha256": {
     "main": "89faceab57ff03c0df3f803390a26f4f084432c9cff936cc69bf3d939643b87b",
     "supplement": "1af4fc2a67bffe58564df6911917c6b618f321b1b17ca8b69e43b8c0c089b74e"
   },
-  "quality_status": "source pages restored; complete paragraph-level Chinese translation NOT passed"
+  "quality_status": "repairing",
+  "visual_template_directory": "reading-packs/2026-09-16_ICLR2026_DriveVLA-W0_阅读包",
+  "current_text_validation": "main_branch_text_files_sha_bytes_checked_2026-11-04",
+  "optional_zip_sync_status": "stale_backup_generated_2026-11-02_does_not_include_2026-11-04_translation_and_css_changes",
+  "content_quality_status": "repairing: incomplete line-by-line coverage, specialist detector table cells, trajectory sample, figure4, offline KaTeX resources and PDF brief",
+  "remains_unfinished": true,
+  "coverage_record": "coverage.md"
 }
