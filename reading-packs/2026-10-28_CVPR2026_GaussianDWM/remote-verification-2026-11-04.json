@@ -1,0 +1,59 @@
+{
+  "paper": "GaussianDWM",
+  "run_date": "2026-11-04",
+  "default_branch": "main",
+  "source_template": "reading-packs/2026-09-16_ICLR2026_DriveVLA-W0_阅读包",
+  "state": "repairing",
+  "completed": false,
+  "evidence": {
+    "manifest_file_count": 36,
+    "remote_payload_blob_sha_matches": 36,
+    "remote_payload_byte_matches": 35,
+    "paper_pdf_blob_sha_match": true,
+    "paper_pdf_byte_rechecked_this_run": false,
+    "paper_pdf_previous_confirmed_bytes": 17452487,
+    "page_image_count": 19,
+    "page_images_git_blob_and_bytes_matches": 19,
+    "figure_images_sha_and_bytes_matches": 4,
+    "brief_pdf_sha_and_bytes_matches": true,
+    "text_file_sha_and_bytes_matches": 10,
+    "inline_translation_html_matches_standalone": true,
+    "inline_algorithm_html_matches_standalone": true,
+    "tab_ids": [
+      "original",
+      "translation",
+      "explanation"
+    ],
+    "required_local_asset_references_checked": 30,
+    "missing_local_asset_refs": 0,
+    "translation_sections_exist": true,
+    "browser_render_screenshot_checked": false,
+    "offline_katex_verified": false,
+    "zip_re_downloaded_this_run": false,
+    "zip_current_with_new_html": false,
+    "source_paragraph_alignment_complete": false
+  },
+  "changes": [
+    "DriveVLA-W0 color/layout and core tabs/ToC/position persistence adapted",
+    "GaussianDWM introduction, related work, method equations, experiments and tables, supplemental A-E expanded",
+    "translation.html, translation.md and index.html synchronized",
+    "coverage.html and coverage.md added",
+    "index, catalog, queue, manifest updated"
+  ],
+  "pending": [
+    "source comparison for all paragraphs and captions",
+    "Table 1 BEVFormer PETR CAPE merged cells",
+    "Figure 4 full image and labels",
+    "supplement trajectory full JSON",
+    "offline browser and KaTeX resource tests",
+    "Chinese brief PDF synchronization",
+    "optionally regenerate stale ZIP and revalidate CRC/SHA256",
+    "full final audit before completed"
+  ],
+  "prior_verified_source_pdf": {
+    "verified_date": "2026-11-02",
+    "sha256": "c6558bba56cb29b00c8ad7e3a04572614ea6ec21650e08b1ab7416ba0edacb5a",
+    "pages": 19
+  },
+  "note": "GitHub main file object SHA and size checks are delivery integrity evidence only. They do not prove paragraph-level translation fidelity or full browser/ZIP offline acceptance. Existing 2026-11-02 ZIP no longer matches 2026-11-04 expanded HTML/Markdown."
+}
