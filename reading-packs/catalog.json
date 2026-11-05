@@ -247,6 +247,9 @@
     "translation_review_status": "expanded 2026-11-04; pending exact paragraph, table1 specialized detectors, full trajectory example and figure4 verification",
     "reader_review_status": "DriveVLA-W0 CSS and interaction migration; file:// browser and offline math render verification pending",
     "optional_zip_status": "verified 2026-11-02 but stale: HTML and translation changed 2026-11-04; do not use as latest version",
-    "pdf_brief_sync_status": "older version: new translation not yet merged into brief"
+    "pdf_brief_sync_status": "older version: new translation not yet merged into brief",
+    "last_repair_date": "2026-11-06",
+    "latest_source_audit_path": "reading-packs/2026-10-28_CVPR2026_GaussianDWM/source-visual-audit-2026-11-06.md",
+    "quality_note": "Table 1 three specialist rows and Figure 4 captions visually verified against restored PDF pages 6 and 8; other paragraphs, supplements, offline math/browser, Chinese PDF brief remain pending; optional ZIP is stale"
   }
 ]
