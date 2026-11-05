@@ -1,0 +1,174 @@
+{
+  "paper": "GaussianDWM",
+  "run_date": "2026-11-06",
+  "source_date": "2026-10-28",
+  "repo": "Daylawrence/Paper",
+  "branch": "main",
+  "status": "repairing",
+  "completed": false,
+  "source_template": "reading-packs/2026-09-16_ICLR2026_DriveVLA-W0_阅读包",
+  "source_pdf_main_pages": 12,
+  "source_pdf_supplement_pages": 7,
+  "merged_pdf_pages": 19,
+  "current_content_fix": {
+    "table1_source_page": "pages/page-06.jpg",
+    "specialized_detectors": [
+      {
+        "method": "BEVFormer",
+        "year": 2022,
+        "pr": "44.50",
+        "map": "23.69",
+        "f1": "1.576",
+        "note": "original precision; other tasks unsupported"
+      },
+      {
+        "method": "PETR",
+        "year": 2022,
+        "pr": "55.80",
+        "map": "31.34",
+        "f1": "20.58",
+        "note": "other tasks unsupported"
+      },
+      {
+        "method": "CAPE",
+        "year": 2023,
+        "pr": "55.02",
+        "map": "32.94",
+        "f1": "21.33",
+        "note": "other tasks unsupported"
+      }
+    ],
+    "figure4_source_page": "pages/page-08.jpg",
+    "figure4_columns": [
+      "Ref. GT",
+      "Ours",
+      "OmniRe",
+      "DeformableGS",
+      "PVG",
+      "StreetGaussian"
+    ],
+    "synchronized_files": [
+      "translation.md",
+      "translation.html",
+      "index.html",
+      "coverage.md",
+      "coverage.html",
+      "source-visual-audit-2026-11-06.md"
+    ]
+  },
+  "verification": {
+    "manifest_file_count": 37,
+    "payload_git_blob_sha_matches": 37,
+    "payload_git_blob_sha_checks": 37,
+    "payload_bytes_matches": 36,
+    "payload_bytes_checks": 36,
+    "paper_pdf_sha_matched": true,
+    "paper_pdf_bytes_rechecked_this_run": false,
+    "pdf_previous_verified_bytes": 17452487,
+    "pdf_source_restored_pages": 19,
+    "original_page_images_count": 19,
+    "inline_page_references_checked": 19,
+    "missing_local_src_references": 0,
+    "modified_text_file_size_checks": [
+      {
+        "file": "index.html",
+        "actual_bytes": 73460,
+        "manifest_bytes": 73460,
+        "blob_sha_match": true,
+        "bytes_match": true
+      },
+      {
+        "file": "translation.html",
+        "actual_bytes": 51168,
+        "manifest_bytes": 51168,
+        "blob_sha_match": true,
+        "bytes_match": true
+      },
+      {
+        "file": "translation.md",
+        "actual_bytes": 43848,
+        "manifest_bytes": 43848,
+        "blob_sha_match": true,
+        "bytes_match": true
+      },
+      {
+        "file": "source-visual-audit-2026-11-06.md",
+        "actual_bytes": 2833,
+        "manifest_bytes": 2833,
+        "blob_sha_match": true,
+        "bytes_match": true
+      },
+      {
+        "file": "coverage.md",
+        "actual_bytes": 2841,
+        "manifest_bytes": 2841,
+        "blob_sha_match": true,
+        "bytes_match": true
+      },
+      {
+        "file": "coverage.html",
+        "actual_bytes": 2085,
+        "manifest_bytes": 2085,
+        "blob_sha_match": true,
+        "bytes_match": true
+      }
+    ],
+    "text_payload_sha256s": [
+      {
+        "file": "index.html",
+        "sha256": "763beec5d2876308d66f6e107e6072e381e0b2604d7e959bf51ab79a720910d0",
+        "git_blob_sha": "8b26d6d72a8e832ae69442c102c0b98e5165c524",
+        "bytes": 73460
+      },
+      {
+        "file": "translation.html",
+        "sha256": "e68a272361a0b61436f3a0b5398b1f1e825cfdf8dcf516589e70b50d6a3ac142",
+        "git_blob_sha": "08372a47cb5a246089c8295b1660f2d27533fe07",
+        "bytes": 51168
+      },
+      {
+        "file": "translation.md",
+        "sha256": "e9a1102301460c106c2b1812d00f6ccb9cdf7928cbf772b818db58c00b98d015",
+        "git_blob_sha": "3df32c17947c17ce76fc89d33e6ed110fbcf681c",
+        "bytes": 43848
+      },
+      {
+        "file": "source-visual-audit-2026-11-06.md",
+        "sha256": "1ff4c2c0c3b011e88c98e28fb0a85e672a7f863409354b50ed33b8b5d29bee22",
+        "git_blob_sha": "c6e634da22b898dd17048b63e048b1087109322a",
+        "bytes": 2833
+      },
+      {
+        "file": "coverage.md",
+        "sha256": "1208d9f7a144a9e7294d5b48ed335522c20cdc72d6c9ae863180f9e56e493a62",
+        "git_blob_sha": "4fae3c43e6931e13613eff5be102c18f6e10422d",
+        "bytes": 2841
+      },
+      {
+        "file": "coverage.html",
+        "sha256": "993b37e2b292e4fa8a183e09f4c54b376443242e56e6cd90fdeeb33217118fb6",
+        "git_blob_sha": "ae3f906abaa9a1e5484b33472c0b47d5b2279f3f",
+        "bytes": 2085
+      }
+    ],
+    "sha256_digest_correction": "Initial character-count routine undercounted non-BMP Unicode. Recovered actual raw GitHub Base64 content and recomputed index.html (73460 B), translation.html (51168 B), translation.md (43848 B) and their SHA256. Verified all 3 sizes and Git blob SHAs against main, and independently validated pure JS SHA256 against page-06.jpg recorded SHA256.",
+    "browser_render_visited": false,
+    "offline_katex_verified": false,
+    "chinese_brief_pdf_synchronized": false,
+    "zip_matches_latest_html": false,
+    "zip_remote_retrieved_this_run": false,
+    "full_paragraph_translation_source_alignment_complete": false
+  },
+  "pending": [
+    "supplement QA/trajectory JSON literal coordinate verification",
+    "all paragraph/figure/table/equation alignment with selected PDF",
+    "full diagram English label translations",
+    "offline browser, narrow viewport and KaTeX assets",
+    "Chinese study brief PDF update",
+    "optional ZIP regeneration and download integrity if provided",
+    "final full PDF byte recheck and strict content acceptance"
+  ],
+  "audit_path": "reading-packs/2026-10-28_CVPR2026_GaussianDWM/source-visual-audit-2026-11-06.md",
+  "manifest_path": "reading-packs/2026-10-28_CVPR2026_GaussianDWM/manifest.json",
+  "note": "Delivery integrity checks do not demonstrate complete Chinese translation or full offline browser acceptance. Existing optional ZIP is older than the November 6 content. Do not mark completed."
+}
