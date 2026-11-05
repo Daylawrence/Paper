@@ -47,9 +47,9 @@
       "sha256": "13be908267f2a0fb60a72ad48c56162c28e9e13923ae3cd3fab3363a2f0245d1"
     },
     "index.html": {
-      "bytes": 73440,
+      "bytes": 73460,
       "git_blob_sha": "8b26d6d72a8e832ae69442c102c0b98e5165c524",
-      "sha256": "8cdfa5b7a607837aebec416a8721f32f0e206cb5088fd6f03f8efe58d54baa5a"
+      "sha256": "763beec5d2876308d66f6e107e6072e381e0b2604d7e959bf51ab79a720910d0"
     },
     "pages/page-01.jpg": {
       "bytes": 190812,
@@ -157,14 +157,14 @@
       "sha256": "bd20c1c34025984e1ab582cb2a752eb207093cce7f6cb785ea79d9d8ef4f7c18"
     },
     "translation.html": {
-      "bytes": 51148,
+      "bytes": 51168,
       "git_blob_sha": "08372a47cb5a246089c8295b1660f2d27533fe07",
-      "sha256": "dcf668b9c9a92fb1ecf0b95bd698a1dda666335f86afdfe871c9057a0836aa38"
+      "sha256": "e68a272361a0b61436f3a0b5398b1f1e825cfdf8dcf516589e70b50d6a3ac142"
     },
     "translation.md": {
-      "bytes": 43839,
+      "bytes": 43848,
       "git_blob_sha": "3df32c17947c17ce76fc89d33e6ed110fbcf681c",
-      "sha256": "0bcd7bb05c6dc8759f5b8e5c0f5bcbc08adb5befb6c56e17fc2474ef27972ede"
+      "sha256": "e9a1102301460c106c2b1812d00f6ccb9cdf7928cbf772b818db58c00b98d015"
     },
     "vendor/README.txt": {
       "bytes": 84,
@@ -201,10 +201,10 @@
   },
   "quality_status": "repairing",
   "visual_template_directory": "reading-packs/2026-09-16_ICLR2026_DriveVLA-W0_阅读包",
-  "current_text_validation": "2026-11-06 renewed SHA256, bytes, Git blob SHA for modified files; static asset refs verified",
+  "current_text_validation": "2026-11-06 main: 37/37 payload Git blob SHAs verified; 36/36 available payload byte sizes verified after correcting UTF-8 non-BMP counts (paper.pdf SHA only, historical bytes); six modified text SHA256s recomputed, 19 page image links statically checked; no current ZIP/PDF brief content re-generation",
   "optional_zip_sync_status": "stale_backup_generated_2026-11-02_does_not_include_2026-11-04_translation_and_css_changes",
   "content_quality_status": "repairing: table1 specialist rows and figure4 source page verified; supplementary trajectory, full paragraph alignment, offline browser/KaTeX and PDF brief remain pending",
   "remains_unfinished": true,
   "coverage_record": "coverage.md",
-  "current_revision_note": "HTML/Markdown Table1 and Figure4 source-page fixes verified, per-file manifest renewed for changed files; older ZIP and PDF brief not synchronized"
+  "current_revision_note": "2026-11-06 source Table 1 and Figure 4 fixes, HTML/Markdown synchronized, manifest Unicode byte counters corrected by reading actual GitHub binary/base64; still repairing for full translation, KaTeX, browser, PDF brief and stale optional ZIP"
 }
