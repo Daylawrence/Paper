@@ -2,7 +2,7 @@
 
 ## 2026-11-06：GaussianDWM 表1及图4原文视觉核验（继续修复）
 
-根据仓库中的 [原文第6页](2026-10-28_CVPR2026_GaussianDWM/pages/page-06.jpg) 人工核对补齐 BEVFormer、PETR、CAPE 的3DVG检测指标；保留 BEVFormer F1=1.576（原文如此），跨任务不支持不按0分处理。根据 [原文第8页](2026-10-28_CVPR2026_GaussianDWM/pages/page-08.jpg) 恢复图4的RGB-D定性比较图注、六组方法标签，在译文HTML和Markdown中直接引用已有原文页图，无需在线图源。[详细视觉核验](2026-10-28_CVPR2026_GaussianDWM/source-visual-audit-2026-11-06.md)。
+根据仓库中的 [原文第6页](2026-10-28_CVPR2026_GaussianDWM/pages/page-06.jpg) 人工核对补齐 BEVFormer、PETR、CAPE 的3DVG检测指标；保留 BEVFormer F1=1.576（原文如此），跨任务不支持不按0分处理。根据 [原文第8页](2026-10-28_CVPR2026_GaussianDWM/pages/page-08.jpg) 恢复图4的RGB-D定性比较图注、六组方法标签，在译文HTML和Markdown中直接引用已有原文页图，无需在线图源。[详细视觉核验](2026-10-28_CVPR2026_GaussianDWM/source-visual-audit-2026-11-06.md)。 [11月6日远端逐文件校验报告](2026-10-28_CVPR2026_GaussianDWM/remote-verification-2026-11-06.json)：37/37 Git blob SHA 匹配、36/36 实际字节数匹配（原文 PDF 本轮仅复核 blob SHA，原字节数沿用此前验收）；已修正3个文件的 Unicode 字节数/SHA256。
 
 已同步修改 [译文 Markdown](2026-10-28_CVPR2026_GaussianDWM/translation.md)、[HTML译文](2026-10-28_CVPR2026_GaussianDWM/translation.html)、[阅读主页源码](2026-10-28_CVPR2026_GaussianDWM/index.html) 和 [覆盖清单](2026-10-28_CVPR2026_GaussianDWM/coverage.md)。**仍为 repairing**：尚未完成补充材料 QA/轨迹全量核对、其他段落与图文字逐项比对、离线 KaTeX/浏览器验收及中文简报PDF同步。11月2日ZIP仍旧版备份，不视为最新交付。旧包修复优先，不推荐新论文。
 
