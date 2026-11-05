@@ -47,9 +47,9 @@
       "sha256": "13be908267f2a0fb60a72ad48c56162c28e9e13923ae3cd3fab3363a2f0245d1"
     },
     "index.html": {
-      "bytes": 72142,
-      "git_blob_sha": "0d7b91a06a79252f90a472ae86edc5cea2a886fa",
-      "sha256": "4e2ec76974360eccd3556186e85c1892e09c0c4605c0e674da85a24830cb3be0"
+      "bytes": 73440,
+      "git_blob_sha": "8b26d6d72a8e832ae69442c102c0b98e5165c524",
+      "sha256": "8cdfa5b7a607837aebec416a8721f32f0e206cb5088fd6f03f8efe58d54baa5a"
     },
     "pages/page-01.jpg": {
       "bytes": 190812,
@@ -157,14 +157,14 @@
       "sha256": "bd20c1c34025984e1ab582cb2a752eb207093cce7f6cb785ea79d9d8ef4f7c18"
     },
     "translation.html": {
-      "bytes": 49850,
-      "git_blob_sha": "e9c56a3cdb3a32303953dce51ea1bd2abcafbd8e",
-      "sha256": "d445d39e240bb3b9585087617dcfff65fb1ea9c75d178696034c736ca4c07613"
+      "bytes": 51148,
+      "git_blob_sha": "08372a47cb5a246089c8295b1660f2d27533fe07",
+      "sha256": "dcf668b9c9a92fb1ecf0b95bd698a1dda666335f86afdfe871c9057a0836aa38"
     },
     "translation.md": {
-      "bytes": 43003,
-      "git_blob_sha": "5c0e88053ea34f6052f61f0828acc084a9492a54",
-      "sha256": "e25747ccdbf148b913d296354f7998239f4529787e7d0c5b63801aa40a03e328"
+      "bytes": 43839,
+      "git_blob_sha": "3df32c17947c17ce76fc89d33e6ed110fbcf681c",
+      "sha256": "0bcd7bb05c6dc8759f5b8e5c0f5bcbc08adb5befb6c56e17fc2474ef27972ede"
     },
     "vendor/README.txt": {
       "bytes": 84,
@@ -177,18 +177,23 @@
       "sha256": "0efda3a1e1ff211942fe371fc6ec593f22255a6c26bd64c93e241e2c7a50c689"
     },
     "coverage.md": {
-      "bytes": 2220,
-      "git_blob_sha": "3505dfbbec277b9e720cbc7ffacc77296514cf3b",
-      "sha256": "890d7c20d73383f0aa77456c6026982088d1d60eab605ca5c70fe767e52d5da3"
+      "bytes": 2841,
+      "git_blob_sha": "4fae3c43e6931e13613eff5be102c18f6e10422d",
+      "sha256": "1208d9f7a144a9e7294d5b48ed335522c20cdc72d6c9ae863180f9e56e493a62"
     },
     "coverage.html": {
-      "bytes": 1843,
-      "git_blob_sha": "bcdac0a011ef73a2099c6235bbaab93ee7975ac0",
-      "sha256": "3e02a9a34fd801c6e464b80e89ecef681de3967affc58bea435861426a4145af"
+      "bytes": 2085,
+      "git_blob_sha": "ae3f906abaa9a1e5484b33472c0b47d5b2279f3f",
+      "sha256": "993b37e2b292e4fa8a183e09f4c54b376443242e56e6cd90fdeeb33217118fb6"
+    },
+    "source-visual-audit-2026-11-06.md": {
+      "bytes": 2833,
+      "git_blob_sha": "c6e634da22b898dd17048b63e048b1087109322a",
+      "sha256": "1ff4c2c0c3b011e88c98e28fb0a85e672a7f863409354b50ed33b8b5d29bee22"
     }
   },
-  "file_count": 36,
-  "last_content_repair_date": "2026-11-04",
+  "file_count": 37,
+  "last_content_repair_date": "2026-11-06",
   "source_pdf": "CVPR 2026 official 12-page main + 7-page supplement",
   "official_source_sha256": {
     "main": "89faceab57ff03c0df3f803390a26f4f084432c9cff936cc69bf3d939643b87b",
@@ -196,9 +201,10 @@
   },
   "quality_status": "repairing",
   "visual_template_directory": "reading-packs/2026-09-16_ICLR2026_DriveVLA-W0_阅读包",
-  "current_text_validation": "main_branch_text_files_sha_bytes_checked_2026-11-04",
+  "current_text_validation": "2026-11-06 renewed SHA256, bytes, Git blob SHA for modified files; static asset refs verified",
   "optional_zip_sync_status": "stale_backup_generated_2026-11-02_does_not_include_2026-11-04_translation_and_css_changes",
-  "content_quality_status": "repairing: incomplete line-by-line coverage, specialist detector table cells, trajectory sample, figure4, offline KaTeX resources and PDF brief",
+  "content_quality_status": "repairing: table1 specialist rows and figure4 source page verified; supplementary trajectory, full paragraph alignment, offline browser/KaTeX and PDF brief remain pending",
   "remains_unfinished": true,
-  "coverage_record": "coverage.md"
+  "coverage_record": "coverage.md",
+  "current_revision_note": "HTML/Markdown Table1 and Figure4 source-page fixes verified, per-file manifest renewed for changed files; older ZIP and PDF brief not synchronized"
 }
