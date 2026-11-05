@@ -250,6 +250,7 @@
     "pdf_brief_sync_status": "older version: new translation not yet merged into brief",
     "last_repair_date": "2026-11-06",
     "latest_source_audit_path": "reading-packs/2026-10-28_CVPR2026_GaussianDWM/source-visual-audit-2026-11-06.md",
-    "quality_note": "Table 1 three specialist rows and Figure 4 captions visually verified against restored PDF pages 6 and 8; other paragraphs, supplements, offline math/browser, Chinese PDF brief remain pending; optional ZIP is stale"
+    "quality_note": "Table 1 three specialist rows and Figure 4 captions visually verified against restored PDF pages 6 and 8; other paragraphs, supplements, offline math/browser, Chinese PDF brief remain pending; optional ZIP is stale",
+    "latest_remote_verification_path": "reading-packs/2026-10-28_CVPR2026_GaussianDWM/remote-verification-2026-11-06.json"
   }
 ]
