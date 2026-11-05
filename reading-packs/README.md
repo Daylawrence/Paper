@@ -1,5 +1,12 @@
 # 论文阅读包（展开 Markdown / PDF 优先）
 
+## 2026-11-06：GaussianDWM 表1及图4原文视觉核验（继续修复）
+
+根据仓库中的 [原文第6页](2026-10-28_CVPR2026_GaussianDWM/pages/page-06.jpg) 人工核对补齐 BEVFormer、PETR、CAPE 的3DVG检测指标；保留 BEVFormer F1=1.576（原文如此），跨任务不支持不按0分处理。根据 [原文第8页](2026-10-28_CVPR2026_GaussianDWM/pages/page-08.jpg) 恢复图4的RGB-D定性比较图注、六组方法标签，在译文HTML和Markdown中直接引用已有原文页图，无需在线图源。[详细视觉核验](2026-10-28_CVPR2026_GaussianDWM/source-visual-audit-2026-11-06.md)。
+
+已同步修改 [译文 Markdown](2026-10-28_CVPR2026_GaussianDWM/translation.md)、[HTML译文](2026-10-28_CVPR2026_GaussianDWM/translation.html)、[阅读主页源码](2026-10-28_CVPR2026_GaussianDWM/index.html) 和 [覆盖清单](2026-10-28_CVPR2026_GaussianDWM/coverage.md)。**仍为 repairing**：尚未完成补充材料 QA/轨迹全量核对、其他段落与图文字逐项比对、离线 KaTeX/浏览器验收及中文简报PDF同步。11月2日ZIP仍旧版备份，不视为最新交付。旧包修复优先，不推荐新论文。
+
+
 ## 2026-11-04：GaussianDWM 网页迁移及译文扩充（仍在修复）
 
 已使用 [DriveVLA-W0 已上传真实模板](2026-09-16_ICLR2026_DriveVLA-W0_%E9%98%85%E8%AF%BB%E5%8C%85/) 中的实际 CSS/JS/HTML 为 GaussianDWM 迁移暖米色/深绿色/金色网页样式及三选项、左目录、右独立滚动、分选项记忆交互。翻译从先前概述扩展至主文引言、相关工作、完整方法（公式1–5）、实验与四张主表、结论及致谢，并补充附录A–E/公式S1–S5与三张补充实验表。**未完成严格逐段核验**：表1若干专用检测器行、图4、完整轨迹数据和图中文字仍有缺口；完整 KaTeX/离线视觉校验未通过，中文简报PDF及ZIP未同步本次文字内容。原有2026-11-02 ZIP仍是**过期备份**，不是最新HTML/Markdown完整包。GaussianDWM状态继续 repairing。
