@@ -84,8 +84,6 @@ loss = edm_weight(sigma) * mse(pred, d)</pre>
 
 <section id="transfer"><h2>学习简报 13：迁移实验</h2><ol><li><strong>VGGT + Depth Pro + YOLO：</strong>用 VGGT 相机/点图与 Depth Pro 补深度，YOLO/SAM 提对象 mask，构建对象级语言 Gaussian；比较纯几何、类别标签和 CLIP 语言场。</li><li><strong>Qwen2.5-VL LoRA：</strong>移植 Gaussian placeholder 接口，冻结视觉编码器，只训练 aligner、selector 与 LoRA；做 K=128/512 显存—准确率曲线。</li><li><strong>未来 VLA Agent：</strong>先查询 Gaussian memory，再生成 3 个候选未来 RGB-D/轨迹，最后用可行驶区域和碰撞代价重排。</li></ol></section>
 </article>
-
-
     <script src="vendor/katex.min.js"></script>
     <script>document.querySelectorAll('.formula[data-latex]').forEach(function(el){
     var target=el.querySelector('.formula-rendered');

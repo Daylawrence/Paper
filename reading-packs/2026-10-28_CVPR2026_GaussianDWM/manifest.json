@@ -7,14 +7,14 @@
   "source_template": "2026-09-16_ICLR2026_DriveVLA-W0_阅读包",
   "files": {
     "2026-10-28_CVPR2026_GaussianDWM_中文学习简报.pdf": {
-      "bytes": 441192,
-      "git_blob_sha": "963a9d93c1f72b7504f7c26d04ae7e8a3c4178c6",
-      "sha256": "f7257d1c4f7b421bc3b60ca96ddccd762d8787b7eddcb8f2c7d54dc65cfe03dd"
+      "bytes": 441194,
+      "git_blob_sha": "d4cd00104022ad165d347308d39ead2992f2bf2f",
+      "sha256": "c841cb60d1d64ed1dc990261c746e260e68aaebe1cc66173a7866eed44ef8479"
     },
     "algorithms.html": {
-      "bytes": 19014,
-      "git_blob_sha": "960225ebaf07d42f2734e90ecaf8bf4c8e06a495",
-      "sha256": "083f5937c80525dbb236c44ae06abbf9b7fba4deb33fffdbf9ba41aea8042908"
+      "bytes": 19012,
+      "git_blob_sha": "793461e90d28f12410016807d6c61783273aca93",
+      "sha256": "126a7cadd251c49e1d32115970be041d9a1b70ee6542d233d30e375d769e6af8"
     },
     "algorithms.md": {
       "bytes": 16214,
@@ -22,9 +22,9 @@
       "sha256": "b6ecfe55a11deeb032a7d4e4398de3fca3466183c4aa8791a23786763fe452e1"
     },
     "app.js": {
-      "bytes": 2489,
-      "git_blob_sha": "e0050b916610d4d2e79fd8ea85d7c4f7cd093adf",
-      "sha256": "64803eccd0320fbf35601af9ae7d03b7e35807ec349457377a6d9876c35e0322"
+      "bytes": 2453,
+      "git_blob_sha": "b01130bc62102f82ed48e9833d61ec05d64ff768",
+      "sha256": "2845b70d993908951320bf9fd033dc65202b3344e0d8ff0f97a825f57e29f049"
     },
     "coverage.html": {
       "bytes": 2085,
@@ -63,8 +63,8 @@
     },
     "offline-quality-check-2026-11-07.json": {
       "bytes": 1485,
-      "git_blob_sha": "9a83a97a5afcc65643f93ea833be2c48f58f8af3",
-      "sha256": "73f6c32126006373d15ed72c0ab84145b285b256846ed59cd7bb75f1fe7421d6"
+      "git_blob_sha": "999e42c5237d5cb88a582f47edfdccbf2fb2f27c",
+      "sha256": "89f7b27e85449814ab7d47200d27220ea86108110da2192ed12e3221bd5f9559"
     },
     "pages/page-01.jpg": {
       "bytes": 190812,
@@ -212,9 +212,9 @@
       "sha256": "e5bb7dc254b460464b871ea46a33065296084f0d36989e8456ab6088077cff72"
     },
     "translation.html": {
-      "bytes": 51903,
-      "git_blob_sha": "1f326ecd87d46033b0c4b7e85cd91c839765a4b2",
-      "sha256": "8d24509b14ba5179f36af2a24692336c6317bdc081a1e67a660d731b30148f42"
+      "bytes": 51902,
+      "git_blob_sha": "12bfb425fd882ee93098842f371611cbf408a60a",
+      "sha256": "7040ea30a6633c77cc7f99878573f5710d0d031ad2c80c3f1bf1814d345ed71d"
     },
     "translation.md": {
       "bytes": 43848,
