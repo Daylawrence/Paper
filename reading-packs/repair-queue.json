@@ -10,13 +10,12 @@
       "directory": "reading-packs/2026-10-28_CVPR2026_GaussianDWM",
       "original_date": "2026-10-28",
       "legacy_status": "repairing",
-      "repair_status": "2026-11-07_source_B_4_2_4_4_4_5_paragraph_fidelity_improved_offline_rebuild_passed_current_remote_verify_pending",
+      "repair_status": "2026-11-07_109_remote_expanded_payload_files_110_zip_entries_19page_original_8page_brief_browser_verified_semantic_paragraph_fidelity_pending",
       "new_standard_completed": false,
       "last_repair_date": "2026-11-07",
       "pending_items": [
-        "remaining_full_source_to_chinese_one_to_one_alignment",
-        "remaining_small_figure_table_labels_coordinates_visual_check",
-        "immutable_remote_recheck_for_current_pack"
+        "main_and_supplement_all_nonreference_english_paragraphs_to_chinese_one_to_one_final_semantic_check",
+        "figure_and_table_micro_labels_coordinates_full_visual_comparison"
       ],
       "partial_achievements": [
         "2026-11-06: Table 1 BEVFormer/PETR/CAPE and Figure 4 verified against source PDF pages 6/8; translation.md/html/index synchronized",
@@ -24,7 +23,8 @@
         "2026-11-07: rebuilt KaTeX/brief/optional ZIP with source page 14 QA and trajectory examples, source figures 1/2, and browser verification=True; full paragraph fidelity pending",
         "2026-11-07: independent remote check PASSED 108 expanded files+109 ZIP entries+19-page original PDF+8-page brief; real offline Chromium test passed 10 KaTeX equations, 850px restored scroll, 152px sidebar",
         "2026-11-07: latest independent remote verification at commit 1a06dc37 verified 108 expanded payload files, 109 ZIP entries/CRC, 19-page paper and 8-page brief; full paragraph semantic audit still pending",
-        "2026-11-07: source-aligned appendix B order, 4.2/4.5 paragraph splits and 4.4 figure narrative; rebuilt offline PDF, HTML and latest ZIP 22,183,917 B"
+        "2026-11-07: source-aligned appendix B order, 4.2/4.5 paragraph splits and 4.4 figure narrative; rebuilt offline PDF, HTML and latest ZIP 22,183,917 B",
+        "2026-11-07: independent re-verification at 90bab195 passed: 109 expanded blobs, 110 ZIP entries CRC/SHA256, paper 19 pages, brief 8 pages; main 4.2/4.4/4.5 and supplement B alignment improved, content semantic review still pending"
       ]
     },
     {

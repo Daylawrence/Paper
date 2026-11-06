@@ -2,6 +2,10 @@
 
 ## 2026-11-07：原文逐段对齐继续修复（新的源码同步与远端核验）
 
+**11 月 7 日最新独立远端复验已通过：** [GitHub Actions 运行](https://github.com/Daylawrence/Paper/actions/runs/42267540158) 对新译文构建后的不可变 commit [`90bab195c`](https://github.com/Daylawrence/Paper/commit/90bab195cd91d4a6bd8f72ced0c17d156fed1690) 校验 **109/109 个展开文件** Git blob SHA/字节数/SHA256；重新下载备份 ZIP **22,183,917 字节，110 项 CRC/SHA256 通过**，19 页原文 PDF 和 8 页中文简报 PDF 均验证成功。[远端验收报告](audits/gaussiandwm-remote-2026-11-07.json)。这是对新版文件的校验（不是旧的 1a06dc37 快照）；**逐段语义终审及小字号图文仍未完成，因此仍为 repairing，暂不切换下一篇或恢复新论文。**
+
+
+
 本轮根据 [主文及附录英文来源](https://arxiv.org/html/2512.23180v3) 修正 4.2 实现细节与 4.5 消融实验中合并过度的段落；补回 4.4 对图 3/图 4 的独立定性描述；恢复补充材料 B 的源文顺序（800 场景介绍 → 数据处理 → 语言标签与 S1–S3 → S4/S5）。更新内容已经同时写入 [完整译文 Markdown](2026-10-28_CVPR2026_GaussianDWM/translation.md)、[独立译文 HTML](2026-10-28_CVPR2026_GaussianDWM/translation.html) 和 [index.html 内嵌译文](2026-10-28_CVPR2026_GaussianDWM/index.html)。[逐段对照核查记录](2026-10-28_CVPR2026_GaussianDWM/source-paragraph-fidelity-2026-11-07.md) 列明了完成和未完成部分。
 
 更新后的 8 页中文简报、HTML 离线访问检测、逐文件 manifest、展开内容、可选 ZIP 已由 [GitHub 重新构建工作流](https://github.com/Daylawrence/Paper/actions/runs/42267068012) 成功生成；含新译文的 ZIP 为 22,183,917 字节。此处“工作流构建成功”**不等于**新版本独立远端复验或全文逐段翻译验收成功，需以下独立远端报告确认才可声称所有文件完整。**GaussianDWM 仍处于 repairing；后续仍优先修复本篇。**
