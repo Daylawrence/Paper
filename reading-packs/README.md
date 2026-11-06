@@ -1,5 +1,13 @@
 # 论文阅读包（展开 Markdown / PDF 优先）
 
+## 2026-11-07：原文逐段对齐继续修复（新的源码同步与远端核验）
+
+本轮根据 [主文及附录英文来源](https://arxiv.org/html/2512.23180v3) 修正 4.2 实现细节与 4.5 消融实验中合并过度的段落；补回 4.4 对图 3/图 4 的独立定性描述；恢复补充材料 B 的源文顺序（800 场景介绍 → 数据处理 → 语言标签与 S1–S3 → S4/S5）。更新内容已经同时写入 [完整译文 Markdown](2026-10-28_CVPR2026_GaussianDWM/translation.md)、[独立译文 HTML](2026-10-28_CVPR2026_GaussianDWM/translation.html) 和 [index.html 内嵌译文](2026-10-28_CVPR2026_GaussianDWM/index.html)。[逐段对照核查记录](2026-10-28_CVPR2026_GaussianDWM/source-paragraph-fidelity-2026-11-07.md) 列明了完成和未完成部分。
+
+更新后的 8 页中文简报、HTML 离线访问检测、逐文件 manifest、展开内容、可选 ZIP 已由 [GitHub 重新构建工作流](https://github.com/Daylawrence/Paper/actions/runs/42267068012) 成功生成；含新译文的 ZIP 为 22,183,917 字节。此处“工作流构建成功”**不等于**新版本独立远端复验或全文逐段翻译验收成功，需以下独立远端报告确认才可声称所有文件完整。**GaussianDWM 仍处于 repairing；后续仍优先修复本篇。**
+
+
+
 ## 2026-11-07：GaussianDWM 附录样例恢复、离线浏览器验收与远端完整性通过（仍修复中）
 
 本轮按 [DriveVLA-W0 实际页面模板](2026-09-16_ICLR2026_DriveVLA-W0_%E9%98%85%E8%AF%BB%E5%8C%85/) 继续修复 GaussianDWM，保留原制作日期 **2026-10-28**。已对照[论文原文第14页](2026-10-28_CVPR2026_GaussianDWM/pages/page-14.jpg) 恢复 QA 字段、完整前 4 帧/后 6 帧轨迹七元组；[第17页](2026-10-28_CVPR2026_GaussianDWM/pages/page-17.jpg)、[第18页](2026-10-28_CVPR2026_GaussianDWM/pages/page-18.jpg) 的补充定性图已加入译文并给出相机、时间及动作标签中英对照。详见 [11月7日原文视觉核对记录](2026-10-28_CVPR2026_GaussianDWM/source-visual-audit-2026-11-07.md)。

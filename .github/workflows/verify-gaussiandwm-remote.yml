@@ -1,4 +1,5 @@
 name: GaussianDWM current remote full-content verification
+# 2026-11-07 fidelity: independent immutable remote verification after source-to-Chinese paragraph revision.
 on:
   push:
     branches: [main]
