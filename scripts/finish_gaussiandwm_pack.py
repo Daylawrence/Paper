@@ -2,6 +2,7 @@
 """GaussianDWM maintenance run: rebuild current PDF brief and optional ZIP, audit offline pack.
 Only infrastructure/content synchronization is automated; NEVER claim complete Chinese translation.
 """
+# 2026-11-07 translation source alignment: rebuild after B/4.2/4.4/4.5 fidelity corrections.
 from __future__ import annotations
 import datetime as dt
 import hashlib

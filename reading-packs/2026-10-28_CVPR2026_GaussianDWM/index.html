@@ -103,8 +103,9 @@
 <p>作者使用两个数据集评估场景理解和场景生成。nuScenes [2] 是常用自动驾驶数据集，系统输入六个环视摄像头的图像。NuInteract [77] 是较新的场景理解基准，提供约 150 万条标注，支持二维感知和三维视觉定位等多项任务。</p>
 <p>场景理解采用标准语言和图像描述指标，包括 gCIDEr [54]、BLEU-4 [46] 与 ROUGE [39]；场景生成采用图像的 FID（Fréchet Inception Distance）与视频的 FVD（Fréchet Video Distance）进行评价。</p>
 <h3>4.2 实现细节</h3>
-<p>整个训练流程分为三个阶段。第一阶段先独立训练 Gaussian Tokenizer、投影器及所提出的采样策略，然后将这些组件接入 LLM 进行联合微调；该阶段的模型训练使用 16 张 NVIDIA A100 GPU。</p>
-<p>第二阶段训练多模态生成模块：从低分辨率（224×400）RGB 视频生成模型出发，将其扩展为低分辨率 RGB-D 生成模型，最后使用混合帧长度策略细化为高分辨率（424×800）RGB-D 视频生成器。作者采用 simulation-free rectified flow（无需仿真的整流流）与 v-prediction 损失 [17] 优化。第三阶段端到端联合优化所有组件，以保持场景理解与生成的一致性。</p>
+<p>整个训练流程分为三个阶段。第一阶段，作者先独立训练 Gaussian Tokenizer、投影器和提出的采样策略，然后把这些模块与 LLM 整合，进行联合微调。这个阶段采用 16 张 NVIDIA A100 GPU 训练全部模型。</p>
+<p>第二阶段专门训练多模态生成模块：首先训练低分辨率（224×400）的 RGB 视频生成模型，然后扩展为低分辨率 RGB-D 生成，最后采用混合帧长度策略将生成器细化为高分辨率（424×800）RGB-D 视频模型。优化采用 simulation-free rectified flow（无仿真整流流）与 v-prediction 损失 [17]。</p>
+<p>最后一个阶段对所有组件进行端到端联合优化，以保证场景理解和场景生成之间的一致性。</p>
 <figure><img src="images/figure3.jpg" alt="GaussianDWM 实验图"><figcaption>图 3：场景理解与场景生成的定性结果。自上而下展示当前场景的多视图输入和三维 Gaussian 椭球、场景理解结果，以及空间和时间方向的场景生成结果。</figcaption></figure>
 <h3>4.3 场景理解</h3>
 <p>作者将场景理解的实验划分为区域描述与感知、规划、二维视觉定位和三维视觉定位四项任务，结果见表 1。实验设置严格遵循 DriveMonkey [77]。</p>
@@ -118,13 +119,17 @@
 <figure class="source-page-figure"><a href="pages/page-08.jpg"><img src="pages/page-08.jpg" loading="lazy" alt="原文第8页包含图4的RGB-D定性比较、表3和表4"></a><figcaption>原文第 8 页完整页图：上方为图 4 RGB-D 比较，下方为表 3、表 4。此处使用原文页图，而非独立裁切图 4；可离线查看。</figcaption></figure>
 <p>作者比较了 PVG [5]、EmerNeRF [72]、StreetGaussian [68]、OmniRe [7]、FreeVS [55] 和 DiST-4D [25] 等街景合成模型，定量结果见表 3。由于视点平移后的真实标注不可得，空间合成采用 FID 和 FVD 作为评价指标。</p>
 <div class="table-caption">表 3：nuScenes 上新视角合成的定量比较。不同视点偏移下的 FID/FVD 越低越好。GaussianDWM 在 ±1m 和 ±2m 两组均较强，但 ±4m 时 DiST-S 的 FID/FVD 分别为 17.57/105.29，低于 GaussianDWM 的 18.81/116.40，故不能声称所有偏移下都获得最佳数值。</div><table><thead><tr><th>方法</th><th>±1m FID↓</th><th>±1m FVD↓</th><th>±2m FID↓</th><th>±2m FVD↓</th><th>±4m FID↓</th><th>±4m FVD↓</th></tr></thead><tbody><tr><td>PVG</td><td>48.15</td><td>246.74</td><td>60.44</td><td>356.23</td><td>84.50</td><td>501.16</td></tr><tr><td>EmerNeRF</td><td>37.57</td><td>171.47</td><td>52.03</td><td>294.55</td><td>76.11</td><td>497.85</td></tr><tr><td>StreetGaussian</td><td>32.12</td><td>153.45</td><td>43.24</td><td>256.91</td><td>67.44</td><td>429.98</td></tr><tr><td>OmniRe</td><td>31.48</td><td>152.01</td><td>43.31</td><td>254.52</td><td>67.36</td><td>428.20</td></tr><tr><td>FreeVS</td><td>51.26</td><td>431.99</td><td>62.04</td><td>497.37</td><td>77.14</td><td>556.14</td></tr><tr><td>DiST-S</td><td>10.12</td><td>45.14</td><td>12.97</td><td>68.80</td><td>17.57</td><td>105.29</td></tr><tr><td>GaussianDWM (Ours)</td><td>8.36</td><td>44.50</td><td>11.27</td><td>68.17</td><td>18.81</td><td>116.40</td></tr></tbody></table>
+<p>论文还在图 3 展示空间场景生成的定性结果，并在图 4 与已有新视角合成方法进一步比较。作者据此描述 RGB 和深度生成的视觉质量，以及世界知识、扩散生成和三维 Gaussian 场景表示之间的互补作用；定性观察应与表 3 的定量结果分开理解。</p>
 <p>大视点偏移（例如 ±4 m）下的可视化表明，该方法有望结合三维 Gaussian 场景表示与扩散生成的优势。高层世界知识加低层几何线索构成的双条件机制，旨在提升较大视点变化下的语义与空间一致性，但应与表 3 的实际数值一起判断效果。</p>
 <p>双条件设计中，高层世界知识引导模型进行未来场景的时间推理，低层稀疏条件约束二维纹理和风格的一致性。这体现了显式世界知识对时序生成语义一致性和空间一致性的作用。总体而言，GaussianDWM 同时处理复杂驾驶场景的理解和生成，为统一式驾驶世界模型提供了研究方向。</p>
 <h3>4.5 消融实验</h3>
-<p>作者对关键组件开展消融，系统分析 3D Gaussian 场景表示、混合采样策略和双条件生成设计各自对整体性能的影响。</p>
-<p>3D Gaussian 表示。相比其他场景表示，Gaussian 可表达纹理与几何特征，并通过语言场与三维空间直接对应。表 2 显示，加入 Gaussian 表示后，LLM 对场景的几何与语义信息的理解得到提升。</p>
-<p>混合采样。考虑到三维 Gaussian 表示中的冗余，作者通过比较随机采样、均匀加 top-k 采样、基于相似度的采样，发现文本查询与 Gaussian token 间的相似度能帮助选择任务相关基元，在需要聚焦对象的 grounding 任务中改善表现。</p>
-<p>高层世界知识。作者还比较双条件中不同控制信号的作用。表 4 显示，低层条件与高层世界知识共同使用，比只用低层条件的生成结果更好；仅有高层条件时该实验设置无法得到有效输出。</p>
+<p>本节开展全面的组件消融研究，以分别检验三维 Gaussian 场景表示、混合采样策略及双条件生成设计对整体性能的影响。</p>
+<p><strong>三维 Gaussian 表示。</strong> 相比其他场景表示，3D Gaussian 能编码包括纹理、几何结构在内的环境信息，并通过其语言特征与三维位置实现直接对齐，消融结果列于表 2。</p>
+<p>这些实验用于检验引入 3D Gaussian 表示是否确实改善 LLM 对场景的三维理解，包括对场景几何关系与语义特征的感知；不能仅由模型命名推断其贡献。</p>
+<p><strong>混合采样。</strong> 由于 Gaussian 场景表示高度冗余，作者使用混合采样策略提取环境中的重要成分；相关结果见表 2。</p>
+<p>作者比较随机采样、uniform+top-k 采样及文本—Gaussian token 相似度采样。对于需要聚焦查询目标的定位任务，相似度策略能更有选择地保留任务相关 Gaussian，改善场景理解性能。</p>
+<p><strong>高层世界知识。</strong> 相比仅在单个层级控制生成的框架，作者提出高层世界知识和低层几何信息相结合的双条件引导机制，相关消融结果见表 4。</p>
+<p>论文据此报告：在长序列预测和较大视点变化的设置下，世界知识条件有助于生成质量。表 4 中，仅使用高层条件的一行未成功生成结果；结合两类条件的 FID 数值优于仅使用低层条件。但表 4 只报告两个空间偏移设置，不能由此断言所有时间预测或所有偏移范围都获得最佳表现。</p>
 <div class="table-caption">表 4：双条件生成机制的消融。横线表示对应设置下生成失败。原文表头写 FID ±1m、±2m，数值如表所示。</div><table><thead><tr><th>低层条件</th><th>高层条件</th><th>FID ±1m</th><th>FID ±2m</th></tr></thead><tbody><tr><td>×</td><td>✓</td><td>—</td><td>—</td></tr><tr><td>✓</td><td>×</td><td>10.12</td><td>45.14</td></tr><tr><td>✓</td><td>✓</td><td>8.36</td><td>44.50</td></tr></tbody></table>
 </section>
 
@@ -138,17 +143,17 @@
 
 </section>
 <section id="supp-b"><h2>补充材料 B. 数据集细节</h2>
+<p>作者为 nuScenes [2] 构建首个面向室外城市场景的大规模三维 Gaussian 数据集，包含从原始 nuScenes 序列处理得到的 800 个场景，目的是使 LLM 可以利用具有高质量几何和外观信息的 Gaussian 表示进行可泛化的三维场景理解。</p>
+<h3>数据处理（Dataset Processing）</h3>
+<p>部分场景的帧间重叠很少，或存在严重运动模糊，无法获得准确的 3DGS 重建。因此，作者删除重建质量未达标准的图像或整个场景。nuScenes 提供高质量 LiDAR 点云，作者使用聚合后的 LiDAR 点初始化场景，而不是采用常规 3DGS 流水线中的 COLMAP，以避免大场景下的明显几何误差。对于具有深度监督的数据，还添加深度损失以提高几何保真度；优化结束后再根据 PSNR 过滤重建场景，筛选出可用于预训练的数据。</p>
+<h3>语言标签收集与训练（Language Label Collection and Training）</h3>
+<p>语言标签收集的目标是建立三维语言配对数据，为每个 Gaussian 基元附加丰富的语言特征 fᵢ。作者在 LangSplat [6] 基础上构建 3DGS 语言场，利用 CLIP 特征和 SAM [4] 提取的分层语义。对于像素 v，语言渲染 F(v) 及其 alpha 定义与补充公式（S3）相同，且 αᵢ=oᵢGᵢ²ᴰ(v)：oᵢ 是不透明度，Gᵢ²ᴰ 是投影到二维后的 Gaussian 响应。</p>
 <p>为优化三维 Gaussian 的参数，首先将它们渲染到二维图像平面，并使用基于 tile 的光栅化器提高效率。作为各向异性三维 Gaussian 的集合，每个基元 G(x) 由均值 μ∈ℝ³ 与协方差矩阵 Σ 描述：</p>
 <div class="formula" data-latex="G(x)=\exp\left(-\frac12(x-\mu)^\top\Sigma^{-1}(x-\mu)\right)"><span class="formula-rendered">G(x) = exp[−½(x−μ)ᵀΣ⁻¹(x−μ)]</span><span class="formula-number">(S1, 补充)</span></div>
 <p>对 Gaussian 的颜色渲染使用前向 alpha compositing；每个基元的颜色为 cᵢ，alpha 为 αᵢ，索引按射线的遮挡顺序排列。渲染到像素 v 的颜色为：</p>
 <div class="formula" data-latex="C(v)=\sum_{i\in\mathcal N}c_i\alpha_i\prod_{j=1}^{i-1}(1-\alpha_j)"><span class="formula-rendered">C(v) = ∑ᵢ∈𝒩 cᵢαᵢ∏ⱼ₌₁ⁱ⁻¹(1−αⱼ)</span><span class="formula-number">(S2, 补充)</span></div>
 <p>为保留光栅化效率，同样按该合成机制渲染 Gaussian 的语言特征：</p>
 <div class="formula" data-latex="F(v)=\sum_{i\in\mathcal N}f_i\alpha_i\prod_{j=1}^{i-1}(1-\alpha_j)"><span class="formula-rendered">F(v) = ∑ᵢ∈𝒩 fᵢαᵢ∏ⱼ₌₁ⁱ⁻¹(1−αⱼ)</span><span class="formula-number">(S3, 补充)</span></div>
-<p>作者为 nuScenes [2] 构建首个面向室外城市场景的大规模三维 Gaussian 数据集，包含从原始 nuScenes 序列处理得到的 800 个场景，目的是使 LLM 可以利用具有高质量几何和外观信息的 Gaussian 表示进行可泛化的三维场景理解。</p>
-<h3>数据处理（Dataset Processing）</h3>
-<p>部分场景的帧间重叠很少，或存在严重运动模糊，无法获得准确的 3DGS 重建。因此，作者删除重建质量未达标准的图像或整个场景。nuScenes 提供高质量 LiDAR 点云，作者使用聚合后的 LiDAR 点初始化场景，而不是采用常规 3DGS 流水线中的 COLMAP，以避免大场景下的明显几何误差。对于具有深度监督的数据，还添加深度损失以提高几何保真度；优化结束后再根据 PSNR 过滤重建场景，筛选出可用于预训练的数据。</p>
-<h3>语言标签收集与训练（Language Label Collection and Training）</h3>
-<p>语言标签收集的目标是建立三维语言配对数据，为每个 Gaussian 基元附加丰富的语言特征 fᵢ。作者在 LangSplat [6] 基础上构建 3DGS 语言场，利用 CLIP 特征和 SAM [4] 提取的分层语义。对于像素 v，语言渲染 F(v) 及其 alpha 定义与补充公式（S3）相同，且 αᵢ=oᵢGᵢ²ᴰ(v)：oᵢ 是不透明度，Gᵢ²ᴰ 是投影到二维后的 Gaussian 响应。</p>
 <p>每个环境通常需要数百万个 Gaussian 才能表示其几何和外观。CLIP 的语言嵌入维数为 512；如果为每个 Gaussian 直接存储/学习 512 维特征，将显著增加计算和内存成本。为此，作者引入场景级语言自动编码器 E，将 CLIP 特征 F(v)∈ℝᴰ 映射成 H(v)=E(F(v))∈ℝᵈ，其中 d 远小于 D；设置 D=512、d=3。训练时，解码器 Ψ 用于重构 CLIP 语言特征，目标为：</p>
 <div class="formula" data-latex="\mathcal L_{\mathrm{ae}}=\sum_{t=1}^T d_{\mathrm{ae}}\big(\Psi(E(F(v))),F(v)\big)"><span class="formula-rendered">𝓛ₐₑ = ∑ₜ₌₁ᵀ dₐₑ(Ψ(E(F(v))), F(v))</span><span class="formula-number">(S4, 补充)</span></div>
 <p>自动编码器训练后，作者把所有 CLIP 嵌入变换到场景专属的低维潜在空间 H(v)。随后，三维语言 Gaussian 直接学习这一场景专属 latent 特征，而不是学习完整 512 维 CLIP 向量。场景先验使内存开销明显下降；语言 Gaussian 的优化目标为：</p>
