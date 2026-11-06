@@ -10,19 +10,19 @@
       "directory": "reading-packs/2026-10-28_CVPR2026_GaussianDWM",
       "original_date": "2026-10-28",
       "legacy_status": "repairing",
-      "repair_status": "2026-11-07_offline_katex_and_brief_sync_and_asset_manifest_rebuilt_full_translation_audit_pending",
+      "repair_status": "2026-11-07_108_remote_expanded_blobs_109_zip_entries_pdf_browser_verified_full_source_translation_quality_audit_pending",
       "new_standard_completed": false,
       "last_repair_date": "2026-11-07",
       "pending_items": [
-        "source_paragraph_alignment",
-        "remaining_figure_and_table_labels",
-        "remote_immutable_commit_validation"
+        "main_paper_and_supplementary_paragraph_1_to_1_source_translation_fidelity",
+        "remaining_figure_table_labels_and_small_box_coordinates_visual_comparison"
       ],
       "partial_achievements": [
         "2026-11-06: Table 1 BEVFormer/PETR/CAPE and Figure 4 verified against source PDF pages 6/8; translation.md/html/index synchronized",
         "2026-11-07: restored template KaTeX vendor, synchronized current brief PDF, regenerated optional ZIP and manifest; browser=False; translation fidelity pending",
         "2026-11-07: rebuilt KaTeX/brief/optional ZIP with source page 14 QA and trajectory examples, source figures 1/2, and browser verification=True; full paragraph fidelity pending",
-        "2026-11-07: independent remote check PASSED 108 expanded files+109 ZIP entries+19-page original PDF+8-page brief; real offline Chromium test passed 10 KaTeX equations, 850px restored scroll, 152px sidebar"
+        "2026-11-07: independent remote check PASSED 108 expanded files+109 ZIP entries+19-page original PDF+8-page brief; real offline Chromium test passed 10 KaTeX equations, 850px restored scroll, 152px sidebar",
+        "2026-11-07: latest independent remote verification at commit 1a06dc37 verified 108 expanded payload files, 109 ZIP entries/CRC, 19-page paper and 8-page brief; full paragraph semantic audit still pending"
       ]
     },
     {

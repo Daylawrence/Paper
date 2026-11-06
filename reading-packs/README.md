@@ -6,7 +6,9 @@
 
 实际 GitHub Actions 离线 `file://` Chromium/Playwright 复测 **通过**：三个选项及嵌入内容一致、KaTeX 渲染 10 个公式、切换后恢复右侧滚动至 850px、390px 窄屏左目录宽 152px、JavaScript 运行错误为零。[浏览器验收记录](2026-10-28_CVPR2026_GaussianDWM/offline-quality-check-2026-11-07.json)。
 
-[独立远端校验](audits/gaussiandwm-remote-2026-11-07.json) **通过**：108 个展开内容文件的远端 Git blob SHA/字节数/本地 SHA256 一致，最新 22,178,505 字节 ZIP 重新下载、CRC、内部 109 项内容完整性校验成功；远端原文 PDF 17,452,487 字节（19 页）、中文简报 PDF 441,192 字节（8 页）均通过重新下载、哈希和页数验证。校验对象为不可变 Git commit `927e0ec3955df35335ebe03d72840618041628ad`，后来新增的 README、审计文件不改变其已验收的阅读包载荷。
+[独立远端校验](audits/gaussiandwm-remote-2026-11-07.json) **通过**：108 个展开内容文件的远端 Git blob SHA/字节数/本地 SHA256 一致，最新 22,181,699 字节 ZIP 重新下载、CRC、内部 109 项内容完整性校验成功；远端原文 PDF 17,452,487 字节（19 页）、中文简报 PDF 441,199 字节（8 页）均通过重新下载、哈希和页数验证。校验对象为不可变 Git commit `1a06dc37ab17ee96715a6dda0974ad9d862061f9`，后来新增的 README、审计文件不改变其已验收的阅读包载荷。
+
+11 月 7 日补充了两幅补充图中主要问答的逐项中英对应，完善 [逐段覆盖清单](2026-10-28_CVPR2026_GaussianDWM/coverage.md)；同日再次重建 ZIP/PDF 并通过最新独立远端核验。
 
 **仍不能标记 completed：**全篇非参考文献部分的逐段英文—中文来源对齐、其余图/表内标签的逐项内容校对尚未完成。现有成果可从 [译文 Markdown](2026-10-28_CVPR2026_GaussianDWM/translation.md)、[关键解释 Markdown](2026-10-28_CVPR2026_GaussianDWM/algorithms.md)、[原文 PDF](2026-10-28_CVPR2026_GaussianDWM/paper.pdf)、[完整展开目录](2026-10-28_CVPR2026_GaussianDWM/) 阅读；GitHub 普通文件页面不能运行 HTML，本地克隆仓库后打开 `index.html`。GaussianDWM 继续 repairing，新论文暂停。
 
