@@ -52,12 +52,12 @@ jobs:
               url="https://raw.githubusercontent.com/Daylawrence/Paper/"+head+"/"+urllib.parse.quote(prefix+rel,safe="/")
               return get(url)
           def sha256(b):return hashlib.sha256(b).hexdigest()
-          def blob(b):return hashlib.sha1(b"blob "+str(len(b)).encode()+b"\\0"+b).hexdigest()
+          def blob(b):return hashlib.sha1(b"blob "+str(len(b)).encode()+bytes([0])+b).hexdigest()
           catalog=json.loads((root/"catalog.json").read_text("utf-8"))
           c=next(x for x in catalog if x.get("paper")=="GaussianDWM")
           zipname="2026-10-28_CVPR2026_GaussianDWM_阅读包.zip"
           zbytes=raw(zipname)
-          assert len(zbytes)==c["zip_bytes"] and sha256(zbytes)==c["zip_sha256"] and blob(zbytes)==c["zip_git_blob_sha"]
+          assert len(zbytes)==c["zip_bytes"] and sha256(zbytes)==c["zip_sha256"] and blob(zbytes)==c["zip_git_blob_sha"],{"downloaded_bytes":len(zbytes),"expected_bytes":c["zip_bytes"],"downloaded_sha256":sha256(zbytes),"expected_sha256":c["zip_sha256"],"downloaded_blob":blob(zbytes),"expected_blob":c["zip_git_blob_sha"]}
           zipnames=set()
           dirname=zipname[:-4]+"/"
           with zipfile.ZipFile(io.BytesIO(zbytes)) as z:
