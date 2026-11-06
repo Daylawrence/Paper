@@ -20,7 +20,7 @@
 <section id="coverage"><h2>章节覆盖清单与版本说明</h2>
 <p>本译文对应 <strong>GaussianDWM: 3D Gaussian Driving World Model for Unified Scene Understanding and Multi-Modal Generation</strong>，arXiv:2512.23180v3（2026-05-16），并合并 CVPR 2026 官方补充材料。主论文 12 页、补充材料 7 页，共 19 页。参考文献列表不翻译；正文引用编号保持原样。</p>
 <table><tr><th>主论文</th><th>补充材料</th></tr><tr><td>摘要；1 引言；2 相关工作；3 方法（3.1–3.3）；4 实验（4.1–4.5）；5 结论</td><td>A 概览；B 数据集细节；C 实现细节；D 消融实验；E 扩展实验</td></tr></table>
-<p class="note">目前尚未达到完整逐段翻译验收：主论文方法、引言、相关工作和实验主体已补充，附录 A–E 已扩展，但主文表 1 的专用检测器合并单元格、个别补充表/图标签和轨迹坐标仍需对照原 PDF 核验，译文与网页视觉/离线公式也尚未完成独立验收。详见覆盖清单。 <a href="coverage.html">覆盖清单（含待核验项）</a>。</p></section>
+<p class="note">目前状态 repairing：已对照原文第 6 页表 1、第 8 页图 4、第 14 页 QA/四帧历史与六帧轨迹示例及第 17、18 页补充定性图。离线 Chromium/KaTeX、窄屏、滚动位置恢复和 108 文件的独立远端哈希校验通过；但全篇其余文字与图表尚未完成逐段审校，不得标为完整翻译。详见 <a href="coverage.html">覆盖清单</a>及 <a href="source-visual-audit-2026-11-07.md">视觉核对报告</a>。</p></section>
 
 <section id="abstract"><h2>摘要</h2>
 <p>随着生成模型取得进展，驾驶世界模型（Driving World Model，DWM）快速发展。然而，现有 DWM 缺乏三维场景理解能力：它们只能依据输入数据条件生成内容，无法解释或推理驾驶环境。此外，现有方法多用点云或 BEV 特征表征三维空间，不能将文本信息准确对齐到其底层三维场景。</p>
@@ -231,7 +231,10 @@
 <h3>额外定性结果与图注</h3>
 <p>补充图 1：场景理解与场景生成的定性结果。从上到下依次展示当前场景的多视图输入、三维 Gaussian 椭球、场景理解输出，以及空间和时间方向的场景生成。图中的任务示例包括：识别前视行人并返回二维框、识别右前摄像头车辆、回答自车应如何行动（示例回答「左转」），并展示文本动作条件下的未来时间帧。</p>
 <p>补充图 2：雨天场景的理解与生成定性结果。示例包含：在左前摄像头检测车辆并返回多个二维框、在右前摄像头返回车辆三维框、回答「直行」、解释目标为「停放的车辆」、预测停放车辆将保持静止，以及回答移动车辆可能接近自车。下方展示参考视角及 +1 m、+2 m 的空间生成结果。</p>
-<p>补充图 1 的图内英文标签：6-View Images（六路图像）、3D Gaussians（三维高斯），六个相机方向分别为 CAM_FRONT_LEFT（左前）、CAM_FRONT（前）、CAM_FRONT_RIGHT（右前）、CAM_BACK_RIGHT（右后）、CAM_BACK（后）、CAM_BACK_LEFT（左后）；Temporal Generation（时间生成）在 GT（真值）和 Generated（生成）下依次展示 t1、t2、t3。场景问答还包含 Turn Left（向左转）的驾驶回答。</p><figure><img src="pages/page-17.jpg" alt="补充图1原文整页：场景理解和时间生成"><figcaption>补充图 1（原文第 17 页）：场景理解、六路相机输入、三维高斯及未来 RGB-D 生成，保留全部图内英文问题与框坐标供对照。</figcaption></figure>
+<p>补充图 1 的图内英文标签：6-View Images（六路图像）、3D Gaussians（三维高斯），六个相机方向分别为 CAM_FRONT_LEFT（左前）、CAM_FRONT（前）、CAM_FRONT_RIGHT（右前）、CAM_BACK_RIGHT（右后）、CAM_BACK（后）、CAM_BACK_LEFT（左后）；Temporal Generation（时间生成）在 GT（真值）和 Generated（生成）下依次展示 t1、t2、t3。场景问答还包含 Turn Left（向左转）的驾驶回答。</p><h3>补充图内问答的逐项中英对照（原文第17、18页）</h3>
+<p><strong>图1：</strong>① 询问前视 `CAM_FRONT` 中的行人数量/二维框，示例边界框 [315,230,378,322]，类别 pedestrian（行人）；② 查询右前 `CAM_FRONT_RIGHT` 的车辆数量/二维框，类别 car；③ 识别前视行人并返回 [x_center,y_center,z_center,x_size,y_size,z_size,roll,pitch,yaw] 三维框及类别；④ 询问自车驾驶行动，回答 Turn Left（向左转）；⑤ 询问前视框 (315,231),(378,322) 的含义，回答 a adult which is moving（正在运动的成年人，原文如此）。</p>
+<p><strong>图2：</strong>① 左前 `CAM_FRONT_LEFT` 查询车辆数量和二维位置，示例框 [102,245,336,337]、[381,248,557,315]；② 右前 `CAM_FRONT_RIGHT` 查询汽车的三维框；③ 规划回答 Go Straight（直行）；④ 前视 (459,240),(489,258) 对象回答 Parked car（停放汽车）；⑤ 该停放车辆未来仍静止（It will remain stationary）；⑥ 前视 (586,234),(700,267) 移动车辆将接近自车（It will be close to the ego car）。三维框中的极小数字及字符串请以紧邻的完整源 PDF 原图对照，尚未全部逐字符验证。</p>
+<figure><img src="pages/page-17.jpg" alt="补充图1原文整页：场景理解和时间生成"><figcaption>补充图 1（原文第 17 页）：场景理解、六路相机输入、三维高斯及未来 RGB-D 生成，保留全部图内英文问题与框坐标供对照。</figcaption></figure>
 <p>补充图 2：雨天场景的六路车辆检测与规划，文字答复 Go Straight（直行）、Parked car（停放车辆）、It will remain stationary（将保持静止）、It will be close to the ego car（会接近自车）。Spatial Generation（空间生成）展示 Ref. GT、+1m、+2m 视点及 RGB/深度对比。</p><figure><img src="pages/page-18.jpg" alt="补充图2原文整页：雨天场景和空间生成"><figcaption>补充图 2（原文第 18 页）：雨天理解与空间生成，保留原图中的车辆框及问答。</figcaption></figure>
 <figure><img src="images/supplement.jpg" alt="补充材料图"><figcaption>补充材料定性结果图（仓库现有图像）。图内原始英文问题、框坐标、模型答复和时间帧应与官方 PDF 中的补充图 1、2 一并核对；该图片本身尚未独立证明覆盖两张完整原图。</figcaption></figure>
 </section>

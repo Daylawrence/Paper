@@ -198,7 +198,7 @@ report["browser"]=browser
 mark("real_offline_browser",browser)
 # Generate honest report before hashing and archiving.
 report["remaining"]=[
-    "source-paragraph one-to-one audit for complete main text and 7 supplement pages",
+    "source-paragraph one-to-one audit for complete main text and non-reference supplement pages",
     "finish full-source paragraph alignment beyond the visually checked page-14 QA/trajectory JSON",
     "check remaining figure labels, table cells and target boxes against source pages",
     "synchronize full paragraph translation to corresponding HTML and Markdown",
