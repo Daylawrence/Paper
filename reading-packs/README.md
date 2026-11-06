@@ -1,5 +1,16 @@
 # 论文阅读包（展开 Markdown / PDF 优先）
 
+## 2026-11-07：GaussianDWM 附录样例恢复、离线浏览器验收与远端完整性通过（仍修复中）
+
+本轮按 [DriveVLA-W0 实际页面模板](2026-09-16_ICLR2026_DriveVLA-W0_%E9%98%85%E8%AF%BB%E5%8C%85/) 继续修复 GaussianDWM，保留原制作日期 **2026-10-28**。已对照[论文原文第14页](2026-10-28_CVPR2026_GaussianDWM/pages/page-14.jpg) 恢复 QA 字段、完整前 4 帧/后 6 帧轨迹七元组；[第17页](2026-10-28_CVPR2026_GaussianDWM/pages/page-17.jpg)、[第18页](2026-10-28_CVPR2026_GaussianDWM/pages/page-18.jpg) 的补充定性图已加入译文并给出相机、时间及动作标签中英对照。详见 [11月7日原文视觉核对记录](2026-10-28_CVPR2026_GaussianDWM/source-visual-audit-2026-11-07.md)。
+
+实际 GitHub Actions 离线 `file://` Chromium/Playwright 复测 **通过**：三个选项及嵌入内容一致、KaTeX 渲染 10 个公式、切换后恢复右侧滚动至 850px、390px 窄屏左目录宽 152px、JavaScript 运行错误为零。[浏览器验收记录](2026-10-28_CVPR2026_GaussianDWM/offline-quality-check-2026-11-07.json)。
+
+[独立远端校验](audits/gaussiandwm-remote-2026-11-07.json) **通过**：108 个展开内容文件的远端 Git blob SHA/字节数/本地 SHA256 一致，最新 22,178,505 字节 ZIP 重新下载、CRC、内部 109 项内容完整性校验成功；远端原文 PDF 17,452,487 字节（19 页）、中文简报 PDF 441,192 字节（8 页）均通过重新下载、哈希和页数验证。校验对象为不可变 Git commit `927e0ec3955df35335ebe03d72840618041628ad`，后来新增的 README、审计文件不改变其已验收的阅读包载荷。
+
+**仍不能标记 completed：**全篇非参考文献部分的逐段英文—中文来源对齐、其余图/表内标签的逐项内容校对尚未完成。现有成果可从 [译文 Markdown](2026-10-28_CVPR2026_GaussianDWM/translation.md)、[关键解释 Markdown](2026-10-28_CVPR2026_GaussianDWM/algorithms.md)、[原文 PDF](2026-10-28_CVPR2026_GaussianDWM/paper.pdf)、[完整展开目录](2026-10-28_CVPR2026_GaussianDWM/) 阅读；GitHub 普通文件页面不能运行 HTML，本地克隆仓库后打开 `index.html`。GaussianDWM 继续 repairing，新论文暂停。
+
+
 ## 2026-11-06：GaussianDWM 表1及图4原文视觉核验（继续修复）
 
 根据仓库中的 [原文第6页](2026-10-28_CVPR2026_GaussianDWM/pages/page-06.jpg) 人工核对补齐 BEVFormer、PETR、CAPE 的3DVG检测指标；保留 BEVFormer F1=1.576（原文如此），跨任务不支持不按0分处理。根据 [原文第8页](2026-10-28_CVPR2026_GaussianDWM/pages/page-08.jpg) 恢复图4的RGB-D定性比较图注、六组方法标签，在译文HTML和Markdown中直接引用已有原文页图，无需在线图源。[详细视觉核验](2026-10-28_CVPR2026_GaussianDWM/source-visual-audit-2026-11-06.md)。 [11月6日远端逐文件校验报告](2026-10-28_CVPR2026_GaussianDWM/remote-verification-2026-11-06.json)：37/37 Git blob SHA 匹配、36/36 实际字节数匹配（原文 PDF 本轮仅复核 blob SHA，原字节数沿用此前验收）；已修正3个文件的 Unicode 字节数/SHA256。
