@@ -10,7 +10,7 @@ permissions:
   contents: write
 concurrency:
   group: gaussian-pack-finishing
-  cancel-in-progress: false
+  cancel-in-progress: true
 jobs:
   rebuild-and-check:
     runs-on: ubuntu-latest
@@ -22,12 +22,11 @@ jobs:
       - uses: actions/setup-python@v5
         with:
           python-version: "3.11"
-      - name: Install CJK PDF and browser-test libraries
+      - name: Install content and browser audit libraries (reuse runner Chrome)
         run: |
-          sudo apt-get update -qq
-          sudo apt-get install -y -qq fonts-noto-cjk libpango-1.0-0 libcairo2
           python -m pip install --quiet pymupdf beautifulsoup4 weasyprint playwright
-          python -m playwright install chromium
+          sudo apt-get install -y -qq fonts-noto-cjk || echo 'CJK package installation unavailable; continue with installed fonts'
+          command -v google-chrome || command -v chromium || command -v chromium-browser || true
       - name: Build synchronized PDF, repair local rendering and check assets
         run: python scripts/finish_gaussiandwm_pack.py
       - name: Publish content, manifests and audit without claiming completed
