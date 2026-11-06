@@ -4,6 +4,7 @@ on:
     branches: [main]
     paths:
       - ".github/workflows/verify-gaussiandwm-remote.yml"
+      - "reading-packs/2026-10-28_CVPR2026_GaussianDWM/manifest.json"
   workflow_dispatch:
 permissions:
   contents: write
@@ -99,7 +100,7 @@ jobs:
           print(json.dumps(result,ensure_ascii=False,indent=2))
           out=root/"audits"/"gaussiandwm-remote-2026-11-07.json"
           out.parent.mkdir(parents=True,exist_ok=True)
-          out.write_text(json.dumps(result,ensure_ascii=False,indent=2)+"\\n",encoding="utf-8")
+          out.write_text(json.dumps(result,ensure_ascii=False,indent=2)+chr(10),encoding="utf-8")
           PY
       - name: Commit independent remote audit without changing completion state
         shell: bash
