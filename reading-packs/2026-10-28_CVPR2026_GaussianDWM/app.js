@@ -17,4 +17,16 @@ set(key+":tab",name);makeToc();const previous=Number(get(key+":"+name));requestA
 tabs.forEach(b=>b.addEventListener("click",()=>show(b.dataset.tab)));
 let queued=false;main.addEventListener("scroll",()=>{if(queued)return;queued=true;requestAnimationFrame(()=>{save();queued=false})},{passive:true});
 window.addEventListener("pagehide",save);show(get(key+":tab")||"original");
+
+function renderFormulae(){
+  if(typeof window.katex==="undefined")return;
+  document.querySelectorAll(".formula[data-latex]").forEach(el=>{
+    const target=el.querySelector(".formula-rendered");
+    if(!target)return;
+    try{window.katex.render(el.getAttribute("data-latex"),target,{displayMode:true,throwOnError:false,strict:"ignore"});}
+    catch(err){el.dataset.mathError=String(err).slice(0,160);}
+  });
+}
+renderFormulae();
+
 })();

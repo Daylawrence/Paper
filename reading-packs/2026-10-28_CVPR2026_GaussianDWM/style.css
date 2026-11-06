@@ -10,3 +10,6 @@
 .panel pre{white-space:pre-wrap;overflow-wrap:anywhere}.panel td,.panel th{overflow-wrap:break-word}
 .panel:focus-visible{outline:2px solid var(--gold)}
 @media(max-width:720px){.reading{padding:14px 12px}.formula{padding:13px 35px 13px 8px}.formula-rendered{font-size:12px}}
+
+/* Offline KaTeX support mirrored from the authoritative DriveVLA-W0 vendor tree. */
+.katex-display{max-width:100%;overflow-x:auto;overflow-y:hidden;padding:4px 0}.formula .katex{font-size:1.09em}.formula-rendered .katex-html{white-space:nowrap}@media(max-width:720px){.formula .katex{font-size:.93em}}
