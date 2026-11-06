@@ -26,16 +26,16 @@
     "real_offline_browser": {
       "attempted": true,
       "success": false,
-      "reason": "AssertionError: Scroll position not restored: 0"
+      "reason": "AssertionError: Scroll position not restored: 2"
     }
   },
   "warnings": [
-    "Offline browser acceptance not fully passed: AssertionError: Scroll position not restored: 0"
+    "Offline browser acceptance not fully passed: AssertionError: Scroll position not restored: 2"
   ],
   "browser": {
     "attempted": true,
     "success": false,
-    "reason": "AssertionError: Scroll position not restored: 0"
+    "reason": "AssertionError: Scroll position not restored: 2"
   },
   "remaining": [
     "source-paragraph one-to-one audit for complete main text and 7 supplement pages",
