@@ -68,6 +68,15 @@ index=read(P/"index.html")
 trans=read(P/"translation.html")
 alg=read(P/"algorithms.html")
 si=BeautifulSoup(index,"html.parser")
+def extract_article(doc,classname):
+    marker='<article class="reading '+classname+'">'
+    start=doc.find(marker)
+    end=doc.rfind("</article>")
+    if start<0 or end<start:
+        raise AssertionError("Could not extract "+classname+" article from standalone HTML")
+    return doc[start:end+len("</article>")]
+trans=extract_article(trans,"translation-body")
+alg=extract_article(alg,"algorithms-body")
 st=BeautifulSoup(trans,"html.parser")
 sa=BeautifulSoup(alg,"html.parser")
 assert si.select_one("#translation") and si.select_one("#explanation")

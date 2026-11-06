@@ -13,9 +13,9 @@ function show(name){if(!allowed.includes(name)||!document.getElementById(name))n
 if(started)save();current=name;
 tabs.forEach(b=>{const on=b.dataset.tab===name;b.classList.toggle("active",on);b.setAttribute("aria-selected",String(on))});
 panels.forEach(p=>p.classList.toggle("active",p.id===name));
-set(key+":tab",name);makeToc();const previous=Number(get(key+":"+name));requestAnimationFrame(()=>main.scrollTop=Number.isFinite(previous)?Math.max(0,previous):0);started=true}
+set(key+":tab",name);makeToc();const previous=Number(get(key+":"+name));void main.offsetHeight;main.scrollTop=Number.isFinite(previous)?Math.max(0,previous):0;started=true}
 tabs.forEach(b=>b.addEventListener("click",()=>show(b.dataset.tab)));
-let queued=false;main.addEventListener("scroll",()=>{if(queued)return;queued=true;requestAnimationFrame(()=>{save();queued=false})},{passive:true});
+// Persist positions on tab switches and pagehide; avoid delayed scroll callbacks racing with a newly activated tab.
 window.addEventListener("pagehide",save);show(get(key+":tab")||"original");
 
 function renderFormulae(){

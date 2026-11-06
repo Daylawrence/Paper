@@ -5,6 +5,7 @@ on:
     paths:
       - ".github/workflows/finish-gaussiandwm.yml"
       - "scripts/finish_gaussiandwm_pack.py"
+      - "reading-packs/2026-10-28_CVPR2026_GaussianDWM/app.js"
   workflow_dispatch:
 permissions:
   contents: write
