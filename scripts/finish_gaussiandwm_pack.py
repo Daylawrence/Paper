@@ -94,7 +94,7 @@ for i in range(1,20):
     assert file.is_file() and file.stat().st_size>20000,repr(file)
 mark("source_pdf_pages",len(pdf))
 mark("original_jpg_pages",19)
-# The report discloses missing transliteration of source numeric trajectory examples.
+# Raw source extraction is kept for evidence; the manually checked JSON examples are now in translation.md/html.
 selected=(12,13,14,15,16,17,18,19)
 slices=[]
 for i in selected:
@@ -166,12 +166,18 @@ try:
         page.locator("[data-tab='original']").click()
         assert page.locator("#original").is_visible()
         main=page.locator(".layout main")
-        main.evaluate("(x)=>x.scrollTop=600")
+        # Simulate a real user scroll; assigning scrollTop while CSS smooth scrolling is
+        # active is asynchronous and previously yielded a false negative (0 or 2 px).
+        main.hover()
+        page.mouse.wheel(0,850)
+        page.wait_for_function("document.querySelector('.layout main').scrollTop >= 100",timeout=10000)
+        actual_before=main.evaluate("(x)=>x.scrollTop")
         page.locator("[data-tab='translation']").click()
         page.locator("[data-tab='original']").click()
-        page.wait_for_timeout(250)
+        page.wait_for_timeout(300)
         scroll=main.evaluate("(x)=>x.scrollTop")
-        assert scroll>=100,f"Scroll position not restored: {scroll}"
+        assert scroll>=100 and abs(scroll-actual_before)<200,(
+            f"Scroll not restored: before={actual_before}, after={scroll}")
         page.set_viewport_size({"width":390,"height":830})
         page.wait_for_timeout(200)
         aside=page.locator("aside").bounding_box()
@@ -193,8 +199,8 @@ mark("real_offline_browser",browser)
 # Generate honest report before hashing and archiving.
 report["remaining"]=[
     "source-paragraph one-to-one audit for complete main text and 7 supplement pages",
-    "verbatim and visual verification of supplemental trajectory and QA JSON",
-    "re-check remaining figure labels and translated tables against source images",
+    "finish full-source paragraph alignment beyond the visually checked page-14 QA/trajectory JSON",
+    "check remaining figure labels, table cells and target boxes against source pages",
     "synchronize full paragraph translation to corresponding HTML and Markdown",
     "re-run remote immutable-commit verification after this push"
 ]
@@ -229,10 +235,11 @@ item["legacy_status"]="repairing"
 item["new_standard_completed"]=False
 item["last_repair_date"]=TODAY
 item["repair_status"]="2026-11-07_offline_katex_and_brief_sync_and_asset_manifest_rebuilt_full_translation_audit_pending"
-item["pending_items"]=["source_paragraph_alignment","supplement_qa_trajectory_verbatim","figure_label_audit",
+item["pending_items"]=["source_paragraph_alignment","remaining_figure_and_table_labels",
                        "remote_immutable_commit_validation"]+([] if browser["success"] else ["offline_browser_validation"])
-item.setdefault("partial_achievements",[]).append(
-    f"{TODAY}: restored template KaTeX vendor, synchronized current brief PDF, regenerated optional ZIP and manifest; browser={browser['success']}; translation fidelity pending")
+achievement=(f"{TODAY}: rebuilt KaTeX/brief/optional ZIP with source page 14 QA and trajectory examples, "
+             f"source figures 1/2, and browser verification={browser['success']}; full paragraph fidelity pending")
+if achievement not in item.setdefault("partial_achievements",[]):item["partial_achievements"].append(achievement)
 q["updated_date"]=TODAY
 q["pending"]=sum(not e.get("new_standard_completed",False) for e in q["entries"])
 save(QUEUE,json.dumps(q,ensure_ascii=False,indent=2)+"\n")
@@ -243,8 +250,10 @@ row.update({"delivery_status":"repairing","repair_last_checked_date":TODAY,
 "zip_git_blob_sha":blob(zpath.read_bytes()),
 "pdf_bytes":out.stat().st_size,"pdf_sha256":sha(out.read_bytes()),
 "pdf_git_blob_sha":blob(out.read_bytes()),
-"pdf_brief_sync_status":"current algorithms.html as of 2026-11-07; full translation audit still pending",
+"pdf_brief_sync_status":"8-page brief regenerated from current algorithms.html; full translation audit still pending",
+"last_content_repair_date":TODAY,
+"optional_zip_status":"repackaged from current expanded content at the verified workflow commit; optional backup",
 "latest_offline_audit_path":"reading-packs/2026-10-28_CVPR2026_GaussianDWM/"+REPORT.name,
-"quality_note":"KaTeX, Chinese brief, optional ZIP and manifest rebuilt; full 19-page source-to-Chinese paragraph/figure/trajectory verification still pending."})
+"quality_note":"QA and trajectory JSON on source page14 and figures on pages17/18 visually checked; KaTeX/brief/ZIP rebuilt; remaining full 19-page paragraph fidelity audit pending."})
 save(CAT,json.dumps(c,ensure_ascii=False,indent=2)+"\n")
 print("repair run output prepared; never set completed without semantic quality acceptance")
