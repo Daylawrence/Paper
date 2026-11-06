@@ -22,25 +22,29 @@
     "local_katex_woff2_fonts": 20,
     "local_relative_resources": true,
     "brief_pdf_pages": 8,
-    "brief_pdf_bytes": 441194,
+    "brief_pdf_bytes": 441192,
     "real_offline_browser": {
       "attempted": true,
-      "success": false,
-      "reason": "AssertionError: Scroll position not restored: 2"
+      "success": true,
+      "katex_equations": 10,
+      "scroll_restored_px": 850,
+      "narrow_sidebar_width": 152,
+      "javascript_errors": []
     }
   },
-  "warnings": [
-    "Offline browser acceptance not fully passed: AssertionError: Scroll position not restored: 2"
-  ],
+  "warnings": [],
   "browser": {
     "attempted": true,
-    "success": false,
-    "reason": "AssertionError: Scroll position not restored: 2"
+    "success": true,
+    "katex_equations": 10,
+    "scroll_restored_px": 850,
+    "narrow_sidebar_width": 152,
+    "javascript_errors": []
   },
   "remaining": [
     "source-paragraph one-to-one audit for complete main text and 7 supplement pages",
-    "verbatim and visual verification of supplemental trajectory and QA JSON",
-    "re-check remaining figure labels and translated tables against source images",
+    "finish full-source paragraph alignment beyond the visually checked page-14 QA/trajectory JSON",
+    "check remaining figure labels, table cells and target boxes against source pages",
     "synchronize full paragraph translation to corresponding HTML and Markdown",
     "re-run remote immutable-commit verification after this push"
   ]

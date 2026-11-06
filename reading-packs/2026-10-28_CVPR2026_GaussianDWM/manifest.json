@@ -7,9 +7,9 @@
   "source_template": "2026-09-16_ICLR2026_DriveVLA-W0_阅读包",
   "files": {
     "2026-10-28_CVPR2026_GaussianDWM_中文学习简报.pdf": {
-      "bytes": 441194,
-      "git_blob_sha": "6d1e65e48ba4d1d5a327c11bd35b594f83777ae5",
-      "sha256": "da357124f222fd1ae785656cd4ab461bbcc61157054e142ac9ae7901dfe09df0"
+      "bytes": 441192,
+      "git_blob_sha": "fce566ba6fccf6d7dbfd1f7e1b2d625e91c67192",
+      "sha256": "8bb9830cdfc554feb66ff694e805457c5e8ab4e782415586de35f3a94de8aad7"
     },
     "algorithms.html": {
       "bytes": 19012,
@@ -62,9 +62,9 @@
       "sha256": "df0c9828053fdbf31a5906e5de49c10106d79e8b6afbf2737fb6d0f03ce05f28"
     },
     "offline-quality-check-2026-11-07.json": {
-      "bytes": 1485,
-      "git_blob_sha": "31499f0871d90ec1c257e51d4853aa9c96a978b8",
-      "sha256": "41b9fad1f902dafb7feae41eee440c055a3022a8b8fae5385c0724cba7914c55"
+      "bytes": 1523,
+      "git_blob_sha": "bd8f5100bf8aa98f03b60740a7f7f1561bdddd32",
+      "sha256": "1ceac3e2f44e3603603f718cd63ce75f0b92b80d722250d6fa6c05ddb8f09737"
     },
     "pages/page-01.jpg": {
       "bytes": 190812,
