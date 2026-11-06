@@ -2,15 +2,15 @@
   "paper": "GaussianDWM",
   "source_created_date": "2026-10-28",
   "verification_date": "2026-11-07",
-  "verified_immutable_remote_commit": "1a06dc37ab17ee96715a6dda0974ad9d862061f9",
-  "checked_tree_sha": "801a9a00f69d5f7ec9e30eac6184e3c131a1618d",
-  "expanded_payload_files": 108,
+  "verified_immutable_remote_commit": "90bab195cd91d4a6bd8f72ced0c17d156fed1690",
+  "checked_tree_sha": "13b22f64d4eb79cd0f59a7d1a71cd4b54c1653bd",
+  "expanded_payload_files": 109,
   "expanded_blob_sha_size_and_sha256": "passed",
   "remote_zip": {
-    "bytes": 22181699,
-    "sha256": "5cf3416b4dc46fdd37bbaab303c01f33541ee43b4d553419ab88b26711d1f548",
+    "bytes": 22183917,
+    "sha256": "6d9428e60ed9a4a44864c25277d9ef019f95fe0cd92fb9afacb3e2faccf9e152",
     "crc": "passed",
-    "entries": 109
+    "entries": 110
   },
   "remote_paper_pdf": {
     "bytes": 17452487,
@@ -18,8 +18,8 @@
     "pages": 19
   },
   "remote_brief_pdf": {
-    "bytes": 441199,
-    "sha256": "a0c796824c0f461aa14a9cc78ad6ab519e0a56ddb7d3a6b56845e275feca0793",
+    "bytes": 441192,
+    "sha256": "95ed36b82734fa7f134429d30ab56929a51d67454329ecb6a5f7be7ef9b082a1",
     "pages": 8
   },
   "relative_html_resources": "passed",
