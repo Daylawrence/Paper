@@ -315,30 +315,60 @@ $$
 
 ### QA 数据结构与样例
 
-补充材料展示了包含 token、scene_token、scene_idx、frame_idx、category、task、conversations、image、views 与 gauss 等字段的样例。示例任务 rdp 为二维感知信息：输入的前视相机目标框为 (14,219)–(37,248)，用户询问它与自车的距离，模型回答 38.7 米。原文保留了 <gauss>、<CAM_FRONT>、<box> 等提示标记。
-
-摘录示意，仅保留可可靠读取的字段与数字，非作者原始 JSON 的完整逐字复制。原始 token 哈希、image 路径及分行格式请以 PDF 图中原例为准。
+补充材料第 2 页（合并原文第 14 页）给出了 2D 感知问答的完整 JSON 样例。这里按原文逐字段转录，**只合并 PDF 印刷行宽导致的断行，不省略 token、图像路径或 Gaussian 文件路径**。任务 `rdp` 在前视相机中查询目标框 (14,219)–(37,248) 至自车的距离，模型回答 38.7 米。提示标签 `<gauss>`、`<CAM_FRONT>`、`<box>` 为原文写法。
 
 ```json
 {
+  "token": "fd8420396768425eabec9bdddf7e64b6",
+  "scene_token": "e7ef871f77f44331aefdebc24ec034b7",
   "scene_idx": 2,
   "frame_idx": 0,
   "category": "2D_perception_infos",
   "task": "rdp",
   "conversations": [
-    {"from": "human", "value": "based on <gauss>, ... <CAM_FRONT> <box>(14,219),(37,248)</box> ...?"},
-    {"from": "gpt", "value": "38.7 meters is the distance from the ego car to it"}
+    {
+      "from": "human",
+      "value": "based on <gauss>, Can you quantify the distance separating the <CAM_FRONT> <box>(14,219),(37,248)</box> from the ego car?"
+    },
+    {
+      "from": "gpt",
+      "value": "38.7 meters is the distance from the ego car to it"
+    }
   ],
-  "views": ["CAM_FRONT"],
-  "gauss": ["gauss/output-full-6v/2_CAM_FRONT/langsplat_3/per_frame/00000.pth"]
+  "image": [
+    "nuscenes/samples/CAM_FRONT/n015-2018-08-02-17-16-37+0800__CAM_FRONT__1533201470412460.jpg"
+  ],
+  "views": [
+    "CAM_FRONT"
+  ],
+  "gauss": [
+    "gauss/output-full-6v/2_CAM_FRONT/langsplat_3/per_frame/00000.pth"
+  ]
 }
 ```
 
 ### 轨迹数据生成（Trajectory Dataset Generation）
 
-生成器同时支持空间与时间方向的场景生成。空间生成的查询通常是「生成向左平移 2 米后的视图」；LLM 先推断目标相机位姿，然后把点云投影到该位姿，得到扩散生成器使用的低层稀疏条件。时间生成则可询问「预测 1 秒后的场景」；LLM 执行轨迹预测，直接输出未来相机位姿，再基于该位姿进行点云投影，以得到时间生成所需的稀疏引导。
+生成器同时支持空间与时间场景生成。空间查询例如「生成向左平移 2 米的视图」，LLM 推断目标相机位姿并投影点云为低层稀疏条件；时间查询例如「预测 1 秒后的场景」，LLM 预测未来相机位姿并构造相应的点云投影引导。
 
-为了让 LLM 具备未来轨迹预测能力，作者构建以轨迹为中心的 QA 数据集。每个视频片段抽取 10 帧：前 4 帧作为提示，后 6 帧作为预测目标；全部轨迹统一到第 5 帧自车坐标系。附录原始轨迹样例为嵌套 [PT, [x,y,z,qx,qy,qz,qw],…] 格式。由于在线 PDF 双栏提取将其中若干数字拆开并交错，当前不擅自重组全部坐标；对应原例的逐数字核验仍待完成。
+作者构建了轨迹问答数据集：每个视频片段取 10 帧，前 4 帧作为提示，后 6 帧为预测目标，所有轨迹转至第 5 帧的自车坐标系。**以下 4 帧历史与 6 帧目标的七维位姿已依据原文第 14 页右栏视觉逐数核对**，只统一小数写法并去掉 PDF 的强制换行。原文英文问句 `last 4frames` 保留原样，坐标格式为 [PT, [x,y,z,qx,qy,qz,qw],…]；后三个 q 与 qw 共同组成四元数，不是位置。
+
+```json
+{
+  "conversations": [
+    {
+      "from": "human",
+      "value": "There is last 4frames trajectory, [PT, [-7.45, 3.05, 0.16, 0.0, 0.0, -0.36, 0.93], [-5.75, 1.97, 0.11, 0.0, 0.0, -0.28, 0.96], [-4.04, 0.92, 0.09, 0.0, 0.0, -0.19, 0.98], [-2.15, 0.26, 0.04, 0.0, 0.0, -0.1, 1.0]]. Summarize the motion of the ego vehicle in this 6-frame clip"
+    },
+    {
+      "from": "gpt",
+      "value": "[PT, [0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 1.0], [2.47, 0.65, -0.06, 0.0, 0.0, 0.09, 1.0], [4.24, 2.32, -0.11, 0.0, 0.0, 0.12, 0.99], [5.5, 4.08, -0.15, 0.0, 0.0, 0.13, 0.99], [7.03, 6.45, -0.15, 0.0, 0.0, 0.13, 0.99], [8.66, 8.91, -0.17, -0.01, 0.0, 0.13, 0.99]]"
+    }
+  ]
+}
+```
+
+中文解读：四帧历史平移依次为 (-7.45,3.05,0.16)、(-5.75,1.97,0.11)、(-4.04,0.92,0.09)、(-2.15,0.26,0.04)。六帧目标从 (0,0,0) 开始，最终位置 (8.66,8.91,-0.17)。这是论文举例，不能当作模型实测精度。
 
 ## 补充材料 C. 实现细节
 
@@ -415,6 +445,14 @@ $$
 补充图 1：场景理解与场景生成的定性结果。从上到下依次展示当前场景的多视图输入、三维 Gaussian 椭球、场景理解输出，以及空间和时间方向的场景生成。图中的任务示例包括：识别前视行人并返回二维框、识别右前摄像头车辆、回答自车应如何行动（示例回答「左转」），并展示文本动作条件下的未来时间帧。
 
 补充图 2：雨天场景的理解与生成定性结果。示例包含：在左前摄像头检测车辆并返回多个二维框、在右前摄像头返回车辆三维框、回答「直行」、解释目标为「停放的车辆」、预测停放车辆将保持静止，以及回答移动车辆可能接近自车。下方展示参考视角及 +1 m、+2 m 的空间生成结果。
+
+补充图 1 的图中文字：6-View Images（六路相机图像）、3D Gaussians（三维高斯场景）；相机分别为 CAM_FRONT_LEFT（左前）、CAM_FRONT（前）、CAM_FRONT_RIGHT（右前）、CAM_BACK_RIGHT（右后）、CAM_BACK（后）、CAM_BACK_LEFT（左后）。中部展示问答任务，例如行人框、车辆框、三维包围框与自车决策；其中驾驶回答 Turn Left 即「向左转」。下部 Temporal Generation（时间生成）展示 GT（真实）与 Generated（生成）的 t1、t2、t3 帧。
+
+![补充图 1：场景理解与时间生成（原文第17页）](pages/page-17.jpg)
+
+补充图 2 为雨天场景的理解与生成，包含车辆二维/三维定位与驾驶问答。回答的关键词包括 Go Straight（直行）、Parked car（停放的汽车）、It will remain stationary（将保持静止）、It will be close to the ego car（将接近自车）。下部 Spatial Generation（空间生成）标有 Ref. GT（参考真值）、+1m、+2m，并比较 RGB 图像与深度结果。
+
+![补充图 2：雨天理解与空间生成（原文第18页）](pages/page-18.jpg)
 
 ![补充材料定性图](images/supplement.jpg)
 

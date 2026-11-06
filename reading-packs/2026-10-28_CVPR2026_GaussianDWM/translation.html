@@ -141,22 +141,50 @@
 <div class="formula" data-latex="\mathcal L_{\mathrm{lang}}=\sum_{l\in\{s,p,w\}}\sum_{t=1}^T d_{\mathrm{lang}}\big(F_t^l(v),H_t^l(v)\big)"><span class="formula-rendered">𝓛ₗₐₙg = ∑ₗ∈{s,p,w} ∑ₜ₌₁ᵀ dₗₐₙg(Fₜˡ(v),Hₜˡ(v))</span><span class="formula-number">(S5, 补充)</span></div>
 <p>其中 d_lang(·) 是三维语言 Gaussian 所使用的距离函数。为把 Gaussian token 注入输入查询，作者专门重建 QA 数据集。为了符合 Qwen-VL 的训练形式，所有三维 Gaussian token 注释均被放在指令开头。</p>
 <h3>QA 数据结构与样例</h3>
-<p>补充材料展示了包含 token、scene_token、scene_idx、frame_idx、category、task、conversations、image、views 与 gauss 等字段的样例。示例任务 rdp 为二维感知信息：输入的前视相机目标框为 (14,219)–(37,248)，用户询问它与自车的距离，模型回答 38.7 米。原文保留了 &lt;gauss&gt;、&lt;CAM_FRONT&gt;、&lt;box&gt; 等提示标记。</p>
-<p><strong>摘录示意，仅保留可可靠读取的字段与数字，非作者原始 JSON 的完整逐字复制。原始 token 哈希、image 路径及分行格式请以 PDF 图中原例为准。</strong></p><pre><code>{
+<p>附录第 2 页（合并原文第 14 页）给出了二维感知问答 JSON。下方是对照原 PDF 页图逐字段转录的样例，合并了印刷断行但保留 token、scene_token、相机图像、Gaussian 路径及数值。rdp 任务要求计算前视相机目标框 (14,219)–(37,248) 到自车的距离，模型回答 38.7 米。</p>
+<pre><code>{
+  &quot;token&quot;: &quot;fd8420396768425eabec9bdddf7e64b6&quot;,
+  &quot;scene_token&quot;: &quot;e7ef871f77f44331aefdebc24ec034b7&quot;,
   &quot;scene_idx&quot;: 2,
   &quot;frame_idx&quot;: 0,
   &quot;category&quot;: &quot;2D_perception_infos&quot;,
   &quot;task&quot;: &quot;rdp&quot;,
   &quot;conversations&quot;: [
-    {&quot;from&quot;: &quot;human&quot;, &quot;value&quot;: &quot;based on &lt;gauss&gt;, ... &lt;CAM_FRONT&gt; &lt;box&gt;(14,219),(37,248)&lt;/box&gt; ...?&quot;},
-    {&quot;from&quot;: &quot;gpt&quot;, &quot;value&quot;: &quot;38.7 meters is the distance from the ego car to it&quot;}
+    {
+      &quot;from&quot;: &quot;human&quot;,
+      &quot;value&quot;: &quot;based on &lt;gauss&gt;, Can you quantify the distance separating the &lt;CAM_FRONT&gt; &lt;box&gt;(14,219),(37,248)&lt;/box&gt; from the ego car?&quot;
+    },
+    {
+      &quot;from&quot;: &quot;gpt&quot;,
+      &quot;value&quot;: &quot;38.7 meters is the distance from the ego car to it&quot;
+    }
   ],
-  &quot;views&quot;: [&quot;CAM_FRONT&quot;],
-  &quot;gauss&quot;: [&quot;gauss/output-full-6v/2_CAM_FRONT/langsplat_3/per_frame/00000.pth&quot;]
+  &quot;image&quot;: [
+    &quot;nuscenes/samples/CAM_FRONT/n015-2018-08-02-17-16-37+0800__CAM_FRONT__1533201470412460.jpg&quot;
+  ],
+  &quot;views&quot;: [
+    &quot;CAM_FRONT&quot;
+  ],
+  &quot;gauss&quot;: [
+    &quot;gauss/output-full-6v/2_CAM_FRONT/langsplat_3/per_frame/00000.pth&quot;
+  ]
 }</code></pre>
 <h3>轨迹数据生成（Trajectory Dataset Generation）</h3>
-<p>生成器同时支持空间与时间方向的场景生成。空间生成的查询通常是「生成向左平移 2 米后的视图」；LLM 先推断目标相机位姿，然后把点云投影到该位姿，得到扩散生成器使用的低层稀疏条件。时间生成则可询问「预测 1 秒后的场景」；LLM 执行轨迹预测，直接输出未来相机位姿，再基于该位姿进行点云投影，以得到时间生成所需的稀疏引导。</p>
-<p>为了让 LLM 具备未来轨迹预测能力，作者构建以轨迹为中心的 QA 数据集。每个视频片段抽取 10 帧：前 4 帧作为提示，后 6 帧作为预测目标；全部轨迹统一到第 5 帧自车坐标系。附录原始轨迹样例为嵌套 [PT, [x,y,z,qx,qy,qz,qw],…] 格式。由于在线 PDF 双栏提取将其中若干数字拆开并交错，当前不擅自重组全部坐标；对应原例的逐数字核验仍待完成。</p>
+<p>空间生成指令（如左移 2 米）由 LLM 推断相机位姿，再将点云投影为生成器的稀疏条件；时间生成指令（如预测 1 秒以后）由 LLM 预测未来相机位姿，同样通过投影得到时间引导。作者提取 10 帧，其中 4 帧历史是提示、6 帧未来是预测目标，轨迹统一到第 5 帧自车坐标系。</p>
+<p>原 PDF 第 14 页右栏的轨迹示例已逐数对照，下面的 JSON 只规范印刷换行和小数形式；原文英文问句与七维位姿 (x,y,z,qx,qy,qz,qw) 均保留。请勿把四元数当作位置向量。</p>
+<pre><code>{
+  &quot;conversations&quot;: [
+    {
+      &quot;from&quot;: &quot;human&quot;,
+      &quot;value&quot;: &quot;There is last 4frames trajectory, [PT, [-7.45, 3.05, 0.16, 0.0, 0.0, -0.36, 0.93], [-5.75, 1.97, 0.11, 0.0, 0.0, -0.28, 0.96], [-4.04, 0.92, 0.09, 0.0, 0.0, -0.19, 0.98], [-2.15, 0.26, 0.04, 0.0, 0.0, -0.1, 1.0]]. Summarize the motion of the ego vehicle in this 6-frame clip&quot;
+    },
+    {
+      &quot;from&quot;: &quot;gpt&quot;,
+      &quot;value&quot;: &quot;[PT, [0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 1.0], [2.47, 0.65, -0.06, 0.0, 0.0, 0.09, 1.0], [4.24, 2.32, -0.11, 0.0, 0.0, 0.12, 0.99], [5.5, 4.08, -0.15, 0.0, 0.0, 0.13, 0.99], [7.03, 6.45, -0.15, 0.0, 0.0, 0.13, 0.99], [8.66, 8.91, -0.17, -0.01, 0.0, 0.13, 0.99]]&quot;
+    }
+  ]
+}</code></pre>
+<p>四帧历史位置依次为 (-7.45,3.05,0.16)、(-5.75,1.97,0.11)、(-4.04,0.92,0.09)、(-2.15,0.26,0.04)，六帧目标从 (0,0,0) 至 (8.66,8.91,-0.17)。可与 <a href="pages/page-14.jpg">原文第 14 页</a>核对。</p>
 
 </section>
 <section id="supp-c"><h2>补充材料 C. 实现细节</h2>
@@ -189,6 +217,8 @@
 <h3>额外定性结果与图注</h3>
 <p>补充图 1：场景理解与场景生成的定性结果。从上到下依次展示当前场景的多视图输入、三维 Gaussian 椭球、场景理解输出，以及空间和时间方向的场景生成。图中的任务示例包括：识别前视行人并返回二维框、识别右前摄像头车辆、回答自车应如何行动（示例回答「左转」），并展示文本动作条件下的未来时间帧。</p>
 <p>补充图 2：雨天场景的理解与生成定性结果。示例包含：在左前摄像头检测车辆并返回多个二维框、在右前摄像头返回车辆三维框、回答「直行」、解释目标为「停放的车辆」、预测停放车辆将保持静止，以及回答移动车辆可能接近自车。下方展示参考视角及 +1 m、+2 m 的空间生成结果。</p>
+<p>补充图 1 的图内英文标签：6-View Images（六路图像）、3D Gaussians（三维高斯），六个相机方向分别为 CAM_FRONT_LEFT（左前）、CAM_FRONT（前）、CAM_FRONT_RIGHT（右前）、CAM_BACK_RIGHT（右后）、CAM_BACK（后）、CAM_BACK_LEFT（左后）；Temporal Generation（时间生成）在 GT（真值）和 Generated（生成）下依次展示 t1、t2、t3。场景问答还包含 Turn Left（向左转）的驾驶回答。</p><figure><img src="pages/page-17.jpg" alt="补充图1原文整页：场景理解和时间生成"><figcaption>补充图 1（原文第 17 页）：场景理解、六路相机输入、三维高斯及未来 RGB-D 生成，保留全部图内英文问题与框坐标供对照。</figcaption></figure>
+<p>补充图 2：雨天场景的六路车辆检测与规划，文字答复 Go Straight（直行）、Parked car（停放车辆）、It will remain stationary（将保持静止）、It will be close to the ego car（会接近自车）。Spatial Generation（空间生成）展示 Ref. GT、+1m、+2m 视点及 RGB/深度对比。</p><figure><img src="pages/page-18.jpg" alt="补充图2原文整页：雨天场景和空间生成"><figcaption>补充图 2（原文第 18 页）：雨天理解与空间生成，保留原图中的车辆框及问答。</figcaption></figure>
 <figure><img src="images/supplement.jpg" alt="补充材料图"><figcaption>补充材料定性结果图（仓库现有图像）。图内原始英文问题、框坐标、模型答复和时间帧应与官方 PDF 中的补充图 1、2 一并核对；该图片本身尚未独立证明覆盖两张完整原图。</figcaption></figure>
 </section>
 
