@@ -7,9 +7,9 @@
   "source_template": "2026-09-16_ICLR2026_DriveVLA-W0_阅读包",
   "files": {
     "2026-10-28_CVPR2026_GaussianDWM_中文学习简报.pdf": {
-      "bytes": 441192,
-      "git_blob_sha": "fce566ba6fccf6d7dbfd1f7e1b2d625e91c67192",
-      "sha256": "8bb9830cdfc554feb66ff694e805457c5e8ab4e782415586de35f3a94de8aad7"
+      "bytes": 441199,
+      "git_blob_sha": "925b685cfb5806bbd4b971d29170dfb5776c24b3",
+      "sha256": "a0c796824c0f461aa14a9cc78ad6ab519e0a56ddb7d3a6b56845e275feca0793"
     },
     "algorithms.html": {
       "bytes": 19012,
@@ -27,14 +27,14 @@
       "sha256": "dfc76a5102db124c54db5a4c115a0cca2a0080b25027f72841f2afe299db3062"
     },
     "coverage.html": {
-      "bytes": 2085,
-      "git_blob_sha": "ae3f906abaa9a1e5484b33472c0b47d5b2279f3f",
-      "sha256": "993b37e2b292e4fa8a183e09f4c54b376443242e56e6cd90fdeeb33217118fb6"
+      "bytes": 2462,
+      "git_blob_sha": "a8ac3004f15405b95cf98711ac74c7866cf7053f",
+      "sha256": "744b102a39629e8bf68ba90260f8faf59474d37e563a9e9ed8c41d2f477a36fd"
     },
     "coverage.md": {
-      "bytes": 2841,
-      "git_blob_sha": "4fae3c43e6931e13613eff5be102c18f6e10422d",
-      "sha256": "1208d9f7a144a9e7294d5b48ed335522c20cdc72d6c9ae863180f9e56e493a62"
+      "bytes": 2930,
+      "git_blob_sha": "b6665fe551264a1afe14c192fed4922aa905d4cb",
+      "sha256": "d044dc745ea6f3cf968b22b363810233732bcd05d74203b9e753133d22844e67"
     },
     "images/figure1.jpg": {
       "bytes": 87381,
@@ -57,14 +57,14 @@
       "sha256": "13be908267f2a0fb60a72ad48c56162c28e9e13923ae3cd3fab3363a2f0245d1"
     },
     "index.html": {
-      "bytes": 75722,
-      "git_blob_sha": "dbf0e7cebcfbd20e8d8675d358a6030c5d34acc1",
-      "sha256": "df0c9828053fdbf31a5906e5de49c10106d79e8b6afbf2737fb6d0f03ce05f28"
+      "bytes": 77000,
+      "git_blob_sha": "ff162d1a4d46bc8e4b477cf11b8cfff77d149005",
+      "sha256": "8022e0d5ce9d5dd0a9978b0db37f06b24ab397fe87e6979e13ca9d00a86255f0"
     },
     "offline-quality-check-2026-11-07.json": {
-      "bytes": 1523,
-      "git_blob_sha": "bd8f5100bf8aa98f03b60740a7f7f1561bdddd32",
-      "sha256": "1ceac3e2f44e3603603f718cd63ce75f0b92b80d722250d6fa6c05ddb8f09737"
+      "bytes": 1535,
+      "git_blob_sha": "1736b50e59cdc5e4a9c9d3a880abfab54e0e9461",
+      "sha256": "aee78d13ef208020e893864635b5353a860d7432d4d8c4923d4320e6e5c91f80"
     },
     "pages/page-01.jpg": {
       "bytes": 190812,
@@ -217,14 +217,14 @@
       "sha256": "e5bb7dc254b460464b871ea46a33065296084f0d36989e8456ab6088077cff72"
     },
     "translation.html": {
-      "bytes": 54021,
-      "git_blob_sha": "b45b5c7a3254baba72b9ac111376d20bb3606bc1",
-      "sha256": "da9b5391dba823c0f1bff7b0567facfe18911ae6b2eabbbf78f840673ee9f978"
+      "bytes": 55299,
+      "git_blob_sha": "cf5375902b55cacb26d8718582d78d7356133230",
+      "sha256": "bb85c6f338e76b9287a972a9b86c1495a5a6a23bf30b01732ad2f35b42ff4ea2"
     },
     "translation.md": {
-      "bytes": 45935,
-      "git_blob_sha": "14985020904cd5041a1b54b2e714314466548104",
-      "sha256": "970a957ee874551ec3b235cc0caec49d9e9a9017ecdfb67580ff7fbeebeed56d"
+      "bytes": 47799,
+      "git_blob_sha": "c3dcaf38cc24c370dcae9c672f558e347a4d860e",
+      "sha256": "984882278f2347b6242210c7143ca2af92120a364a21d449899fe4fa4129efae"
     },
     "vendor/auto-render.min.js": {
       "bytes": 3486,

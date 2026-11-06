@@ -10,12 +10,13 @@
       "directory": "reading-packs/2026-10-28_CVPR2026_GaussianDWM",
       "original_date": "2026-10-28",
       "legacy_status": "repairing",
-      "repair_status": "2026-11-07_browser_and_108_expanded_remote_sha_zip_pdf_verified_chinese_source_paragraph_alignment_pending",
+      "repair_status": "2026-11-07_offline_katex_and_brief_sync_and_asset_manifest_rebuilt_full_translation_audit_pending",
       "new_standard_completed": false,
       "last_repair_date": "2026-11-07",
       "pending_items": [
-        "source_paragraph_alignment_all_main_supplement",
-        "remaining_figure_table_text_and_annotation_alignment"
+        "source_paragraph_alignment",
+        "remaining_figure_and_table_labels",
+        "remote_immutable_commit_validation"
       ],
       "partial_achievements": [
         "2026-11-06: Table 1 BEVFormer/PETR/CAPE and Figure 4 verified against source PDF pages 6/8; translation.md/html/index synchronized",
