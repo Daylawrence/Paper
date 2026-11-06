@@ -1,4 +1,8 @@
-<article class="reading algorithms-body">
+<!doctype html><html lang="zh-CN"><head><meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <title>GaussianDWM 关键解释（算法与公式）</title><link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="vendor/katex.min.css"></head>
+    <body class="standalone"><article class="reading algorithms-body">
 <section id="brief"><h2>学习简报 1–4：基本信息、标签、推荐理由与问题定义</h2>
 <table><tr><th>项目</th><th>内容</th></tr><tr><td>论文</td><td>GaussianDWM: 3D Gaussian Driving World Model for Unified Scene Understanding and Multi-Modal Generation</td></tr><tr><td>版本</td><td>CVPR 2026；arXiv:2512.23180v3；主文 12 页 + 官方补充 7 页</td></tr><tr><td>官方代码</td><td>GaussianDWM；固定 commit <code>50e29cb7df691f58dc5c9992b7de6ec496a4e6d0</code></td></tr><tr><td>标签</td><td>自动驾驶、3DGS、世界模型、VLM、RGB-D 生成、视觉定位、轨迹预测</td></tr></table>
 <p><strong>个性化推荐理由。</strong>这篇论文把你的三条技术线连起来：YOLO/多摄像头检测负责“看见对象”，Depth Pro/VGGT 提供“几何与相机”，GaussianDWM 展示怎样把它们压成可查询的 3D 语义 token，再把问答结果回灌给生成式世界模型。对未来 VLA Agent，它补上“显式三维记忆—语言查询—想象未来”的接口设计。</p>
@@ -81,3 +85,10 @@ loss = edm_weight(sigma) * mse(pred, d)</pre>
 <section id="transfer"><h2>学习简报 13：迁移实验</h2><ol><li><strong>VGGT + Depth Pro + YOLO：</strong>用 VGGT 相机/点图与 Depth Pro 补深度，YOLO/SAM 提对象 mask，构建对象级语言 Gaussian；比较纯几何、类别标签和 CLIP 语言场。</li><li><strong>Qwen2.5-VL LoRA：</strong>移植 Gaussian placeholder 接口，冻结视觉编码器，只训练 aligner、selector 与 LoRA；做 K=128/512 显存—准确率曲线。</li><li><strong>未来 VLA Agent：</strong>先查询 Gaussian memory，再生成 3 个候选未来 RGB-D/轨迹，最后用可行驶区域和碰撞代价重排。</li></ol></section>
 </article>
 
+
+    <script src="vendor/katex.min.js"></script>
+    <script>document.querySelectorAll('.formula[data-latex]').forEach(function(el){
+    var target=el.querySelector('.formula-rendered');
+    if(target && window.katex) try{katex.render(el.getAttribute('data-latex'),target,
+    {displayMode:true,throwOnError:false,strict:'ignore'})}catch(e){el.dataset.mathError=String(e)}});</script>
+    </body></html>

@@ -1,20 +1,20 @@
 {
   "paper": "GaussianDWM",
   "original_created_date": "2026-10-28",
-  "restored_date": "2026-10-30",
-  "source_archive_sha256": "1aa852e5e6e66f92e959fd740e17592c01df1f4064c386a0ae028a4313aaa77e",
-  "source_archive_bytes": 7048829,
-  "source_description": "Complete original ZIP recovered from user's file library; extracted original files and newer standalone Chinese brief PDF.",
+  "repair_date": "2026-11-07",
+  "status": "repairing",
+  "completed": false,
+  "source_template": "2026-09-16_ICLR2026_DriveVLA-W0_阅读包",
   "files": {
     "2026-10-28_CVPR2026_GaussianDWM_中文学习简报.pdf": {
-      "bytes": 157043,
-      "git_blob_sha": "df25e3a739fe97457629a08f44c3f334549c7bc1",
-      "sha256": "2ac738ef0d5970edde9d7786d00fddb195c26a2834920097b90338f1679f616f"
+      "bytes": 441192,
+      "git_blob_sha": "963a9d93c1f72b7504f7c26d04ae7e8a3c4178c6",
+      "sha256": "f7257d1c4f7b421bc3b60ca96ddccd762d8787b7eddcb8f2c7d54dc65cfe03dd"
     },
     "algorithms.html": {
-      "bytes": 18279,
-      "git_blob_sha": "649c7ba91d6e66e450ba4f83274dfc0942b1b307",
-      "sha256": "bda9a47825259f9ce8bce5b85a15d49c073398da84f607f82a6f13383fff74bf"
+      "bytes": 19014,
+      "git_blob_sha": "960225ebaf07d42f2734e90ecaf8bf4c8e06a495",
+      "sha256": "083f5937c80525dbb236c44ae06abbf9b7fba4deb33fffdbf9ba41aea8042908"
     },
     "algorithms.md": {
       "bytes": 16214,
@@ -22,9 +22,19 @@
       "sha256": "b6ecfe55a11deeb032a7d4e4398de3fca3466183c4aa8791a23786763fe452e1"
     },
     "app.js": {
-      "bytes": 2057,
-      "git_blob_sha": "1bbee1015ce32daf58c5e824f83082f0579ba6ca",
-      "sha256": "e5dabe10d9d3a2915bf0545f5ac23583f453b9f4c94ff02be3cf4ccc6515b01e"
+      "bytes": 2489,
+      "git_blob_sha": "e0050b916610d4d2e79fd8ea85d7c4f7cd093adf",
+      "sha256": "64803eccd0320fbf35601af9ae7d03b7e35807ec349457377a6d9876c35e0322"
+    },
+    "coverage.html": {
+      "bytes": 2085,
+      "git_blob_sha": "ae3f906abaa9a1e5484b33472c0b47d5b2279f3f",
+      "sha256": "993b37e2b292e4fa8a183e09f4c54b376443242e56e6cd90fdeeb33217118fb6"
+    },
+    "coverage.md": {
+      "bytes": 2841,
+      "git_blob_sha": "4fae3c43e6931e13613eff5be102c18f6e10422d",
+      "sha256": "1208d9f7a144a9e7294d5b48ed335522c20cdc72d6c9ae863180f9e56e493a62"
     },
     "images/figure1.jpg": {
       "bytes": 87381,
@@ -47,9 +57,14 @@
       "sha256": "13be908267f2a0fb60a72ad48c56162c28e9e13923ae3cd3fab3363a2f0245d1"
     },
     "index.html": {
-      "bytes": 73460,
-      "git_blob_sha": "8b26d6d72a8e832ae69442c102c0b98e5165c524",
-      "sha256": "763beec5d2876308d66f6e107e6072e381e0b2604d7e959bf51ab79a720910d0"
+      "bytes": 73603,
+      "git_blob_sha": "e67ccf534a77a4ca6a66bc89da8830798852bfcf",
+      "sha256": "9b519f9e940b2cfd28dddc4b0d68e2327ccb40c9f0ba4a09cbd7f4c5ec98968c"
+    },
+    "offline-quality-check-2026-11-07.json": {
+      "bytes": 1485,
+      "git_blob_sha": "9a83a97a5afcc65643f93ea833be2c48f58f8af3",
+      "sha256": "73f6c32126006373d15ed72c0ab84145b285b256846ed59cd7bb75f1fe7421d6"
     },
     "pages/page-01.jpg": {
       "bytes": 190812,
@@ -151,60 +166,380 @@
       "git_blob_sha": "4367f7541a3eb3d207ec2de10cc4f46fe1991617",
       "sha256": "c6558bba56cb29b00c8ad7e3a04572614ea6ec21650e08b1ab7416ba0edacb5a"
     },
+    "quality-audit-2026-10-30.json": {
+      "bytes": 2929,
+      "git_blob_sha": "59b9237ae90840596b1cfbf41eeb2b9ae290237b",
+      "sha256": "a7674a582589eff4db19c1da35a2436edf9889173ed8bfedaee1010f6be6b971"
+    },
+    "remote-audit-2026-10-30.json": {
+      "bytes": 1735,
+      "git_blob_sha": "86df28f216d12facc789effeddbac41038ee3951",
+      "sha256": "24ebcdf2dac24bbc5be94f8fd09b40c1f807ffe90e403d03c33abf3021e2d303"
+    },
+    "remote-verification-2026-11-02.json": {
+      "bytes": 980,
+      "git_blob_sha": "a7a6819e2d012985e2b7132453665203254742f0",
+      "sha256": "2e090a0424df12b5e57ca50ebf2f3dfcc26b9b7e4480caceb5c3d9843df166b6"
+    },
+    "remote-verification-2026-11-04.json": {
+      "bytes": 2434,
+      "git_blob_sha": "31a36c7669501d3f0e00ae09adf3532aeee46aa9",
+      "sha256": "704a94fc021572256fa46c3076ac1e608af97e6a888b5324083a7b0b8990bd28"
+    },
+    "remote-verification-2026-11-06.json": {
+      "bytes": 5877,
+      "git_blob_sha": "60d794e7f5ed36fb71b6873ab2cf89a0764d6713",
+      "sha256": "1c9c856bb26bd41a059f551f94daf7220e08dc8b0f6183aa4e24a2b692231940"
+    },
+    "source-restoration-audit-2026-11-02.json": {
+      "bytes": 2001,
+      "git_blob_sha": "f80c7d7891ae00cfe1ae71fe5aab2055f040f8f3",
+      "sha256": "275ee40f887fa9b05fe4a6ee22697212bd6a5148ed1388551494424e5e757d85"
+    },
+    "source-visual-audit-2026-11-06.md": {
+      "bytes": 2833,
+      "git_blob_sha": "c6e634da22b898dd17048b63e048b1087109322a",
+      "sha256": "1ff4c2c0c3b011e88c98e28fb0a85e672a7f863409354b50ed33b8b5d29bee22"
+    },
     "style.css": {
-      "bytes": 4772,
-      "git_blob_sha": "1c1c1fa99e0aba589ed27f0ea972a965fce22272",
-      "sha256": "bd20c1c34025984e1ab582cb2a752eb207093cce7f6cb785ea79d9d8ef4f7c18"
+      "bytes": 5076,
+      "git_blob_sha": "a8a09bd85b9289b559ef0203cd593c52b3a944c2",
+      "sha256": "bf4af7354b1a29d27b23ebf923db3d28c0de582ebbb91367bd2814a8f54dbfa9"
+    },
+    "supplement-source-extracted-2026-11-07.txt": {
+      "bytes": 26082,
+      "git_blob_sha": "6309965b6f792a729b62603bb466fdbd7b7f0986",
+      "sha256": "e5bb7dc254b460464b871ea46a33065296084f0d36989e8456ab6088077cff72"
     },
     "translation.html": {
-      "bytes": 51168,
-      "git_blob_sha": "08372a47cb5a246089c8295b1660f2d27533fe07",
-      "sha256": "e68a272361a0b61436f3a0b5398b1f1e825cfdf8dcf516589e70b50d6a3ac142"
+      "bytes": 51903,
+      "git_blob_sha": "1f326ecd87d46033b0c4b7e85cd91c839765a4b2",
+      "sha256": "8d24509b14ba5179f36af2a24692336c6317bdc081a1e67a660d731b30148f42"
     },
     "translation.md": {
       "bytes": 43848,
       "git_blob_sha": "3df32c17947c17ce76fc89d33e6ed110fbcf681c",
       "sha256": "e9a1102301460c106c2b1812d00f6ccb9cdf7928cbf772b818db58c00b98d015"
     },
-    "vendor/README.txt": {
-      "bytes": 84,
-      "git_blob_sha": "a04fca5bf107117d08ad6f9f8c5794a58f7e8566",
-      "sha256": "fb6464921a3c4c9a5ff7d166618a06f1108d437da99e4a26079bff5d38f26329"
+    "vendor/auto-render.min.js": {
+      "bytes": 3486,
+      "git_blob_sha": "0a1f35df54ecfa15d068341f6c6571e27f70567f",
+      "sha256": "e5372d199bcdae8b4de71d0f7ceba72a4ba12774a27c60a6f1f77d03b3228ee4"
+    },
+    "vendor/fonts/KaTeX_AMS-Regular.ttf": {
+      "bytes": 63632,
+      "git_blob_sha": "c6f9a5e7c03f9e64e9c7b4773a8e37ade8eaf406",
+      "sha256": "68534840bcfdd2bffb6f0e8deb48684dd01e7f04ea2813267577afb906de1d13"
+    },
+    "vendor/fonts/KaTeX_AMS-Regular.woff": {
+      "bytes": 33516,
+      "git_blob_sha": "b804d7b33a3fa5b2587d2d1d55006aed678e3eb2",
+      "sha256": "30da91e84c893f875e252689faebdc590b2871145e8adc7f9a9d4dbd8ce0b251"
+    },
+    "vendor/fonts/KaTeX_AMS-Regular.woff2": {
+      "bytes": 28076,
+      "git_blob_sha": "0acaaff03d4bb7606de02a827aeee338e5a86910",
+      "sha256": "0cdd387c9590a1a9f9794560022dbb59654a7d86f187aa0c81495ad42d3a7308"
+    },
+    "vendor/fonts/KaTeX_Caligraphic-Bold.ttf": {
+      "bytes": 12368,
+      "git_blob_sha": "9ff4a5e04421e5107f74c28e27354e0b2a4e7ef8",
+      "sha256": "07d8e303ce4fc12b4bb54f1004170dd190a1f3db45d400fe68060df3e0897268"
+    },
+    "vendor/fonts/KaTeX_Caligraphic-Bold.woff": {
+      "bytes": 7716,
+      "git_blob_sha": "9759710d1d3e16eb10012d56babb73f2479ba9f0",
+      "sha256": "1ae6bd7475590e97e7f145a89e09ccde322f7a6bc0b91607b1c8b8ee28290fed"
+    },
+    "vendor/fonts/KaTeX_Caligraphic-Bold.woff2": {
+      "bytes": 6912,
+      "git_blob_sha": "f390922eceffe1f6dfb81a3dc086a92d98171b02",
+      "sha256": "de7701e42cf1f4cf0b766c03fb27977207eee2f4fd5d76fa82188406da43ea4c"
+    },
+    "vendor/fonts/KaTeX_Caligraphic-Regular.ttf": {
+      "bytes": 12344,
+      "git_blob_sha": "f522294ff0f3f8c52dfdaef7ebfaa06ebfcfaabf",
+      "sha256": "ed0b74372feefcbb9c0666b2e210da37b7e49fa7fbbf3eeb11db5f693dacfbb7"
+    },
+    "vendor/fonts/KaTeX_Caligraphic-Regular.woff": {
+      "bytes": 7656,
+      "git_blob_sha": "9bdd534fd2beb9b878f0219da9d63ffba56677e2",
+      "sha256": "3398dd02302557a793f2863f88e02d96ce10df2abffa07c8e9fa90775116e65c"
+    },
+    "vendor/fonts/KaTeX_Caligraphic-Regular.woff2": {
+      "bytes": 6908,
+      "git_blob_sha": "75344a1f98e37e2c631e178065854c3a81fb842f",
+      "sha256": "5d53e70ad607c2352162dec9e0923fb54ecdafaccbf604cd8dcf7d00facb989b"
+    },
+    "vendor/fonts/KaTeX_Fraktur-Bold.ttf": {
+      "bytes": 19584,
+      "git_blob_sha": "4e98259c3b54076d684bf3459baeaeae8dbce97a",
+      "sha256": "9163df9c7122432e6495b4229fa9071cf9ae86a758ae5efc4924ec2e1a6dbce1"
+    },
+    "vendor/fonts/KaTeX_Fraktur-Bold.woff": {
+      "bytes": 13296,
+      "git_blob_sha": "e7730f66275c87c28f26530d89264cffecf90be0",
+      "sha256": "9be7ceb88004ab8ad124082246fbfcca4091e36385d4ec6ed1df67375dad50fb"
+    },
+    "vendor/fonts/KaTeX_Fraktur-Bold.woff2": {
+      "bytes": 11348,
+      "git_blob_sha": "395f28beac23c7b0f7f3a1e714bd8dac253dd3bc",
+      "sha256": "74444efd593c005e3f4573b44524704c0af0a937fe911cca9e94068d0d140d3f"
+    },
+    "vendor/fonts/KaTeX_Fraktur-Regular.ttf": {
+      "bytes": 19572,
+      "git_blob_sha": "b8461b275fae76efd0d21fd0f1aaa696a5b10f9a",
+      "sha256": "1e6f9579e90e2cac37f8f60a597c436e075c114385652b7cbeb0dec0421291b3"
+    },
+    "vendor/fonts/KaTeX_Fraktur-Regular.woff": {
+      "bytes": 13208,
+      "git_blob_sha": "acab069f90b6fe6301a004e6f8beaf6a0db48bce",
+      "sha256": "5e28753be717dac97f559f49bc10be9cf3c124ddcabda6659d11cb68febc6463"
+    },
+    "vendor/fonts/KaTeX_Fraktur-Regular.woff2": {
+      "bytes": 11316,
+      "git_blob_sha": "735f6948d63c8cc7f8233735bb9c8d843c83d804",
+      "sha256": "51814d270d06ff0255dba0799994fa4d8c84d11f09951d47595f4abb1f3602dc"
+    },
+    "vendor/fonts/KaTeX_Main-Bold.ttf": {
+      "bytes": 51336,
+      "git_blob_sha": "4060e627dc341c1854260cbc3f7386e222a4d297",
+      "sha256": "138ac28d1663b3037e9c5f52371fa5c63d8324f4a38d22cd573e6ea3a3fd0cf8"
+    },
+    "vendor/fonts/KaTeX_Main-Bold.woff": {
+      "bytes": 29912,
+      "git_blob_sha": "f38136ac1cc2dcdc9d9b10b8521487468b1f768c",
+      "sha256": "c76c5d696297d51b9cb1639c7da4334f0e7dec81b42b11213b5e25ef671bb822"
+    },
+    "vendor/fonts/KaTeX_Main-Bold.woff2": {
+      "bytes": 25324,
+      "git_blob_sha": "ab2ad21da6fbe6c171bb869240954d0ead8f68fd",
+      "sha256": "0f60d1b897938ec918c8ce073092411baf9438f6739465693ff18b0f9d20b021"
+    },
+    "vendor/fonts/KaTeX_Main-BoldItalic.ttf": {
+      "bytes": 32968,
+      "git_blob_sha": "dc007977ee709a236d9e82719cf7d4e5577a81b9",
+      "sha256": "70ee1f64a20f2048c21940ef46d0144fd215baa953ca69afd1e31e98544f708f"
+    },
+    "vendor/fonts/KaTeX_Main-BoldItalic.woff": {
+      "bytes": 19412,
+      "git_blob_sha": "67807b0bd4f867853271f5917fb3adf377f93f53",
+      "sha256": "a6f7ec0d846ac7ad975adb8959c37ed49b94acbc4ae436db9ce9e20287e4a64c"
+    },
+    "vendor/fonts/KaTeX_Main-BoldItalic.woff2": {
+      "bytes": 16780,
+      "git_blob_sha": "5931794de4a2a485fa70099bf2659b145976d043",
+      "sha256": "99cd42a3c072d918f2f44984a807cf7aa16e13545fd0875fc07c6c65f99e715b"
+    },
+    "vendor/fonts/KaTeX_Main-Italic.ttf": {
+      "bytes": 33580,
+      "git_blob_sha": "0e9b0f354ad460202bba554359f5adcc8da666b7",
+      "sha256": "0d85ae7cc30f23790a7f1a58c4a112fdca8aae769b6ba11429af1d98b1b6cb3a"
+    },
+    "vendor/fonts/KaTeX_Main-Italic.woff": {
+      "bytes": 19676,
+      "git_blob_sha": "6f43b594b6c1d863a0e3f93b001f8dd503316464",
+      "sha256": "f1d6ef86f3b11a528bd5185199bd2443ecb2b0dead96d88674b5a2c12be24bdf"
+    },
+    "vendor/fonts/KaTeX_Main-Italic.woff2": {
+      "bytes": 16988,
+      "git_blob_sha": "b50920e138807f385d0b0359f4f0f09891f18406",
+      "sha256": "97479ca6cce906abc961ecac96faa5f9ca2e61b8e7670d475826bcdee9a7c267"
+    },
+    "vendor/fonts/KaTeX_Main-Regular.ttf": {
+      "bytes": 53580,
+      "git_blob_sha": "dd45e1ed2e18b32c516d9b481ebed3cb8bffa711",
+      "sha256": "d0332f52868370fd83ae7fa46470f90c8f2eab2fcf12bc4f88080b340c95a830"
+    },
+    "vendor/fonts/KaTeX_Main-Regular.woff": {
+      "bytes": 30772,
+      "git_blob_sha": "21f5812968c42392a3eaea9b0c6320870b6b8b38",
+      "sha256": "c6368d87e8a1a3a5d337623d83d8dc4b868f242a9ad476237d6f8d1e0f168cdc"
+    },
+    "vendor/fonts/KaTeX_Main-Regular.woff2": {
+      "bytes": 26272,
+      "git_blob_sha": "eb24a7ba282b03d830fa6c63ee897d92a5188736",
+      "sha256": "c2342cd8b869e01752a9321dc17213fc40d4d04c79688c1d43f2cf316abd7866"
+    },
+    "vendor/fonts/KaTeX_Math-BoldItalic.ttf": {
+      "bytes": 31196,
+      "git_blob_sha": "728ce7a1e2cb689df32c3a6c26e1bd072dcf2acb",
+      "sha256": "f9377ab0271cda59af24bcffbd46a4d0c8a3572ffafdbb38de2ad5ea7b0d5ee5"
+    },
+    "vendor/fonts/KaTeX_Math-BoldItalic.woff": {
+      "bytes": 18668,
+      "git_blob_sha": "0ae390d74c9f665cf8b1e5ea5483395da7513444",
+      "sha256": "850c0af5c2238497febaf5e461d880bf458c341f42f4f330f1b1ab5698b1998e"
+    },
+    "vendor/fonts/KaTeX_Math-BoldItalic.woff2": {
+      "bytes": 16400,
+      "git_blob_sha": "29657023adc09956249f6295746c8ce4469b50d3",
+      "sha256": "dc47344dbb6cb5b655c8460d561f4df5f501b90c804ad3c6cec65fe322351ab1"
+    },
+    "vendor/fonts/KaTeX_Math-Italic.ttf": {
+      "bytes": 31308,
+      "git_blob_sha": "70d559b4e937ca1b805eb39f544cbebe3c58ca6f",
+      "sha256": "08ce98e51b04d58945a301e639e02b6998af29fdfd61a7b8afdd07bbfc479d4a"
+    },
+    "vendor/fonts/KaTeX_Math-Italic.woff": {
+      "bytes": 18748,
+      "git_blob_sha": "eb5159d4c1ca83fb92b3190223698427df0e010c",
+      "sha256": "8a8d244581371912b8f3f5a23e2437cb2a59cd9bcaebb0346e722c05737a2571"
+    },
+    "vendor/fonts/KaTeX_Math-Italic.woff2": {
+      "bytes": 16440,
+      "git_blob_sha": "215c143fd7805a5c2b222bd7892a1a2b09610020",
+      "sha256": "7af58c5ec8f132a2ddde9027c6d7814decce4d3b822a11192a42a20e2e973264"
+    },
+    "vendor/fonts/KaTeX_SansSerif-Bold.ttf": {
+      "bytes": 24504,
+      "git_blob_sha": "2f65a8a3a6d3628d11ea9c26c9077cef672fe427",
+      "sha256": "1ece03f79f95277d57dc7f6b435a74e1379b0d46104a8530286b60ff49369ea0"
+    },
+    "vendor/fonts/KaTeX_SansSerif-Bold.woff": {
+      "bytes": 14408,
+      "git_blob_sha": "8d47c02d9408d34b2a9d566c0fe0d42bf82fb735",
+      "sha256": "ece03cfd83e22c212cdef66feb8442d25a083beb988db3f1883f3f9738d750ba"
+    },
+    "vendor/fonts/KaTeX_SansSerif-Bold.woff2": {
+      "bytes": 12216,
+      "git_blob_sha": "cfaa3bda59246b49e94298478d6de3b3208066c8",
+      "sha256": "e99ae51144bf1232efcc1bfe5add36262c6866b0faab24fa75740e1b98577a62"
+    },
+    "vendor/fonts/KaTeX_SansSerif-Italic.ttf": {
+      "bytes": 22364,
+      "git_blob_sha": "d5850df98ec19de2eee9ff922ef59586efe471d0",
+      "sha256": "3931dd81faed86ba021bb2bbdc36f5bed9a38d6b4f4077aca59b265aa1b02083"
+    },
+    "vendor/fonts/KaTeX_SansSerif-Italic.woff": {
+      "bytes": 14112,
+      "git_blob_sha": "7e02df963621a5e26d53d510f0b4992eebde1c60",
+      "sha256": "91ee67500cc0129aa0ace3ac5c61ff1692102f0f31d02b69347fba35dcb75bf2"
+    },
+    "vendor/fonts/KaTeX_SansSerif-Italic.woff2": {
+      "bytes": 12028,
+      "git_blob_sha": "349c06dc609f896392fd5bc8b364d3bc3efc9330",
+      "sha256": "00b26ac825e2095056396e0553b8ac26d3f8ad158c3826e28b4c45b385c4714a"
+    },
+    "vendor/fonts/KaTeX_SansSerif-Regular.ttf": {
+      "bytes": 19436,
+      "git_blob_sha": "537279f6bd2184ed32f1a5168850609147d58ee6",
+      "sha256": "f36ea897e19f4a2e571d1e900e4e3710e438deb05a842486045ba0a3e616a4ad"
+    },
+    "vendor/fonts/KaTeX_SansSerif-Regular.woff": {
+      "bytes": 12316,
+      "git_blob_sha": "31b84829b42edae20d0148eeec0d922dad2108c4",
+      "sha256": "11e4dc8a6471ff6d6ee561d53d10fde8f7489e798257ff449c5d37c197435605"
+    },
+    "vendor/fonts/KaTeX_SansSerif-Regular.woff2": {
+      "bytes": 10344,
+      "git_blob_sha": "a90eea85f6f7bded69ff5d40114447a6d8b48cfe",
+      "sha256": "68e8c73ef42afd3ccec58bf0fba302cce448938e7fc020a5e31f8a952eee1342"
+    },
+    "vendor/fonts/KaTeX_Script-Regular.ttf": {
+      "bytes": 16648,
+      "git_blob_sha": "fd679bf374af72f2a183b97b40c9c7e9e51fbe5e",
+      "sha256": "1c67f068fea8bb09bf099c088b1cf64bd27516a6e07f4684344873564bb66a67"
+    },
+    "vendor/fonts/KaTeX_Script-Regular.woff": {
+      "bytes": 10588,
+      "git_blob_sha": "0e7da821eee0dd05a0a6f0b16c2c1345dc573a84",
+      "sha256": "d96cdf2b3bdd4d64a8fd5f74a4c467f123a8a73931cd435889f08ffaf9bf947a"
+    },
+    "vendor/fonts/KaTeX_Script-Regular.woff2": {
+      "bytes": 9644,
+      "git_blob_sha": "b3048fc115681ee6c1bc86b0aa158cfbbf59daa3",
+      "sha256": "036d4e95149b69ff9bcc0cd55771efeb25ffa3947293e69acd78d5ac328c684b"
+    },
+    "vendor/fonts/KaTeX_Size1-Regular.ttf": {
+      "bytes": 12228,
+      "git_blob_sha": "871fd7d19d8658f64d8696ed9cdfc82c821ed76d",
+      "sha256": "95b6d2f1a50173bfedb8c63e1d1c99b10427d0a4df4201cb44513b226951a22b"
+    },
+    "vendor/fonts/KaTeX_Size1-Regular.woff": {
+      "bytes": 6496,
+      "git_blob_sha": "7f292d91184f257054ef77cc1cd3443db757c9cc",
+      "sha256": "c943cc986384f59e86bea5fd7dc50a9c4dfe567a7c05eb40d6790720dead97c9"
+    },
+    "vendor/fonts/KaTeX_Size1-Regular.woff2": {
+      "bytes": 5468,
+      "git_blob_sha": "c5a8462fbfe2c39a7c1857b9e296e62500a8a8a5",
+      "sha256": "6b47c40166b6dbe21a5dfca7718413f2147fd2399be1ba605d8ad39cedf25dfe"
+    },
+    "vendor/fonts/KaTeX_Size2-Regular.ttf": {
+      "bytes": 11508,
+      "git_blob_sha": "7a212caf91c0007e826fee2d622bf48acbd30dde",
+      "sha256": "a6b2099fb555c60e3a0db3a08842ebf1d732c6eb4e4bf44913613bed4fc4e39b"
+    },
+    "vendor/fonts/KaTeX_Size2-Regular.woff": {
+      "bytes": 6188,
+      "git_blob_sha": "d241d9be2d317f7b39b401d96c8b18836acea0fa",
+      "sha256": "2014c523c3210bcc166648c4d4cc57f05b747df07a24277bf71c51e67dc79e3d"
+    },
+    "vendor/fonts/KaTeX_Size2-Regular.woff2": {
+      "bytes": 5208,
+      "git_blob_sha": "e1bccfe2403a4ed770c1697ae7c15b9e1cd9bc4e",
+      "sha256": "d04c54219f9eaec6d4d4fd42dfb28785975a4794d6b2fc71e566b9cd6db842dd"
+    },
+    "vendor/fonts/KaTeX_Size3-Regular.ttf": {
+      "bytes": 7588,
+      "git_blob_sha": "00bff3495fa9d2f98c1c9ce436add6a1bcfe87fb",
+      "sha256": "500e04d54f0d51666332c9d2089aa803be22aa878eca539e59fa53c6e522b082"
+    },
+    "vendor/fonts/KaTeX_Size3-Regular.woff": {
+      "bytes": 4420,
+      "git_blob_sha": "e6e9b658dcf1cd031ac82b6b8f312444c55d4fc0",
+      "sha256": "6ab6b62e9b62dae2c00dd90f791bd10950be0ecc3490d7d6045f51c2e8fe0949"
+    },
+    "vendor/fonts/KaTeX_Size3-Regular.woff2": {
+      "bytes": 3624,
+      "git_blob_sha": "249a28662218a7a17ad8bd1fe072169ecb666a49",
+      "sha256": "73d591271b1604960cb10bb90fee021670af7297017e0e98480b332d11f51995"
+    },
+    "vendor/fonts/KaTeX_Size4-Regular.ttf": {
+      "bytes": 10364,
+      "git_blob_sha": "74f08921f00f71f413ca42c9d1c90202e672ef38",
+      "sha256": "c647367d1dd4e162468717d020e1fc0f1dc5c26ebfdffbe55261713bf88c5877"
+    },
+    "vendor/fonts/KaTeX_Size4-Regular.woff": {
+      "bytes": 5980,
+      "git_blob_sha": "e1ec5457664f438ce5a1cc6dd8409bf60ca7804b",
+      "sha256": "99f9c6750b489c9462bf04900bd3f939df9b829339daaaaa99ef5495cdddea58"
+    },
+    "vendor/fonts/KaTeX_Size4-Regular.woff2": {
+      "bytes": 4928,
+      "git_blob_sha": "680c13085076a2f6c5a7e695935ec3f21cddb65f",
+      "sha256": "a4af7d414440a1c1790825cfb700cf9cf43b0f2c4b04f0ebc523011ad9853ec0"
+    },
+    "vendor/fonts/KaTeX_Typewriter-Regular.ttf": {
+      "bytes": 27556,
+      "git_blob_sha": "c83252c5714c71a3e0ec62195884167339a0129b",
+      "sha256": "f01f3e87d9c6a61c0c081ceb577abd864eb00a612f7ac1620dd6915fad2ef5aa"
+    },
+    "vendor/fonts/KaTeX_Typewriter-Regular.woff": {
+      "bytes": 16028,
+      "git_blob_sha": "2432419f28936aff53ddfa2a732d027e6a6648fd",
+      "sha256": "e14fed02b1aba7ce9f5afd5844b5d0321b22351febc720e0de8b8723527609f7"
+    },
+    "vendor/fonts/KaTeX_Typewriter-Regular.woff2": {
+      "bytes": 13568,
+      "git_blob_sha": "771f1af705f5cef5f578b3a1e7d8eff66f9b76b0",
+      "sha256": "71d517d67827787cfabdf186914cc3358eda539e37931941f2b2fd4a21f68c0b"
+    },
+    "vendor/katex.min.css": {
+      "bytes": 24788,
+      "git_blob_sha": "d2216b8fe5ccec7a0a56ab7595b8755f15cb1856",
+      "sha256": "50d9c78e03da144a021001b7de679133355179bcb06fd11e9e309223056a03dd"
+    },
+    "vendor/katex.min.js": {
+      "bytes": 272715,
+      "git_blob_sha": "ff17da3883330d8dce82700783b92351e484bce3",
+      "sha256": "10a91b479cd927446ceb60409fb0d72b5d0d05eaf446c9e52fafd64058c84540"
     },
     "打开说明.txt": {
       "bytes": 713,
       "git_blob_sha": "12cc98cb6979ac33e381fbff6dcbab3ebee2b93b",
       "sha256": "0efda3a1e1ff211942fe371fc6ec593f22255a6c26bd64c93e241e2c7a50c689"
-    },
-    "coverage.md": {
-      "bytes": 2841,
-      "git_blob_sha": "4fae3c43e6931e13613eff5be102c18f6e10422d",
-      "sha256": "1208d9f7a144a9e7294d5b48ed335522c20cdc72d6c9ae863180f9e56e493a62"
-    },
-    "coverage.html": {
-      "bytes": 2085,
-      "git_blob_sha": "ae3f906abaa9a1e5484b33472c0b47d5b2279f3f",
-      "sha256": "993b37e2b292e4fa8a183e09f4c54b376443242e56e6cd90fdeeb33217118fb6"
-    },
-    "source-visual-audit-2026-11-06.md": {
-      "bytes": 2833,
-      "git_blob_sha": "c6e634da22b898dd17048b63e048b1087109322a",
-      "sha256": "1ff4c2c0c3b011e88c98e28fb0a85e672a7f863409354b50ed33b8b5d29bee22"
     }
-  },
-  "file_count": 37,
-  "last_content_repair_date": "2026-11-06",
-  "source_pdf": "CVPR 2026 official 12-page main + 7-page supplement",
-  "official_source_sha256": {
-    "main": "89faceab57ff03c0df3f803390a26f4f084432c9cff936cc69bf3d939643b87b",
-    "supplement": "1af4fc2a67bffe58564df6911917c6b618f321b1b17ca8b69e43b8c0c089b74e"
-  },
-  "quality_status": "repairing",
-  "visual_template_directory": "reading-packs/2026-09-16_ICLR2026_DriveVLA-W0_阅读包",
-  "current_text_validation": "2026-11-06 main: 37/37 payload Git blob SHAs verified; 36/36 available payload byte sizes verified after correcting UTF-8 non-BMP counts (paper.pdf SHA only, historical bytes); six modified text SHA256s recomputed, 19 page image links statically checked; no current ZIP/PDF brief content re-generation",
-  "optional_zip_sync_status": "stale_backup_generated_2026-11-02_does_not_include_2026-11-04_translation_and_css_changes",
-  "content_quality_status": "repairing: table1 specialist rows and figure4 source page verified; supplementary trajectory, full paragraph alignment, offline browser/KaTeX and PDF brief remain pending",
-  "remains_unfinished": true,
-  "coverage_record": "coverage.md",
-  "current_revision_note": "2026-11-06 source Table 1 and Figure 4 fixes, HTML/Markdown synchronized, manifest Unicode byte counters corrected by reading actual GitHub binary/base64; still repairing for full translation, KaTeX, browser, PDF brief and stale optional ZIP"
+  }
 }

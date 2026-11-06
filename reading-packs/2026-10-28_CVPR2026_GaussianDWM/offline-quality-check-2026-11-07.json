@@ -1,0 +1,47 @@
+{
+  "paper": "GaussianDWM",
+  "audit_date": "2026-11-07",
+  "original_date": "2026-10-28",
+  "quality_status": "repairing",
+  "translation_completeness": "not certified; source paragraph alignment remains pending",
+  "checks": {
+    "index_standalone_translation_content_equal": true,
+    "index_standalone_algorithms_content_equal": true,
+    "source_pdf_pages": 19,
+    "original_jpg_pages": 19,
+    "supplement_pdf_text_extraction_pages": [
+      12,
+      13,
+      14,
+      15,
+      16,
+      17,
+      18,
+      19
+    ],
+    "local_katex_woff2_fonts": 20,
+    "local_relative_resources": true,
+    "brief_pdf_pages": 8,
+    "brief_pdf_bytes": 441192,
+    "real_offline_browser": {
+      "attempted": true,
+      "success": false,
+      "reason": "AssertionError: Scroll position not restored: 0"
+    }
+  },
+  "warnings": [
+    "Offline browser acceptance not fully passed: AssertionError: Scroll position not restored: 0"
+  ],
+  "browser": {
+    "attempted": true,
+    "success": false,
+    "reason": "AssertionError: Scroll position not restored: 0"
+  },
+  "remaining": [
+    "source-paragraph one-to-one audit for complete main text and 7 supplement pages",
+    "verbatim and visual verification of supplemental trajectory and QA JSON",
+    "re-check remaining figure labels and translated tables against source images",
+    "synchronize full paragraph translation to corresponding HTML and Markdown",
+    "re-run remote immutable-commit verification after this push"
+  ]
+}

@@ -1,5 +1,5 @@
 {
-  "updated_date": "2026-11-06",
+  "updated_date": "2026-11-07",
   "policy": "GaussianDWM first until completed; then oldest uncompleted historical item, one paper per run; do not resume new recommendations while pending items exist",
   "total_packs": 14,
   "pending": 14,
@@ -10,20 +10,19 @@
       "directory": "reading-packs/2026-10-28_CVPR2026_GaussianDWM",
       "original_date": "2026-10-28",
       "legacy_status": "repairing",
-      "repair_status": "2026-11-06_verified_main_table1_specialist_3dvg_rows_and_figure4_source_page_remains_translation_quality_and_offline_pending",
+      "repair_status": "2026-11-07_offline_katex_and_brief_sync_and_asset_manifest_rebuilt_full_translation_audit_pending",
       "new_standard_completed": false,
-      "last_repair_date": "2026-11-06",
+      "last_repair_date": "2026-11-07",
       "pending_items": [
-        "supplement_trajectory_sample",
-        "full_paragraph_source_alignment",
-        "offline_math_browser_validation",
-        "pdf_brief_sync",
-        "optional_zip_stale",
-        "final_remote_manifest_verification",
-        "other_figure_labels_and_translation_alignment"
+        "source_paragraph_alignment",
+        "supplement_qa_trajectory_verbatim",
+        "figure_label_audit",
+        "remote_immutable_commit_validation",
+        "offline_browser_validation"
       ],
       "partial_achievements": [
-        "2026-11-06: Table 1 BEVFormer/PETR/CAPE and Figure 4 verified against source PDF pages 6/8; translation.md/html/index synchronized"
+        "2026-11-06: Table 1 BEVFormer/PETR/CAPE and Figure 4 verified against source PDF pages 6/8; translation.md/html/index synchronized",
+        "2026-11-07: restored template KaTeX vendor, synchronized current brief PDF, regenerated optional ZIP and manifest; browser=False; translation fidelity pending"
       ]
     },
     {
