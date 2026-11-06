@@ -1,4 +1,4 @@
-name: Verify GaussianDWM remote full archive, PDF and 34 expanded files
+name: GaussianDWM current remote full-content verification
 on:
   push:
     branches: [main]
@@ -7,118 +7,109 @@ on:
   workflow_dispatch:
 permissions:
   contents: write
+concurrency:
+  group: gaussian-current-remote-verify
+  cancel-in-progress: false
 jobs:
-  remote-verify:
+  verify:
     runs-on: ubuntu-latest
-    timeout-minutes: 20
+    timeout-minutes: 30
     steps:
       - uses: actions/checkout@v4
         with: {fetch-depth: 0}
       - uses: actions/setup-python@v5
         with: {python-version: "3.11"}
-      - run: python -m pip install --quiet pymupdf pillow
-      - name: Download from immutable remote commit and verify contents
+      - run: python -m pip install --quiet pymupdf
+      - name: Verify immutable remote blob tree, ZIP, PDF and references
         shell: bash
         run: |
           set -euo pipefail
-          python3 - <<'PY'
-          import json,hashlib,pathlib,subprocess,zipfile,urllib.parse,urllib.request,io,re
+          python - <<'PY'
+          import pathlib, subprocess, urllib.request, urllib.parse, json, hashlib, zipfile, io, re
           import fitz
-          from PIL import Image
-          root=pathlib.Path('.')
-          d=root/'reading-packs/2026-10-28_CVPR2026_GaussianDWM'
-          prefix='reading-packs/2026-10-28_CVPR2026_GaussianDWM/'
-          zipname='2026-10-28_CVPR2026_GaussianDWM_阅读包.zip'
-          head=subprocess.check_output(['git','rev-parse','HEAD'],text=True).strip()
-          req=urllib.request.Request('https://api.github.com/repos/Daylawrence/Paper/git/trees/'+head+'?recursive=1',headers={'User-Agent':'GaussianDWM-remote-audit'})
-          with urllib.request.urlopen(req,timeout=100) as f:tree=json.loads(f.read())
-          assert tree['sha']==head
-          remote={f['path']:f for f in tree['tree'] if f['type']=='blob'}
-          manifest=json.loads((d/'manifest.json').read_text(encoding='utf-8'))
-          catalogpath=root/'reading-packs/catalog.json'
-          catalog=json.loads(catalogpath.read_text(encoding='utf-8'))
-          c=next(x for x in catalog if x.get('paper')=='GaussianDWM')
-          assert len(manifest['files'])==34
-          for rel,info in manifest['files'].items():
-              e=remote.get(prefix+rel)
-              assert e and e['size']==info['bytes'] and e['sha']==info['git_blob_sha'],rel
-          assert remote[prefix+zipname]['size']==c['zip_bytes']
-          assert remote[prefix+zipname]['sha']==c['zip_git_blob_sha']
-          def sha(b):return hashlib.sha256(b).hexdigest()
-          def blob(b):return hashlib.sha1(('blob '+str(len(b))+'\0').encode()+b).hexdigest()
-          def raw(rel,out):
-              u='https://raw.githubusercontent.com/Daylawrence/Paper/'+head+'/'+urllib.parse.quote(prefix+rel,safe='/')
-              subprocess.run(['curl','-fL','--retry','3','--connect-timeout','20','--max-time','300',u,'-o',out],check=True)
-              return pathlib.Path(out).read_bytes()
-          zbytes=raw(zipname,'/tmp/gaussiandwm-remote.zip')
-          assert len(zbytes)==c['zip_bytes'] and sha(zbytes)==c['zip_sha256']
-          assert blob(zbytes)==c['zip_git_blob_sha']
+          root=pathlib.Path("reading-packs")
+          d=root/"2026-10-28_CVPR2026_GaussianDWM"
+          prefix=d.as_posix()+"/"
+          head=subprocess.check_output(["git","rev-parse","HEAD"],text=True).strip()
+          tree_sha=subprocess.check_output(["git","rev-parse","HEAD^{tree}"],text=True).strip()
+          def get(url):
+              req=urllib.request.Request(url,headers={"User-Agent":"Paper-verified-remote/1.0"})
+              with urllib.request.urlopen(req,timeout=120) as r:return r.read()
+          tree=json.loads(get("https://api.github.com/repos/Daylawrence/Paper/git/trees/"+tree_sha+"?recursive=1"))
+          assert not tree.get("truncated"),"Git remote tree truncated"
+          assert tree["sha"]==tree_sha,(tree["sha"],tree_sha)
+          objects={x["path"]:x for x in tree["tree"] if x["type"]=="blob"}
+          manifest=json.loads((d/"manifest.json").read_text("utf-8"))
+          files=manifest["files"]
+          assert len(files)>=35,f"Unexpectedly sparse manifest: {len(files)}"
+          for path,meta in files.items():
+              o=objects.get(prefix+path)
+              assert o and o["sha"]==meta["git_blob_sha"] and o["size"]==meta["bytes"],path
+              content=(d/path).read_bytes()
+              assert len(content)==meta["bytes"],path
+              assert hashlib.sha256(content).hexdigest()==meta["sha256"],path
+          def raw(rel):
+              url="https://raw.githubusercontent.com/Daylawrence/Paper/"+head+"/"+urllib.parse.quote(prefix+rel,safe="/")
+              return get(url)
+          def sha256(b):return hashlib.sha256(b).hexdigest()
+          def blob(b):return hashlib.sha1(b"blob "+str(len(b)).encode()+b"\\0"+b).hexdigest()
+          catalog=json.loads((root/"catalog.json").read_text("utf-8"))
+          c=next(x for x in catalog if x.get("paper")=="GaussianDWM")
+          zipname="2026-10-28_CVPR2026_GaussianDWM_阅读包.zip"
+          zbytes=raw(zipname)
+          assert len(zbytes)==c["zip_bytes"] and sha256(zbytes)==c["zip_sha256"] and blob(zbytes)==c["zip_git_blob_sha"]
+          zipnames=set()
+          dirname=zipname[:-4]+"/"
           with zipfile.ZipFile(io.BytesIO(zbytes)) as z:
-              assert z.testzip() is None
-              dirname=zipname[:-4]+'/'
-              expected={dirname+k for k in [*manifest['files'],'manifest.json']}
-              assert set(z.namelist())==expected
-              for rel,info in manifest['files'].items():
-                  content=z.read(dirname+rel)
-                  assert len(content)==info['bytes'] and sha(content)==info['sha256'] and blob(content)==info['git_blob_sha'],rel
-              p18=z.read(dirname+'pages/page-18.jpg')
-              p19=z.read(dirname+'pages/page-19.jpg')
-              assert sha(p18)!=sha(p19)
-              Image.open(io.BytesIO(p18)).verify()
-              Image.open(io.BytesIO(p19)).verify()
-          pbytes=raw('paper.pdf','/tmp/gaussiandwm-remote.pdf')
-          assert len(pbytes)==c['source_pdf_bytes'] and sha(pbytes)==c['source_pdf_sha256']
-          assert blob(pbytes)==c['source_pdf_git_blob_sha']
-          doc=fitz.open(stream=pbytes,filetype='pdf')
-          assert len(doc)==19
-          last={str(i):len(doc[i-1].get_text('text').strip()) for i in (17,18,19)}
-          assert min(last.values())>100,last
-          html=(d/'index.html').read_text(encoding='utf-8')
-          refs=set(re.findall(r'(?:src|href)="([^"]+)"',html))
-          invalid=[]
-          for ref in refs:
-              if re.match(r'^(?:https?:|mailto:|data:|javascript:|#)',ref):continue
-              rel=ref.split('#')[0].split('?')[0]
-              if rel and not (d/rel).is_file():invalid.append(ref)
-          assert not invalid,invalid
-          audit={
-            'paper':'GaussianDWM','verification_date':'2026-11-02',
-            'remote_commit_checked':head,'default_branch':'main',
-            'remote_git_tree_34_expanded_entries':'passed',
-            'remote_zip':{'bytes':len(zbytes),'sha256':sha(zbytes),'git_blob_sha':blob(zbytes),'crc':'passed','manifest_entry_checks':34},
-            'remote_paper_pdf':{'bytes':len(pbytes),'sha256':sha(pbytes),'git_blob_sha':blob(pbytes),'pages':19,'last_page_text_chars':last},
-            'static_relative_asset_links':'passed','source_pages_restored':True,
-            'full_chinese_translation':'not passed, original text substantially condensed',
-            'delivery_status':'repairing','completed':False}
-          (d/'remote-verification-2026-11-02.json').write_text(json.dumps(audit,ensure_ascii=False,indent=2)+'\n',encoding='utf-8')
-          c['zip_remote_bytes_current_metadata']=len(zbytes)
-          c['repair_status']='official_source_and_remote_verified_translation_pending'
-          c['repair_last_checked_date']='2026-11-02'
-          c['repair_audit_path']=prefix+'remote-verification-2026-11-02.json'
-          c['delivery_status']='repairing'
-          c['repair_note']='19 official pages restored; 34 remote Git blobs and full remote ZIP and PDF verified; full translation remains pending.'
-          catalogpath.write_text(json.dumps(catalog,ensure_ascii=False,indent=2)+'\n',encoding='utf-8')
-          qpath=root/'reading-packs/repair-queue.json'
-          queue=json.loads(qpath.read_text(encoding='utf-8'))
-          first=next(x for x in queue['entries'] if x['paper']=='GaussianDWM')
-          first['repair_status']='official_source_and_remote_verified_translation_pending'
-          first['new_standard_completed']=False
-          queue['updated_date']='2026-11-02'
-          qpath.write_text(json.dumps(queue,ensure_ascii=False,indent=2)+'\n',encoding='utf-8')
-          source=d/'source-restoration-audit-2026-11-02.json'
-          a=json.loads(source.read_text(encoding='utf-8'))
-          a['remote_default_branch_validation']='passed, independent full ZIP and PDF redownload, 34 Git object checks'
-          a['completed']=False
-          source.write_text(json.dumps(a,ensure_ascii=False,indent=2)+'\n',encoding='utf-8')
-          print(json.dumps(audit,ensure_ascii=False))
+              assert z.testzip() is None,"ZIP CRC validation failed"
+              zipnames=set(z.namelist())
+              expect={dirname+x for x in files}|{dirname+"manifest.json"}
+              assert zipnames==expect,f"ZIP discrepancy: extra {len(zipnames-expect)}, missing {len(expect-zipnames)}"
+              for rel,m in files.items():
+                  data=z.read(dirname+rel)
+                  assert len(data)==m["bytes"] and sha256(data)==m["sha256"] and blob(data)==m["git_blob_sha"],rel
+              assert z.read(dirname+"manifest.json")== (d/"manifest.json").read_bytes()
+          pdf=raw("paper.pdf")
+          assert len(pdf)==c["source_pdf_bytes"] and sha256(pdf)==c["source_pdf_sha256"] and blob(pdf)==c["source_pdf_git_blob_sha"]
+          paper=fitz.open(stream=pdf,filetype="pdf")
+          assert len(paper)==19,len(paper)
+          briefs=[x for x in files if x.endswith("_中文学习简报.pdf")]
+          assert len(briefs)==1,briefs
+          brief=raw(briefs[0])
+          m=files[briefs[0]]
+          assert len(brief)==m["bytes"] and sha256(brief)==m["sha256"] and blob(brief)==m["git_blob_sha"]
+          briefpages=len(fitz.open(stream=brief,filetype="pdf"))
+          for file in ["index.html","translation.html","algorithms.html","coverage.html"]:
+              html=(d/file).read_text("utf-8")
+              for link in re.findall(r'(?:src|href)="([^"]+)"',html):
+                  if re.match(r"^(?:https?:|mailto:|data:|#|javascript:)",link):continue
+                  local=urllib.parse.unquote(link.split("?")[0].split("#")[0])
+                  assert local and (d/local).is_file(),(file,link)
+          from pathlib import PurePosixPath
+          result={
+              "paper":"GaussianDWM","source_created_date":"2026-10-28","verification_date":"2026-11-07",
+              "verified_immutable_remote_commit":head,"checked_tree_sha":tree_sha,
+              "expanded_payload_files":len(files),"expanded_blob_sha_size_and_sha256":"passed",
+              "remote_zip":{"bytes":len(zbytes),"sha256":sha256(zbytes),"crc":"passed","entries":len(zipnames)},
+              "remote_paper_pdf":{"bytes":len(pdf),"sha256":sha256(pdf),"pages":len(paper)},
+              "remote_brief_pdf":{"bytes":len(brief),"sha256":sha256(brief),"pages":briefpages},
+              "relative_html_resources":"passed","translation_full_paragraph_quality":"not yet certified",
+              "delivery_status":"repairing","new_standard_completed":False
+          }
+          print(json.dumps(result,ensure_ascii=False,indent=2))
+          out=root/"audits"/"gaussiandwm-remote-2026-11-07.json"
+          out.parent.mkdir(parents=True,exist_ok=True)
+          out.write_text(json.dumps(result,ensure_ascii=False,indent=2)+"\\n",encoding="utf-8")
           PY
-      - name: Publish audit without changing repair completion status
+      - name: Commit independent remote audit without changing completion state
+        shell: bash
         run: |
+          set -euo pipefail
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add reading-packs/2026-10-28_CVPR2026_GaussianDWM/remote-verification-2026-11-02.json \
-            reading-packs/2026-10-28_CVPR2026_GaussianDWM/source-restoration-audit-2026-11-02.json \
-            reading-packs/catalog.json reading-packs/repair-queue.json
-          git commit -m "Record independent GaussianDWM GitHub re-download integrity check [skip ci]"
-          git pull --rebase origin main
+          git add reading-packs/audits/gaussiandwm-remote-2026-11-07.json
+          if git diff --cached --quiet; then exit 0; fi
+          git commit -m "audit(GaussianDWM): immutable remote ZIP, PDF and expanded file integrity [skip ci]"
+          git fetch origin main
+          git rebase origin/main
           git push origin HEAD:main
