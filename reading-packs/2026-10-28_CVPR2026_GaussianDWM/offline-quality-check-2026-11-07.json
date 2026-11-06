@@ -22,7 +22,7 @@
     "local_katex_woff2_fonts": 20,
     "local_relative_resources": true,
     "brief_pdf_pages": 8,
-    "brief_pdf_bytes": 441199,
+    "brief_pdf_bytes": 441192,
     "real_offline_browser": {
       "attempted": true,
       "success": true,
