@@ -1,5 +1,5 @@
 {
-  "updated_date": "2026-11-07",
+  "updated_date": "2026-11-08",
   "policy": "GaussianDWM first until completed; then oldest uncompleted historical item, one paper per run; do not resume new recommendations while pending items exist",
   "total_packs": 14,
   "pending": 14,
@@ -10,12 +10,15 @@
       "directory": "reading-packs/2026-10-28_CVPR2026_GaussianDWM",
       "original_date": "2026-10-28",
       "legacy_status": "repairing",
-      "repair_status": "2026-11-07_109_remote_expanded_payload_files_110_zip_entries_19page_original_8page_brief_browser_verified_semantic_paragraph_fidelity_pending",
+      "repair_status": "2026-11-08_source_paragraph_audit_found_merged_source_paragraphs_and_unmarked_translation_notes;_remote_zip_and_binaries_unchanged_since_2026-11-07",
       "new_standard_completed": false,
       "last_repair_date": "2026-11-07",
       "pending_items": [
-        "main_and_supplement_all_nonreference_english_paragraphs_to_chinese_one_to_one_final_semantic_check",
-        "figure_and_table_micro_labels_coordinates_full_visual_comparison"
+        "source_paragraphs_one_to_one_mapping_and_split_merged_sections_1_2_3_2_and_supplement_C",
+        "separate_unmarked_translator_comments_as_译注_or_move_to_algorithms",
+        "full_semantic_review_of_every_nonreferences_source_paragraph_and_formula_or_caption",
+        "figures_table_micro_labels_coordinates_complete_visual_check",
+        "after_edit_rebuild_html_md_pdf_manifest_optional_zip_then_retest_offline_and_remote_file_bytes_blob_sha"
       ],
       "partial_achievements": [
         "2026-11-06: Table 1 BEVFormer/PETR/CAPE and Figure 4 verified against source PDF pages 6/8; translation.md/html/index synchronized",
@@ -24,8 +27,11 @@
         "2026-11-07: independent remote check PASSED 108 expanded files+109 ZIP entries+19-page original PDF+8-page brief; real offline Chromium test passed 10 KaTeX equations, 850px restored scroll, 152px sidebar",
         "2026-11-07: latest independent remote verification at commit 1a06dc37 verified 108 expanded payload files, 109 ZIP entries/CRC, 19-page paper and 8-page brief; full paragraph semantic audit still pending",
         "2026-11-07: source-aligned appendix B order, 4.2/4.5 paragraph splits and 4.4 figure narrative; rebuilt offline PDF, HTML and latest ZIP 22,183,917 B",
-        "2026-11-07: independent re-verification at 90bab195 passed: 109 expanded blobs, 110 ZIP entries CRC/SHA256, paper 19 pages, brief 8 pages; main 4.2/4.4/4.5 and supplement B alignment improved, content semantic review still pending"
-      ]
+        "2026-11-07: independent re-verification at 90bab195 passed: 109 expanded blobs, 110 ZIP entries CRC/SHA256, paper 19 pages, brief 8 pages; main 4.2/4.4/4.5 and supplement B alignment improved, content semantic review still pending",
+        "2026-11-08: independently compared original arXiv v3 HTML and supplementary extracted source with translation.md; confirmed source-paragraph mergers in Intro/Related/Method/Supp C and unmarked translator commentary; published exact issue map; current reading payload unchanged, last verified ZIP/PDF remain the 2026-11-07 version."
+      ],
+      "last_quality_audit_date": "2026-11-08",
+      "latest_quality_audit_path": "reading-packs/audits/gaussiandwm-source-fidelity-2026-11-08.md"
     },
     {
       "priority": 2,
