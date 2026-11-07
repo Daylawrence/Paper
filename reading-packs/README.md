@@ -39,6 +39,12 @@
 最新直接阅读：[完整目录](2026-10-28_CVPR2026_GaussianDWM/) · [翻译Markdown（仍待校对）](2026-10-28_CVPR2026_GaussianDWM/translation.md) · [关键解释Markdown](2026-10-28_CVPR2026_GaussianDWM/algorithms.md) · [逐节覆盖与缺口](2026-10-28_CVPR2026_GaussianDWM/coverage.md) · [原文PDF](2026-10-28_CVPR2026_GaussianDWM/paper.pdf)。未部署并核实GitHub Pages；普通GitHub网页不运行index.html，若需网页交互请clone后本地打开。保留优先处理本篇，历史问题包未验收完成前不推荐新论文。
 
 
+## 2026-11-08 GaussianDWM 修复进度：译文段落对齐与译注区分（仍未完成）
+
+本轮逐项比对 [arXiv v3 主文](https://arxiv.org/html/2512.23180v3) 与当前中文译文，确认合并原文段落及未标注译者评论问题，已在 [translation.md](2026-10-28_CVPR2026_GaussianDWM/translation.md)、translation.html、index.html 同步完成 **16 处目标段落/译注修正**，并更新 109 项展开文件的 manifest（其中本轮变更的三份文本已回读检查字节数、SHA256 和 Git blob SHA）。[本轮来源对照审计](audits/gaussiandwm-source-fidelity-2026-11-08.md)。
+
+**未通过 completed：** 全文每一个非参考文献段落的语义对应审校、图表小字最终核对及这次更新后的全量独立远端验收仍未完成。**原 ZIP 是 11 月 7 日的旧版可选备份，与当前 11 月 8 日展开文件不同步，不得作为最新版使用。** 请以 GitHub 展开目录中的最新 Markdown/PDF 或 clone 后本地打开 index.html 为准；不需要下载 ZIP。旧版报告仅证明当时的不可变版本。优先级仍为 GaussianDWM，新论文保持暂停。
+
 ## 2026-11-02 修复进度：GaussianDWM 原文与远端完整性已恢复
 
 保留原制作日期 **2026-10-28**；实际修复与远端验收日期 **2026-11-02**。继续**先修复历史旧包，暂停新论文推荐与上传**。[修复队列](repair-queue.json)。
