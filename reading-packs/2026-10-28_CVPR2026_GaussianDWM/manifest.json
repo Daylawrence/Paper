@@ -1,7 +1,7 @@
 {
   "paper": "GaussianDWM",
   "original_created_date": "2026-10-28",
-  "repair_date": "2026-11-07",
+  "repair_date": "2026-11-08",
   "status": "repairing",
   "completed": false,
   "source_template": "2026-09-16_ICLR2026_DriveVLA-W0_阅读包",
@@ -57,9 +57,9 @@
       "sha256": "13be908267f2a0fb60a72ad48c56162c28e9e13923ae3cd3fab3363a2f0245d1"
     },
     "index.html": {
-      "bytes": 78018,
-      "git_blob_sha": "fe86bd4e8dcc8f95faaf803809bccd44f21d4dad",
-      "sha256": "d061429af782b78c57d30bf8dc0d7c9f4366a92e96eb67abf30b0558819b8441"
+      "bytes": 78194,
+      "git_blob_sha": "f40f5a24720a00b6ef8aa51cc565e2d5eaef7336",
+      "sha256": "b747700bc061aea4f26f444a91840f5635f9ab700dfbb18e943ba58c2af64f4b"
     },
     "offline-quality-check-2026-11-07.json": {
       "bytes": 1535,
@@ -222,14 +222,14 @@
       "sha256": "e5bb7dc254b460464b871ea46a33065296084f0d36989e8456ab6088077cff72"
     },
     "translation.html": {
-      "bytes": 56317,
-      "git_blob_sha": "72b8aaec8ac59fbf35ec2a09d6ba77d0dafee6dd",
-      "sha256": "351286585b7e4ff066539823f5bb7d8dc7a40a7eb97ca36ed6aebd67322d71ef"
+      "bytes": 56493,
+      "git_blob_sha": "427ccd35ce776a4487ad4ca9a12de1a9a926021e",
+      "sha256": "6791215d73ef007333e966b135318b84c81ff2b5e249b5b3c71444a061105db9"
     },
     "translation.md": {
-      "bytes": 48748,
-      "git_blob_sha": "c3ea24bac0216fd5cd56af2d9793b2a9c5b7df7f",
-      "sha256": "27f2f6c4a44419f1cbddf76a5393d76e5577a96aeabc2edda28e2a24ff83c7e5"
+      "bytes": 48828,
+      "git_blob_sha": "c570cfea27591ece9f9cc419248a7c5d8d113578",
+      "sha256": "035096aaaa918777f744775ef45fd31a0de5d0193eba0bbf20b93e283e39a567"
     },
     "vendor/auto-render.min.js": {
       "bytes": 3486,
@@ -551,5 +551,7 @@
       "git_blob_sha": "12cc98cb6979ac33e381fbff6dcbab3ebee2b93b",
       "sha256": "0efda3a1e1ff211942fe371fc6ec593f22255a6c26bd64c93e241e2c7a50c689"
     }
-  }
+  },
+  "optional_zip_status": "legacy_backup_out_of_sync_since_2026-11-08;do_not_use_as_current_version",
+  "current_source_fidelity_audit": "reading-packs/audits/gaussiandwm-source-fidelity-2026-11-08.md"
 }
