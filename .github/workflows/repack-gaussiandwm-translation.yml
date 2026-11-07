@@ -4,6 +4,7 @@ on:
     branches: [main]
     paths:
       - 'reading-packs/2026-10-28_CVPR2026_GaussianDWM/translation.md'
+      - '.github/workflows/repack-gaussiandwm-translation.yml'
 permissions:
   contents: write
 concurrency:
@@ -43,6 +44,7 @@ jobs:
           manifest['repair_date']='2026-11-08'
           manifest['status']='repairing'
           manifest['completed']=False
+          manifest['optional_zip_status']='current_2026-11-08_after_repack'
           files={}
           for p in sorted(d.rglob('*')):
               if not p.is_file() or p.name in (zipname,'manifest.json'):continue
