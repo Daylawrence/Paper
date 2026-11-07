@@ -1,0 +1,97 @@
+name: Repack GaussianDWM after translation corrections
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'reading-packs/2026-10-28_CVPR2026_GaussianDWM/translation.md'
+permissions:
+  contents: write
+concurrency:
+  group: gaussian-translation-repack
+  cancel-in-progress: false
+jobs:
+  repack:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+        with: {fetch-depth: 0}
+      - uses: actions/setup-python@v5
+        with: {python-version: '3.11'}
+      - name: Verify bilingual HTML consistency, recompute manifest and optional ZIP backup
+        shell: bash
+        run: |
+          set -euo pipefail
+          python - <<'PY'
+          import pathlib,hashlib,json,zipfile,io,re
+          root=pathlib.Path('reading-packs')
+          d=root/'2026-10-28_CVPR2026_GaussianDWM'
+          text=(d/'translation.md').read_text('utf-8')
+          page=(d/'index.html').read_text('utf-8')
+          standalone=(d/'translation.html').read_text('utf-8')
+          for s in ['译注：这里的 fᵢ', '译注：不同指标需逐列理解','译注：不能仅由模型命名推断其贡献']:
+              assert all(s in t for t in (text,page,standalone)),('Unmatched annotated translator note',s)
+          for s in ['为解决这一局限，作者提出以 3DGS 为基础','二者共同引导 RGB','早期基于 NeRF 的','对于单视角问题']:
+              assert all(s in t for t in (text,page,standalone)),('Missing corrected source paragraph',s)
+          assert 'id="translation"' in page and 'id="explanation"' in page
+          assert len(re.findall(r'pages/page-\d\d.jpg',page))==19
+          assert (d/'paper.pdf').stat().st_size>1000000
+          def sh(b):return hashlib.sha256(b).hexdigest()
+          def blob(b):return hashlib.sha1(b'blob '+str(len(b)).encode()+b'\0'+b).hexdigest()
+          zipname='2026-10-28_CVPR2026_GaussianDWM_阅读包.zip'
+          manifest=json.loads((d/'manifest.json').read_text('utf-8'))
+          manifest['repair_date']='2026-11-08'
+          manifest['status']='repairing'
+          manifest['completed']=False
+          files={}
+          for p in sorted(d.rglob('*')):
+              if not p.is_file() or p.name in (zipname,'manifest.json'):continue
+              rel=p.relative_to(d).as_posix()
+              b=p.read_bytes()
+              files[rel]={'bytes':len(b),'git_blob_sha':blob(b),'sha256':sh(b)}
+          assert len(files)>=105,len(files)
+          manifest['files']=files
+          (d/'manifest.json').write_text(json.dumps(manifest,ensure_ascii=False,indent=2)+'\n','utf-8')
+          prefix=zipname[:-4]+'/'
+          stream=io.BytesIO()
+          with zipfile.ZipFile(stream,'w',compression=zipfile.ZIP_DEFLATED,compresslevel=7,allowZip64=True) as archive:
+              for rel in files:
+                  archive.write(d/rel,prefix+rel)
+              archive.write(d/'manifest.json',prefix+'manifest.json')
+          b=stream.getvalue()
+          with zipfile.ZipFile(io.BytesIO(b)) as z:
+              assert z.testzip() is None
+              assert len(z.namelist())==len(files)+1
+              for rel,m in files.items():
+                  payload=z.read(prefix+rel)
+                  assert sh(payload)==m['sha256'] and blob(payload)==m['git_blob_sha']
+          (d/zipname).write_bytes(b)
+          cp=root/'catalog.json'
+          catalog=json.loads(cp.read_text('utf-8'))
+          info=next(x for x in catalog if x.get('paper')=='GaussianDWM')
+          info['zip_bytes']=len(b)
+          info['zip_sha256']=sh(b)
+          info['zip_git_blob_sha']=blob(b)
+          info['delivery_status']='repairing'
+          info['optional_zip_status']='2026-11-08 repacked from current expanded content; content fidelity audit still pending'
+          info['last_content_repair_date']='2026-11-08'
+          info['repair_note']='2026-11-08: source paragraph splits and translation annotation fixes; locally manifest/ZIP rebuilt, independent remote verification must follow'
+          info['expanded_files_manifest_verified']=None
+          info['latest_remote_verification_immutable_commit']=None
+          cp.write_text(json.dumps(catalog,ensure_ascii=False,indent=2)+'\n','utf-8')
+          print(json.dumps({'manifest_files':len(files),'zip_bytes':len(b),'zip_sha256':sh(b),'ready_for_remote_verification':True},ensure_ascii=False))
+          PY
+      - name: Commit rebuilt payload and metadata to main
+        shell: bash
+        run: |
+          set -euo pipefail
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add reading-packs/2026-10-28_CVPR2026_GaussianDWM/manifest.json
+          git add reading-packs/2026-10-28_CVPR2026_GaussianDWM/2026-10-28_CVPR2026_GaussianDWM_阅读包.zip
+          git add reading-packs/catalog.json
+          if git diff --cached --quiet; then exit 0; fi
+          git commit -m "repair(GaussianDWM): repack source-aligned translation and manifest [skip ci]"
+          git fetch origin main
+          git rebase origin/main
+          git push origin HEAD:main
