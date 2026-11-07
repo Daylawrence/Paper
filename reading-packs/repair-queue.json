@@ -10,9 +10,9 @@
       "directory": "reading-packs/2026-10-28_CVPR2026_GaussianDWM",
       "original_date": "2026-10-28",
       "legacy_status": "repairing",
-      "repair_status": "2026-11-08_source_paragraph_audit_found_merged_source_paragraphs_and_unmarked_translation_notes;_remote_zip_and_binaries_unchanged_since_2026-11-07",
+      "repair_status": "2026-11-08_16_source_paragraph_and_译注_fixes_manifest_refreshed_legacy_zip_stale_awaits_complete_source_and_remote_validation",
       "new_standard_completed": false,
-      "last_repair_date": "2026-11-07",
+      "last_repair_date": "2026-11-08",
       "pending_items": [
         "source_paragraphs_one_to_one_mapping_and_split_merged_sections_1_2_3_2_and_supplement_C",
         "separate_unmarked_translator_comments_as_译注_or_move_to_algorithms",
@@ -28,10 +28,12 @@
         "2026-11-07: latest independent remote verification at commit 1a06dc37 verified 108 expanded payload files, 109 ZIP entries/CRC, 19-page paper and 8-page brief; full paragraph semantic audit still pending",
         "2026-11-07: source-aligned appendix B order, 4.2/4.5 paragraph splits and 4.4 figure narrative; rebuilt offline PDF, HTML and latest ZIP 22,183,917 B",
         "2026-11-07: independent re-verification at 90bab195 passed: 109 expanded blobs, 110 ZIP entries CRC/SHA256, paper 19 pages, brief 8 pages; main 4.2/4.4/4.5 and supplement B alignment improved, content semantic review still pending",
-        "2026-11-08: independently compared original arXiv v3 HTML and supplementary extracted source with translation.md; confirmed source-paragraph mergers in Intro/Related/Method/Supp C and unmarked translator commentary; published exact issue map; current reading payload unchanged, last verified ZIP/PDF remain the 2026-11-07 version."
+        "2026-11-08: independently compared original arXiv v3 HTML and supplementary extracted source with translation.md; confirmed source-paragraph mergers in Intro/Related/Method/Supp C and unmarked translator commentary; published exact issue map; current reading payload unchanged, last verified ZIP/PDF remain the 2026-11-07 version.",
+        "2026-11-08: 16 source-aligned paragraph boundary and translator-note fixes applied consistently to MD, standalone HTML, and inline HTML; updated manifest for 109 expanded files; optional ZIP remains stale legacy backup; complete semantic and visual source checking still pending."
       ],
       "last_quality_audit_date": "2026-11-08",
-      "latest_quality_audit_path": "reading-packs/audits/gaussiandwm-source-fidelity-2026-11-08.md"
+      "latest_quality_audit_path": "reading-packs/audits/gaussiandwm-source-fidelity-2026-11-08.md",
+      "last_content_repair_date": "2026-11-08"
     },
     {
       "priority": 2,
