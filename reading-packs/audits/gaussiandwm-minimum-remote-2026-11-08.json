@@ -1,0 +1,23 @@
+{
+  "paper": "GaussianDWM",
+  "verification_date": "2026-11-08",
+  "verification_type": "minimum_full_translation_delivery_and_remote_static_integrity",
+  "verified_snapshot_commit": "577100daaffaf92768f897e388f298f725b9c4a5",
+  "verification_result": "passed_with_explicit_pdf_size_and_browser_limitations",
+  "expanded_manifest_file_count": 110,
+  "expanded_files_retrieved_now_sha_and_size_match": 109,
+  "expanded_files_retrieved_now_errors": 0,
+  "original_pdf": {
+    "path": "reading-packs/2026-10-28_CVPR2026_GaussianDWM/paper.pdf",
+    "blob_sha_retrieved_now": "4367f7541a3eb3d207ec2de10cc4f46fe1991617",
+    "manifest_bytes": 17452487,
+    "size_verification": "inherited from independent 2026-11-08 full-byte audit at e348ca2a; not re-downloaded in this pass because connector returned empty base64 payload for this large file",
+    "last_independent_sha256": "c6558bba56cb29b00c8ad7e3a04572614ea6ec21650e08b1ab7416ba0edacb5a"
+  },
+  "verification_scope": "109 small files individually re-read from current default branch in base64 and checked byte size and Git blob SHA against current manifest. Paper.pdf blob SHA independently re-read, bytes last verified in immutable audit. JSON catalog/queue and translation HTML/MD re-read and checked status/section completeness.",
+  "translation_scope": "arXiv 2512.23180v3 main 1-5 and supplementary A-E, bibliography excluded",
+  "translation_quality": "minimum full-readable coverage accepted; not publication-grade every-sentence semantic certification or microtext verification",
+  "offline_browser_test": "prior real Chromium run on 2026-11-07; current status-text-only change not re-executed with browser",
+  "source_report": "reading-packs/2026-10-28_CVPR2026_GaussianDWM/acceptance-2026-11-08.md",
+  "optional_zip": "stale 2026-11-07 backup, explicitly not today's delivery"
+}
