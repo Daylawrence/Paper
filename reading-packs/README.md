@@ -1,6 +1,14 @@
 # 论文阅读包（展开 Markdown / PDF 优先）
 
-## 2026-11-07：原文逐段对齐继续修复（新的源码同步与远端核验）
+## 2026-11-08 · GaussianDWM 达到新版全文中文译文最低标准
+
+按最新交付要求（**参考文献列表不译，其余主文与补充 A–E 全文中文可读**），GaussianDWM 已完成本轮最低标准验收，历史队列从 14 篇待验收更新为 **13 篇待验收**。本次继续沿用 DriveVLA-W0 真实网页模板；没有新增论文推荐。[完整中文译文](2026-10-28_CVPR2026_GaussianDWM/translation.md) · [阅读包展开目录](2026-10-28_CVPR2026_GaussianDWM/) · [覆盖检查](2026-10-28_CVPR2026_GaussianDWM/coverage.md) · [验收依据及限制](2026-10-28_CVPR2026_GaussianDWM/acceptance-2026-11-08.md) · [修复队列](repair-queue.json)。下篇按队列为 DiffusionDrive。
+
+旧 ZIP **未同步 11 月 8 日译文，是过时备份**，不用于本次交付；用户应在 GitHub 直接阅读 Markdown/PDF 或 clone 后本地打开 index.html。11 月 7 日离线 Chromium 测试与 11 月 8 日远端完整性历史报告可复用为未变资源的证据；本轮没有重新运行浏览器，不能声称视觉重测。图中极小字号字符未达到出版级逐字校勘，现行最低标准不以此阻断完整译文交付。
+
+---
+
+## 历史记录 · 2026-11-07：原文逐段对齐继续修复（已由 11-08 验收结论更新）
 
 **11 月 7 日最新独立远端复验已通过：** [GitHub Actions 运行](https://github.com/Daylawrence/Paper/actions/runs/42267540158) 对新译文构建后的不可变 commit [`90bab195c`](https://github.com/Daylawrence/Paper/commit/90bab195cd91d4a6bd8f72ced0c17d156fed1690) 校验 **109/109 个展开文件** Git blob SHA/字节数/SHA256；重新下载备份 ZIP **22,183,917 字节，110 项 CRC/SHA256 通过**，19 页原文 PDF 和 8 页中文简报 PDF 均验证成功。[远端验收报告](audits/gaussiandwm-remote-2026-11-07.json)。这是对新版文件的校验（不是旧的 1a06dc37 快照）；**逐段语义终审及小字号图文仍未完成，因此仍为 repairing，暂不切换下一篇或恢复新论文。**
 
