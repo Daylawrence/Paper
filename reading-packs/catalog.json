@@ -219,7 +219,7 @@
     "pdf_sha256": "95ed36b82734fa7f134429d30ab56929a51d67454329ecb6a5f7be7ef9b082a1",
     "zip_git_blob_sha": "7d61dea0bd05d7bd23998e12ade5fa9dec7745ef",
     "pdf_git_blob_sha": "f7066ae39f4155074e57c40aafe0d5e4ee1dc504",
-    "delivery_status": "repairing",
+    "delivery_status": "completed",
     "repair_started_date": "2026-10-30",
     "original_created_date": "2026-10-28",
     "zip_remote_bytes_before_repair": 524288,
@@ -256,6 +256,16 @@
     "latest_remote_verification_immutable_commit": "e348ca2a053fd049adc92996c0c5dfd2c787461a",
     "latest_source_paragraph_audit_path": "reading-packs/audits/gaussiandwm-source-fidelity-2026-11-08.md",
     "current_expanded_manifest_path": "reading-packs/2026-10-28_CVPR2026_GaussianDWM/manifest.json",
-    "last_remote_audit_date": "2026-11-08"
+    "last_remote_audit_date": "2026-11-08",
+    "new_standard_completed": true,
+    "completed_date": "2026-11-08",
+    "delivery_basis": "expanded_directory_full_zh_translation_main_and_supplement_excluding_bibliography",
+    "translation_path": "reading-packs/2026-10-28_CVPR2026_GaussianDWM/translation.md",
+    "translation_html_path": "reading-packs/2026-10-28_CVPR2026_GaussianDWM/translation.html",
+    "acceptance_report_path": "reading-packs/2026-10-28_CVPR2026_GaussianDWM/acceptance-2026-11-08.md",
+    "zip_status": "stale_optional_legacy_backup",
+    "zip_current": false,
+    "delivered_as": "expanded_html_markdown_pdf",
+    "verified_version": "arXiv:2512.23180v3 + CVPR2026 supplementary"
   }
 ]
