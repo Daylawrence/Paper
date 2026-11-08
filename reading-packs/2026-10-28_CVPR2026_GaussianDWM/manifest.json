@@ -2,14 +2,19 @@
   "paper": "GaussianDWM",
   "original_created_date": "2026-10-28",
   "repair_date": "2026-11-08",
-  "status": "repairing",
-  "completed": false,
+  "status": "completed",
+  "completed": true,
   "source_template": "2026-09-16_ICLR2026_DriveVLA-W0_阅读包",
   "files": {
     "2026-10-28_CVPR2026_GaussianDWM_中文学习简报.pdf": {
       "bytes": 441192,
       "git_blob_sha": "f7066ae39f4155074e57c40aafe0d5e4ee1dc504",
       "sha256": "95ed36b82734fa7f134429d30ab56929a51d67454329ecb6a5f7be7ef9b082a1"
+    },
+    "acceptance-2026-11-08.md": {
+      "bytes": 2650,
+      "git_blob_sha": "e0535f4afd08c895fda93fb44c5eb6e212bc3046",
+      "sha256": "eec9db609904c76d6d5b7841bc02d58aef6aeb526e9954930fc4e33881434920"
     },
     "algorithms.html": {
       "bytes": 19012,
@@ -27,14 +32,14 @@
       "sha256": "dfc76a5102db124c54db5a4c115a0cca2a0080b25027f72841f2afe299db3062"
     },
     "coverage.html": {
-      "bytes": 2462,
-      "git_blob_sha": "a8ac3004f15405b95cf98711ac74c7866cf7053f",
-      "sha256": "744b102a39629e8bf68ba90260f8faf59474d37e563a9e9ed8c41d2f477a36fd"
+      "bytes": 2254,
+      "git_blob_sha": "1683b9b3129f53fc84b968a1644b1c6521c777f1",
+      "sha256": "48f0d744ecf68746b5e54cfd05ba9f923210c6b1548d9a7565fe6037e2cd356d"
     },
     "coverage.md": {
-      "bytes": 3232,
-      "git_blob_sha": "a2d39af985ba28e00d8c2062de7050d77cdcc295",
-      "sha256": "226d8fde3328da513f6847868f922e0ee34abf9c30d8cfc9667dda29ab7c0e41"
+      "bytes": 2511,
+      "git_blob_sha": "c2bf7c39da95e6946ef930904dfd4968d5be5a4c",
+      "sha256": "00e7e7d010fd39680fc825e93eeadd20a99e3ca30ba8a23aa635a0aa2d0e1531"
     },
     "images/figure1.jpg": {
       "bytes": 87381,
@@ -57,9 +62,9 @@
       "sha256": "13be908267f2a0fb60a72ad48c56162c28e9e13923ae3cd3fab3363a2f0245d1"
     },
     "index.html": {
-      "bytes": 78194,
-      "git_blob_sha": "f40f5a24720a00b6ef8aa51cc565e2d5eaef7336",
-      "sha256": "b747700bc061aea4f26f444a91840f5635f9ab700dfbb18e943ba58c2af64f4b"
+      "bytes": 78274,
+      "git_blob_sha": "e1e3ba2981103d323f3e91c2785e338cc5a2c7d9",
+      "sha256": "ec79c7a07c83d53e581d0ffd1347f3e73b5527e148a13cf0713def8b8a321fc0"
     },
     "offline-quality-check-2026-11-07.json": {
       "bytes": 1535,
@@ -222,14 +227,14 @@
       "sha256": "e5bb7dc254b460464b871ea46a33065296084f0d36989e8456ab6088077cff72"
     },
     "translation.html": {
-      "bytes": 56493,
-      "git_blob_sha": "427ccd35ce776a4487ad4ca9a12de1a9a926021e",
-      "sha256": "6791215d73ef007333e966b135318b84c81ff2b5e249b5b3c71444a061105db9"
+      "bytes": 56558,
+      "git_blob_sha": "47713292e4523e7c82d8e34718841527e28e55cb",
+      "sha256": "209955a95dddcc861112f932e93589f8705d5a25d39919e0587c8e1eeae80aae"
     },
     "translation.md": {
-      "bytes": 48828,
-      "git_blob_sha": "c570cfea27591ece9f9cc419248a7c5d8d113578",
-      "sha256": "035096aaaa918777f744775ef45fd31a0de5d0193eba0bbf20b93e283e39a567"
+      "bytes": 48999,
+      "git_blob_sha": "f8ec5579ea6225de61227880e3d830b846af9aef",
+      "sha256": "8573075bb2432007dc0d4ccb56f4450d4926007dcbcdd8463e1c1b729f07381d"
     },
     "vendor/auto-render.min.js": {
       "bytes": 3486,
@@ -552,6 +557,8 @@
       "sha256": "0efda3a1e1ff211942fe371fc6ec593f22255a6c26bd64c93e241e2c7a50c689"
     }
   },
-  "optional_zip_status": "legacy_backup_out_of_sync_since_2026-11-08;do_not_use_as_current_version",
-  "current_source_fidelity_audit": "reading-packs/audits/gaussiandwm-source-fidelity-2026-11-08.md"
+  "optional_zip_status": "stale_optional_legacy_backup_not_current",
+  "current_source_fidelity_audit": "reading-packs/audits/gaussiandwm-source-fidelity-2026-11-08.md",
+  "completion_standard": "Full readable Chinese translation of all non-reference main + supplementary paper content",
+  "completion_report": "acceptance-2026-11-08.md"
 }
