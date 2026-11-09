@@ -1,0 +1,76 @@
+name: Expand historical DiffusionDrive reading pack safely
+on:
+  push:
+    branches: [main]
+    paths:
+      - ".github/workflows/expand-diffusiondrive.yml"
+  workflow_dispatch:
+permissions:
+  contents: write
+concurrency:
+  group: expand-diffusiondrive-main
+  cancel-in-progress: false
+jobs:
+  expand:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - name: Inspect original ZIP and unpack safe files without executing package contents
+        shell: bash
+        run: |
+          set -euo pipefail
+          python - <<'PY'
+          import pathlib,zipfile,json,hashlib,stat
+          dest=pathlib.Path('reading-packs/2026-09-18_CVPR2025_DiffusionDrive')
+          zips=list(dest.glob('*.zip'))
+          assert len(zips)==1, 'Need exactly one intact legacy ZIP'
+          z=zips[0]
+          data=z.read_bytes()
+          assert len(data)==4307336, (len(data),'Unexpected legacy ZIP size')
+          assert hashlib.sha256(data).hexdigest()=='57186453edd567cb50a00b816e93ccaa64473d84e7872e4e85a7b688fa293b59'
+          report={'original_date':'2026-09-18','migration_date':'2026-11-09','source_zip_sha256':hashlib.sha256(data).hexdigest(),'archive_entries':[],'extracted_files':[],'status':'expanded_not_yet_translation_verified'}
+          with zipfile.ZipFile(z) as bundle:
+              assert bundle.testzip() is None, 'Bad ZIP CRC'
+              entries=[i for i in bundle.infolist() if not i.is_dir()]
+              prefix=pathlib.PurePosixPath(entries[0].filename).parts[0]
+              for entry in entries:
+                  name=entry.filename.replace('\\','/')
+                  parts=pathlib.PurePosixPath(name).parts
+                  assert parts and parts[0]==prefix
+                  if len(parts)<2: continue
+                  sub=pathlib.PurePosixPath(*parts[1:])
+                  assert not sub.is_absolute() and '..' not in sub.parts
+                  if any(part.startswith('.') for part in sub.parts):continue
+                  if sub.suffix.lower()=='.zip':continue
+                  assert not stat.S_ISLNK(entry.external_attr>>16),name
+                  assert entry.file_size < 25000000,(name,entry.file_size)
+                  b=bundle.read(entry)
+                  assert len(b)==entry.file_size
+                  f=dest.joinpath(*sub.parts)
+                  f.parent.mkdir(parents=True,exist_ok=True)
+                  if f.exists() and f.read_bytes()!=b:
+                      # Preserve existing files if any; don't silently overwrite.
+                      report.setdefault('existing_conflicts',[]).append(str(sub))
+                      continue
+                  f.write_bytes(b)
+                  report['extracted_files'].append({'path':str(sub),'bytes':len(b),'sha256':hashlib.sha256(b).hexdigest()})
+                  report['archive_entries'].append(str(sub))
+          assert len(report['extracted_files'])>=8, 'Unexpectedly small legacy bundle; require manual review'
+          (dest/'extraction-report-2026-11-09.json').write_text(json.dumps(report,ensure_ascii=False,indent=2)+'\n','utf-8')
+          print(json.dumps({'count':len(report['extracted_files']),'files':[x['path'] for x in report['extracted_files']],'conflicts':report.get('existing_conflicts',[])},ensure_ascii=False))
+          PY
+      - name: Commit expanded archive as unverified working files
+        shell: bash
+        run: |
+          set -euo pipefail
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add -A reading-packs/2026-09-18_CVPR2025_DiffusionDrive
+          if git diff --cached --quiet; then echo "Nothing to expand"; exit 0; fi
+          git commit -m "Restore DiffusionDrive historical expanded resources for full-text translation audit [skip ci]"
+          git fetch origin main
+          git rebase origin/main
+          git push origin HEAD:main
