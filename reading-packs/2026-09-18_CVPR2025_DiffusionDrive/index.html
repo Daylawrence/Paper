@@ -1,0 +1,79 @@
+<!doctype html><html lang="zh-CN"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>DiffusionDrive 论文阅读</title><link rel="stylesheet" href="style.css"></head><body><header><h1>DiffusionDrive: Truncated Diffusion Model for End-to-End Autonomous Driving</h1><div class="meta"><span>2026-09-18 · CVPR 2025 Highlight · arXiv:2411.15139</span><a href="paper.pdf">打开原始 PDF</a><a href="https://github.com/hustvl/DiffusionDrive/tree/9b52ed0ec06b073d82d6f392ab084c7b301c8681">固定版本代码</a></div><nav class="tabs"><button class="tab" data-panel="original">原文</button><button class="tab" data-panel="translation">译文</button><button class="tab" data-panel="algorithms">关键解释</button></nav></header><div class="workspace"><aside class="sidebar"><h2>目录</h2><nav class="toc"></nav></aside><main class="main"><section class="panel" id="original"><div class="pdf-fallback">以下为 CVPR 2025 正式版逐页图像（11 页），断网可读。也可点击顶部“打开原始 PDF”。</div><div class="pages"><section class="paper-page" id="p-1"><div class="page-label">原文第 1 / 11 页</div><img src="pages/page-01.jpg" alt="DiffusionDrive 原文第 1 页" loading="lazy"></section><section class="paper-page" id="p-2"><div class="page-label">原文第 2 / 11 页</div><img src="pages/page-02.jpg" alt="DiffusionDrive 原文第 2 页" loading="lazy"></section><section class="paper-page" id="p-3"><div class="page-label">原文第 3 / 11 页</div><img src="pages/page-03.jpg" alt="DiffusionDrive 原文第 3 页" loading="lazy"></section><section class="paper-page" id="p-4"><div class="page-label">原文第 4 / 11 页</div><img src="pages/page-04.jpg" alt="DiffusionDrive 原文第 4 页" loading="lazy"></section><section class="paper-page" id="p-5"><div class="page-label">原文第 5 / 11 页</div><img src="pages/page-05.jpg" alt="DiffusionDrive 原文第 5 页" loading="lazy"></section><section class="paper-page" id="p-6"><div class="page-label">原文第 6 / 11 页</div><img src="pages/page-06.jpg" alt="DiffusionDrive 原文第 6 页" loading="lazy"></section><section class="paper-page" id="p-7"><div class="page-label">原文第 7 / 11 页</div><img src="pages/page-07.jpg" alt="DiffusionDrive 原文第 7 页" loading="lazy"></section><section class="paper-page" id="p-8"><div class="page-label">原文第 8 / 11 页</div><img src="pages/page-08.jpg" alt="DiffusionDrive 原文第 8 页" loading="lazy"></section><section class="paper-page" id="p-9"><div class="page-label">原文第 9 / 11 页</div><img src="pages/page-09.jpg" alt="DiffusionDrive 原文第 9 页" loading="lazy"></section><section class="paper-page" id="p-10"><div class="page-label">原文第 10 / 11 页</div><img src="pages/page-10.jpg" alt="DiffusionDrive 原文第 10 页" loading="lazy"></section><section class="paper-page" id="p-11"><div class="page-label">原文第 11 / 11 页</div><img src="pages/page-11.jpg" alt="DiffusionDrive 原文第 11 页" loading="lazy"></section></div></section><section class="panel" id="translation">
+<article class="reading translation">
+<h1>完整中文译文</h1>
+<p class="note">版本：CVPR 2025 正式 Open Access 版，共 11 页；本译文覆盖摘要、正文第 1-5 节、图表标题与致谢。参考文献保留在“原文”PDF中，不翻译。页码指 PDF 页码。</p>
+<section id="t-abstract"><h2>摘要（原文第 1 页）</h2>
+<p>近年来，扩散模型已成为机器人策略学习中强大的生成技术，能够建模多模态（multi-mode）动作分布。将其用于端到端自动驾驶很有前景，但机器人扩散策略需要大量去噪步骤，而交通场景更加动态、开放，这使实时生成多样驾驶动作十分困难。为此，我们提出截断扩散策略：引入先验多模态锚点并截断扩散日程，使模型从锚定高斯分布去噪到多模态驾驶动作分布。我们还设计高效的级联扩散解码器，以增强与条件场景上下文的交互。</p>
+<p>DiffusionDrive 相比普通扩散策略将去噪步骤减少 10 倍，只用 2 步即可获得更好的多样性与质量。在面向规划的 NAVSIM 上，使用对齐的 ResNet-34 主干，模型在不加入额外技巧时达到 88.1 PDMS，并在 NVIDIA 4090 上达到 45 FPS。定性结果表明，它能在困难场景中生成多条合理且多样的轨迹。</p></section>
+
+<section id="t-intro"><h2>1. 引言（原文第 1-2 页）</h2>
+<p>随着检测、跟踪和在线地图构建的发展，端到端自动驾驶受到广泛关注：系统直接从原始传感器学习驾驶策略，为传统规则式规划在复杂场景中难以泛化的问题提供数据驱动替代方案。Transfuser、UniAD、VAD 等主流方法通常由一个 ego query 回归单条轨迹，忽略驾驶行为的不确定性和多模态性。VADv2 用 4096 条固定锚轨迹离散连续动作空间，但容易受锚点数量与质量限制，也会带来实时计算压力。</p>
+<p>扩散策略可以从高斯分布迭代采样多条物理可行轨迹。作者先把 Transfuser 的 MLP 回归头替换为条件扩散模型，得到 TransfuserDP。虽然规划质量提高，但 20 步 DDIM 使推理显著变慢，而且从不同噪声出发的样本最终趋于相似，出现模式坍塌。</p>
+<p>驾驶并非从完全随机噪声开始：人类会在直行、转弯、变道等常见先验模式上结合实时交通调整。因此，作者将高斯分布划分为以先验轨迹锚点为中心的多个子高斯分布，并只在锚点附近加入少量噪声。更合理的起点使去噪从 20 步缩短为 2 步，同时小量锚点便可覆盖潜在动作空间。为加强环境交互，解码器利用稀疏可变形注意力读取 BEV/PV 特征，也与智能体/地图 query 做交叉注意力，并通过级联层逐步修正轨迹。</p>
+<p>贡献包括：首次系统地把扩散策略用于实时端到端驾驶，并用截断扩散解决计算开销与模式坍塌；提出面向场景条件交互的 Transformer 级联扩散解码器；NAVSIM 达到 88.1 PDMS 与 45 FPS；展示多样且合理的驾驶候选。</p></section>
+
+<section id="t-related"><h2>2. 相关工作（原文第 2-4 页）</h2>
+<h3>2.1 端到端自动驾驶</h3><p>UniAD 通过联合多个感知任务展示了规划导向端到端驾驶的潜力；VAD 用紧凑矢量场景表示提高效率；后续方法多沿用单轨迹回归。VADv2 转向“从大型锚点词表采样”，Hydra-MDP 以多目标蒸馏改进评分，SparseDrive 探索无 BEV 的稀疏场景表征。本文不同之处是直接以生成式扩散建模连续、多模态驾驶动作。</p>
+<h3>2.2 交通仿真中的扩散</h3><p>MotionDiffuser、CTG、CTG++ 与 Diffusion-ES 等主要在抽象感知真值或仿真轨迹上进行多智能体预测、可控生成或搜索。本文把扩散推进到由车载传感器直接输入的实时端到端驾驶。</p>
+<h3>2.3 机器人策略与图像生成</h3><p>Diffusion Policy 已证明条件生成可表示多模态机器人动作，后续扩展到导航、移动操作、四足与灵巧手。DDIM 用非马尔可夫采样减少步骤；Flow Matching 直接学习连续概率流；TDPM 从隐式中间分布开始生成。DiffusionDrive 与这些方法的关键区别是把显式驾驶锚点先验放进扩散起点。</p></section>
+
+<section id="t-method"><h2>3. 方法（原文第 4-6 页）</h2>
+<h3>3.1 任务与条件扩散</h3><p>输入为原始传感器数据，输出自车未来轨迹 τ={(x_t,y_t)}，其中 T_f 是规划时域，坐标位于当前自车坐标系。前向扩散为：</p><div class="formula">q(τⁱ|τ⁰)=𝒩(τⁱ; √ᾱᵢ τ⁰, (1-ᾱᵢ)I)，ᾱᵢ=∏ₛ₌₁ⁱ(1-βˢ)。</div>
+<p>反向模型 fθ(τⁱ,z,i) 在场景条件 z 引导下预测干净轨迹 τ⁰。标准推理从纯高斯 τᵀ 开始，经多步 pθ(τⁱ⁻¹|τⁱ,z) 逐渐还原。</p>
+<h3>3.2 初步调查</h3><p>TransfuserDP 用条件 UNet 替换确定性 MLP，在 20 步 DDIM 下比 Transfuser 略好，却从 60 FPS 降到 7 FPS。作者定义多样性分数 D=1-(1/N)Σ Area(τᵢ∩∪τⱼ)/Area(τᵢ∪∪τⱼ)。轨迹重叠越少，D 越高；实验发现普通扩散的不同噪声会收敛到相近轨迹。</p>
+<h3>3.3 截断扩散</h3><p><b>训练。</b>先在训练集轨迹上做 K-Means 得到 N_anchor 个锚点 a_k。只在前 T_trunc 个扩散时刻加噪：</p><div class="formula">τₖⁱ=√ᾱᵢ aₖ + √(1-ᾱᵢ) ε，ε~𝒩(0,I)，i∈[1,T_trunc]，且 T_trunc≪T。</div>
+<p>解码器接收全部带噪轨迹与条件 z，输出每个模式的置信度 ŝ_k 与去噪轨迹 τ̂_k。距离真值最近的锚点为正样本。论文公式写作 L=Σ[y_k L_rec(τ̂_k,τ_gt)+λ BCE(ŝ_k,y_k)]，其中 L_rec 为 L1。公开实现实际采用 sigmoid focal loss 做分类、仅对最近模式做 L1 回归，详见关键解释。</p>
+<p><b>推理。</b>从锚定高斯分布采样带噪轨迹，按 DDIM 更新规则逐步去噪；每一步输出分类分数和坐标。训练时使用固定锚点数，但推理可根据算力改变样本数 N_infer。最终选择置信度最高的轨迹。</p>
+<h3>3.4 架构</h3><p>方法可接入不同感知模块和传感器。轨迹特征先根据轨迹坐标从 BEV/PV 中通过空间交叉注意力取样，再与 agent/map query 做交叉注意力，随后经过 FFN。时间步嵌入调制特征，MLP 输出置信度和相对初始噪声轨迹的偏移。多个级联解码层逐层细化；跨去噪步共享参数。</p></section>
+
+<section id="t-exp"><h2>4. 实验（原文第 6-8 页）</h2>
+<h3>4.1 数据与指标</h3><p>NAVSIM 基于 OpenScene/nuPlan，包含 8 相机 360°视野、5 个 LiDAR 融合点云、2Hz 标注、HD 地图与 3D 框，强调意图变化等困难场景并排除大量静止或匀速片段。PDMS 结合无责任碰撞 NC、可行驶区域合规 DAC、碰撞时间 TTC、舒适性 Comf. 与自车进度 EP。</p>
+<h3>4.2 实现细节</h3><p>公平比较时沿用 Transfuser 感知模块与 ResNet-34。解码器只对 BEV 做空间交叉注意力，只做 agent 交叉注意力；堆叠 2 层级联解码器，使用 20 个聚类锚点。训练截断为 50/1000；推理用 2 步并取 top-1。输入为三张裁剪缩放的前向相机图拼接成 1024×256，以及栅格化 BEV LiDAR。navtrain 从零训练 100 epoch，AdamW，8×RTX 4090，总 batch 512，学习率 6×10⁻⁴；不做测试时增强。输出为未来 4 秒的 8 个 waypoint。</p>
+<h3>4.3 主结果</h3><p>NAVSIM navtest 上 DiffusionDrive 达到 NC 98.2、DAC 96.2、TTC 94.7、舒适性 100、EP 82.2、PDMS 88.1。相比相同 ResNet-34 的 Transfuser（84.0）高 4.1；相比 8192 锚点 VADv2（80.9）高 7.2，同时只用 20 个锚点；相比带额外规则评估器监督与后处理的 Hydra-MDP-W-EP（86.5）高 1.6。</p>
+<h3>4.4 路线图与效率</h3><p>TransfuserDP：84.6 PDMS、D=11%、101M 参数、20 步、7 FPS；加入截断扩散的 TransfuserTD：85.7、D=70%、102M、2 步、27 FPS；完整 DiffusionDrive：88.1、D=74%、60M、2 步、45 FPS。相对普通扩散，去噪步数减少 10 倍、FPS 约提高 6 倍。</p>
+<h3>4.5 消融</h3><p>无丰富场景交互的解码器仅 55.1 PDMS；加入空间交叉注意力达到 87.1；进一步加入 agent/map 交叉注意力为 87.4；加入级联层达到 88.1。1、2、3 个去噪步对应 87.9、88.1、88.1，说明合理起点使 1 步也可工作。级联层从 1 到 2 提升 0.7 PDMS，4 层仅再增 0.1 且参数变为 65M。N_infer 从 10 到 20、40 时 PDMS 为 84.9、88.1、88.2。</p>
+<h3>4.6 定性结果</h3><p>top-1 与真值接近，而 top-10 候选能给出合理变道。在另一个场景中，低分候选仍能与周围车辆交互并避碰，说明多样性不只是随机分散。</p>
+<h3>4.7 nuScenes</h3><p>作者在 SparseDrive 上加入两层级联解码器和 18 个锚点。平均 L2 从 SparseDrive 的 0.61m 降到 0.57m，平均碰撞率同为 0.08%；相对 VAD，平均 L2 低 20.8%、碰撞率低 63.6%，并以 8.2 FPS 对 4.5 FPS 快约 1.8 倍。需注意这里是开放环评估，不能与 NAVSIM PDMS 直接互换。</p></section>
+
+<section id="t-conclusion"><h2>5. 结论与致谢（原文第 8-9 页）</h2><p>DiffusionDrive 以截断扩散策略和高效级联扩散解码器构成生成式端到端驾驶决策模型。它从锚定高斯分布对可变数量样本去噪，以实时速度产生多条轨迹。实验支持其在规划质量、效率和模式多样性方面的优势。作者感谢 Tianheng Cheng 的反馈，项目获得中国国家自然科学基金 62276108 的部分支持。</p></section>
+<section id="t-figures"><h2>图表说明索引</h2><p>图1：单轨迹回归、锚点词表、普通扩散与截断扩散范式对比。图2：三种模型在 NAVSIM 困难场景中的多轨迹比较。图3：锚点附近加噪与截断去噪。图4：总体架构与级联扩散解码层。表1：NAVSIM 主结果。表2：从 Transfuser 到 DiffusionDrive 的路线。表3-6：模块、步数、级联层和样本数消融。表7：nuScenes 开放环比较。</p></section>
+</article></section><section class="panel" id="algorithms">
+<article class="reading algorithms">
+<h1>关键解释与完整学习简报</h1>
+<p class="note">代码核验固定版本：<code>9b52ed0ec06b073d82d6f392ab084c7b301c8681</code>。以下为源码静态分析；本次未下载 NAVSIM 数据、未运行训练或复现实验数字。</p>
+<section id="a-info"><h2>1. 基本信息</h2><table><tr><th>项目</th><th>内容</th></tr><tr><td>标题</td><td>DiffusionDrive: Truncated Diffusion Model for End-to-End Autonomous Driving</td></tr><tr><td>作者/机构</td><td>Bencheng Liao 等；华中科技大学人工智能研究院、EIC 学院与地平线机器人</td></tr><tr><td>会议</td><td>CVPR 2025 Highlight；Open Access 正式版，11 页</td></tr><tr><td>首次公开</td><td>arXiv:2411.15139，2024-11-22</td></tr><tr><td>资源</td><td><a href="https://openaccess.thecvf.com/content/CVPR2025/html/Liao_DiffusionDrive_Truncated_Diffusion_Model_for_End-to-End_Autonomous_Driving_CVPR_2025_paper.html">论文页</a> · <a href="https://arxiv.org/abs/2411.15139">arXiv</a> · <a href="https://github.com/hustvl/DiffusionDrive/tree/9b52ed0ec06b073d82d6f392ab084c7b301c8681">固定版本代码</a> · <a href="https://huggingface.co/hustvl/DiffusionDrive">权重</a> · <a href="https://github.com/autonomousvision/navsim">NAVSIM</a></td></tr></table></section>
+<section id="a-tags"><h2>2. 分类标签</h2><p>自动驾驶；端到端规划；多模态轨迹；扩散策略；BEV；相机-LiDAR 融合；高效推理。</p></section>
+<section id="a-why"><h2>3. 推荐理由</h2><p>它正好补足你现有“YOLO/Depth/VGGT 负责几何感知，但尚未把几何状态转换为可执行规划”的最后一段链路。相比已经读过的 WAM-Flow（离散 token refinement）和 DriveVLA-W0（世界模型监督），本文提供一个更小、更容易沿源码追踪的连续轨迹生成头：20 条先验轨迹 → 加少量噪声 → 两步修正 → 置信度选优。也能把你做过的 GRPO 与后续 DiffusionDriveV2 的策略优化自然衔接起来。</p></section>
+<section id="a-problem"><h2>4. 一句话问题定义</h2><p>在十字路口既可直行又可变道时，如何从相机与 LiDAR 场景特征实时产生多条合理候选轨迹，而不是只回归一条平均轨迹，或用 20 次去噪拖慢系统？</p></section>
+<section id="a-flow"><h2>5. 方法流程与关键张量</h2>
+<ol><li>感知编码：三张前视图拼为 <code>[B,3,256,1024]</code>，LiDAR 栅格进入 Transfuser；得到 BEV feature、agent queries、ego/status encoding。</li><li>锚点：加载 K-Means 轨迹 <code>[20,8,2]</code>；batch 后为 <code>[B,20,8,2]</code>。20 是模式数，8 是 4 秒内 waypoint 数，2 是 (x,y)。源码后续回归含航向，为 <code>[B,20,8,3]</code>。</li><li>截断加噪：训练随机 t∈[0,49]；实现的调度总长仍是 1000，只取早期小噪声。推理固定在 t=8 附近加噪。</li><li>轨迹嵌入：每点正弦位置编码，8 点展平后经 MLP 得到每模式 query <code>[B,20,d_model]</code>。</li><li>场景交互：按轨迹坐标在 BEV 上双线性采样；再与 agent query 交互；时间步嵌入调制；两层级联解码器输出轨迹与分类。</li><li>训练损失：最近锚点为正类；实际代码是 focal classification + 最近模式 L1 regression。推理做 2 个 DDIM 更新并取最高分模式。</li></ol>
+<div class="formula">带噪锚点：x_t = √ᾱ_t a_k + √(1-ᾱ_t) ε；实际损失：L = w_cls·Focal(s,y) + w_reg·L1(τ̂_k*,τ_gt)。</div></section>
+<section id="a-innov"><h2>6. 真正创新点</h2><p><b>沿用：</b>Transfuser 感知、DDIM scheduler、K-Means anchors、DETR 风格 query/cross-attention、L1/分类损失。<b>新增组合：</b>把锚点从“最终离散答案词表”改成“扩散起点的混合先验”；训练和推理都只覆盖扩散早期；级联解码层直接沿候选轨迹在 BEV 上取样。这使少量锚点可被连续修正，也把去噪缩到 2 步。创新不在发明新的扩散方程，而在为驾驶动作分布选择合适的初始分布和条件交互结构。</p></section>
+<section id="a-evidence"><h2>7. 实验与证据</h2><table><tr><th>设置</th><th>关键结果</th><th>能支持的结论</th></tr><tr><td>NAVSIM，ResNet-34，相机+LiDAR</td><td>88.1 PDMS；45 FPS；20 anchors</td><td>同设定下兼顾质量和实时性</td></tr><tr><td>普通扩散 → 完整模型</td><td>84.6→88.1；D 11%→74%；7→45 FPS</td><td>截断起点和解码器同时重要</td></tr><tr><td>去噪步数</td><td>1/2/3 步：87.9/88.1/88.1</td><td>两步已近饱和</td></tr><tr><td>nuScenes 开放环</td><td>Avg L2 0.57m；碰撞 0.08%</td><td>可迁移到 SparseDrive，但指标不同于 NAVSIM</td></tr></table></section>
+<section id="a-limit"><h2>8. 局限与适用范围</h2><p><b>作者证据边界：</b>NAVSIM 是 non-reactive simulation，top-1 PDMS 不能证明真实闭环道路安全；nuScenes 还是开放环。模型只用前视图+栅格 LiDAR 的特定 Transfuser 配方做主实验。<b>源码观察：</b>训练 t 随机取 0-49，而推理加噪固定 t=8、更新时刻按 20/step_num 构造，和论文“50/1000、2步”的高层描述并非完全一一对应，需要按实现复现。<b>我的推断：</b>K-Means 锚点可能压低罕见急转、绕障或极端驾驶意图的覆盖率；置信度校准失败时，多样候选并不会自动带来更安全 top-1。</p></section>
+<section id="a-prereq"><h2>9. 前置知识</h2><ul><li><b>DDPM/DDIM：</b>理解加噪、反向预测与少步确定性采样，才能看懂为何“截断”有效。</li><li><b>K-Means 轨迹锚点：</b>锚点不是最终答案，而是混合分布中心。</li><li><b>BEV 与 grid_sample：</b>候选轨迹坐标如何对齐 BEV 特征决定条件信息是否正确。</li><li><b>多模态规划：</b>这里的 mode 是多个行为解，不是相机/LiDAR 多模态输入。</li><li><b>PDMS：</b>由碰撞、道路合规、TTC、舒适和进度组成，避免只看 L2。</li></ul></section>
+<section id="a-plan"><h2>10. 45 分钟学习路线</h2><ol><li>0-8 分钟：读图1、摘要和引言，写出单轨迹、锚点词表、普通扩散、截断扩散四者差异。</li><li>8-22 分钟：精读式(4)-(6)和图3；必须说清“为何不是从 N(0,I) 开始”。</li><li>22-32 分钟：读图4与源码 <code>TrajectoryHead.forward_train/test</code>，手写张量形状。</li><li>32-40 分钟：看表2、3、4，分别判断增益来自截断、注意力还是多步采样。</li><li>40-45 分钟：思考题：如果把 Depth Pro/VGGT 的 3D 几何特征作为条件，应该注入 BEV cross-attention、agent query，还是锚点生成阶段？为什么？</li></ol></section>
+<section id="a-code"><h2>11. 代码学习任务与准确位置</h2>
+<table><tr><th>文件/位置</th><th>关注点</th></tr>
+<tr><td><a href="https://github.com/hustvl/DiffusionDrive/blob/9b52ed0ec06b073d82d6f392ab084c7b301c8681/navsim/agents/diffusiondrive/transfuser_model_v2.py#L385-L430">TrajectoryHead 初始化 L385-430</a></td><td>1000-step DDIM、20×8×2 固定锚点、时间嵌入、两层解码器。</td></tr>
+<tr><td><a href="https://github.com/hustvl/DiffusionDrive/blob/9b52ed0ec06b073d82d6f392ab084c7b301c8681/navsim/agents/diffusiondrive/transfuser_model_v2.py#L459-L502">训练 L459-502</a> / <a href="https://github.com/hustvl/DiffusionDrive/blob/9b52ed0ec06b073d82d6f392ab084c7b301c8681/navsim/agents/diffusiondrive/transfuser_model_v2.py#L504-L558">推理 L504-558</a></td><td>t∈[0,49]、加噪、两步 DDIM、top-1 gather。</td></tr>
+<tr><td><a href="https://github.com/hustvl/DiffusionDrive/blob/9b52ed0ec06b073d82d6f392ab084c7b301c8681/navsim/agents/diffusiondrive/modules/multimodal_loss.py#L117-L163">LossComputer L117-163</a></td><td>最近锚点匹配；实现用 focal 而非论文公式字面 BCE。</td></tr>
+<tr><td><a href="https://github.com/hustvl/DiffusionDrive/blob/9b52ed0ec06b073d82d6f392ab084c7b301c8681/navsim/agents/diffusiondrive/modules/blocks.py#L42-L109">GridSampleCrossBEVAttention L42-109</a></td><td>轨迹归一化、xy 交换、双线性取样和按 waypoint 加权。</td></tr></table>
+<p><b>最小路线：</b>按 README 安装环境，准备 NAVSIM/OpenScene、ResNet-34、20-anchor 文件和官方 checkpoint；先跑 metric cache，再运行 <code>run_pdm_score.py</code>。官方训练配置为 100 epoch、8×RTX 4090、batch 512；这是完整训练要求，不等于单次推理。单次推理显存需求仓库未明确给出，不做无依据估算。</p></section>
+<section id="a-pseudo"><h2>核心算法小例子（自行编写的示意代码，非作者源码）</h2><pre><code># anchors: [K=20, T=8, 2], scene: 条件特征
+t = randint(0, 50)
+x_t = scheduler.add_noise(anchors, randn_like(anchors), t)
+scores, traj = decoder(embed(x_t), scene, time_embed(t))
+k_star = nearest_anchor(anchors, gt_traj)
+loss = focal(scores, one_hot(k_star)) + l1(traj[k_star], gt_traj)
+
+# inference
+x = add_small_noise(anchors, timestep=8)
+for t in [10, 0]:
+    scores, x0 = decoder(embed(x), scene, time_embed(t))
+    x = ddim_step(x0, t, x)
+return x0[argmax(scores)]</code></pre><p>二维玩具直觉：若三条锚点分别代表左转、直行、右转，扩散只需在各自附近学习小幅修正；从纯噪声开始则先要识别“属于哪个意图”，再恢复精确轨迹，任务更难且更慢。</p></section>
+<section id="a-diff"><h2>12. 论文与公开实现差异、复现注意点</h2><ul><li>论文式(6)写 BCE；代码使用 alpha=0.25、gamma=2 的 sigmoid focal loss，属于实现层面的不一致。</li><li>论文轨迹定义为 (x,y)，实现回归张量注释为 (x,y,θ)，但 DDIM 更新只取 <code>poses_reg[..., :2]</code>；要区分扩散状态与最终监督维度。</li><li><code>norm_odo</code> 包含固定范围常数，换数据集或坐标定义时必须重估，否则 grid sample 和噪声尺度会错位。</li><li>配置中的默认 anchor 路径是作者机器绝对路径，复现前必须修改。</li><li>本文所有数字来自论文/README；这里只完成源码静态核验，没有声称实跑复现。</li></ul></section>
+<section id="a-interview"><h2>13. 面试价值</h2><p><b>Q1：为什么锚点数从 8192 降到 20 仍能覆盖动作空间？</b><br>答：锚点只定义局部高斯中心，扩散解码器可连续修正坐标；8192-anchor 方法把锚点当离散答案，表达能力更依赖词表密度。</p><p><b>Q2：两步去噪为何不等价于把网络直接回归两次？</b><br>答：训练仍在多个截断时间步上学习带时间条件的反向映射，推理通过 DDIM scheduler 在概率路径上更新；锚点提供多模式起点，分类头负责选择。消融显示截断 UNet 与专用解码器各有增益。</p></section>
+<section id="a-transfer"><h2>14. 迁移想法（最小对照实验）</h2><p><b>改动：</b>在 <code>GridSampleCrossBEVAttention</code> 前加入一张由 Depth Pro 深度和 VGGT world points 投影得到的几何 BEV（高度、密度、置信度 3-4 通道），与原 LiDAR/视觉 BEV 做轻量 gated fusion；YOLO 车辆框转换为 agent query 附加尺寸、距离和速度估计。</p><p><b>预期：</b>远处车辆与遮挡区域的轨迹候选可获得更明确的几何约束；无 LiDAR 版本有机会保留部分三维条件。</p><p><b>需验证假设：</b>VGGT/Depth Pro 的尺度和时序抖动在驾驶数据上是否小到足以帮助规划，而不是污染 BEV。</p><p><b>最小对照：</b>固定 DiffusionDrive checkpoint 与 20 anchors，仅训练新几何适配层；A=原输入，B=加入 Depth Pro BEV，C=加入 VGGT confidence mask。比较 PDMS 子项、远距车辆场景碰撞率、top-10 diversity，并按 0-30m/30-60m 分桶。若 B/C 只提升 L2 不提升 NC/TTC，则不应宣称规划更安全。</p></section>
+</article></section></main></div><script src="app.js"></script></body></html>

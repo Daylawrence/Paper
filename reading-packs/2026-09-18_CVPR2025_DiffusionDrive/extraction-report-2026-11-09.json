@@ -1,0 +1,130 @@
+{
+  "original_date": "2026-09-18",
+  "migration_date": "2026-11-09",
+  "source_zip_sha256": "57186453edd567cb50a00b816e93ccaa64473d84e7872e4e85a7b688fa293b59",
+  "archive_entries": [
+    "2026-09-18_CVPR2025_DiffusionDrive-Truncated-Diffusion-Model.pdf",
+    "algorithms.html",
+    "app.js",
+    "index.html",
+    "pages/page-01.jpg",
+    "pages/page-02.jpg",
+    "pages/page-03.jpg",
+    "pages/page-04.jpg",
+    "pages/page-05.jpg",
+    "pages/page-06.jpg",
+    "pages/page-07.jpg",
+    "pages/page-08.jpg",
+    "pages/page-09.jpg",
+    "pages/page-10.jpg",
+    "pages/page-11.jpg",
+    "paper.pdf",
+    "style.css",
+    "translation.html",
+    "vendor/README.txt",
+    "打开说明.txt"
+  ],
+  "extracted_files": [
+    {
+      "path": "2026-09-18_CVPR2025_DiffusionDrive-Truncated-Diffusion-Model.pdf",
+      "bytes": 88538,
+      "sha256": "d171b94cae08402b9307da9f738a6c264eb8e182555c9eed9905fec6a13b14ae"
+    },
+    {
+      "path": "algorithms.html",
+      "bytes": 11957,
+      "sha256": "23e9f25e6af569e2dcfc466076dbcf533dcd85e3cdee17db57c88ee14499a9ce"
+    },
+    {
+      "path": "app.js",
+      "bytes": 1025,
+      "sha256": "4a018ccf32821f48cae80e9194a574ec705bd7ec29df15561960d7110a95a7e7"
+    },
+    {
+      "path": "index.html",
+      "bytes": 25181,
+      "sha256": "7fb872fcc81c91a92a531d2bc7bf9b3a0d1a5fdbf253f3c1a73bace512033247"
+    },
+    {
+      "path": "pages/page-01.jpg",
+      "bytes": 290321,
+      "sha256": "17d6061262aa461ca1f2f74847e66cfc327f38073c1b10964390f8eca6c4cbd4"
+    },
+    {
+      "path": "pages/page-02.jpg",
+      "bytes": 378369,
+      "sha256": "0fb291bf733c639d1fb2b519a5941467b565664e1f72dd571e1fc1a29dfb0984"
+    },
+    {
+      "path": "pages/page-03.jpg",
+      "bytes": 237551,
+      "sha256": "b645d01a9774e2cce4efb3fa4aea394b0afcc85cfd66829fe351408df63c34de"
+    },
+    {
+      "path": "pages/page-04.jpg",
+      "bytes": 270318,
+      "sha256": "2daba40f00f3f6cba69bff9488ffcda3e64816644f33396c59cef6e20d33dc23"
+    },
+    {
+      "path": "pages/page-05.jpg",
+      "bytes": 293506,
+      "sha256": "e6b956fe57bba8f5a881ef93554622044b860c51da2d720ee013ab3c3d935cf9"
+    },
+    {
+      "path": "pages/page-06.jpg",
+      "bytes": 337079,
+      "sha256": "05ddf0fcaff7a925da4dc1f6b23fd058be265a1f7447959c588df10939c41766"
+    },
+    {
+      "path": "pages/page-07.jpg",
+      "bytes": 324619,
+      "sha256": "2aff586899aa7985331a3fd2ff9ca7d97204dc29d6124ada20997d0f797a2154"
+    },
+    {
+      "path": "pages/page-08.jpg",
+      "bytes": 341292,
+      "sha256": "9004d5fec1a5d7f36a9d34d99bb6c5d3e618c1567cd406f6bf4b2eb31191572c"
+    },
+    {
+      "path": "pages/page-09.jpg",
+      "bytes": 324918,
+      "sha256": "ac94bc1665b82bf9bbdd4be78976d06a4bf332d22b704915c75186e13d79bd59"
+    },
+    {
+      "path": "pages/page-10.jpg",
+      "bytes": 343608,
+      "sha256": "1b0cbb02a6d3d00943395822add2147ff668c36319701792e0077fc023ca68e1"
+    },
+    {
+      "path": "pages/page-11.jpg",
+      "bytes": 80552,
+      "sha256": "c29cc4272576e2ce4665a04a73d9710b9fecaa61da5e598c8c986c480174052f"
+    },
+    {
+      "path": "paper.pdf",
+      "bytes": 1453766,
+      "sha256": "e1a6fc71864f39f05c469330c4a0b89c15c67ba6a61efb864ec43efed8c7bdec"
+    },
+    {
+      "path": "style.css",
+      "bytes": 2916,
+      "sha256": "46bf8e3f64e0861eab592b1959fbef1b90bfb379173f76ca3974373bee715317"
+    },
+    {
+      "path": "translation.html",
+      "bytes": 10149,
+      "sha256": "69afc613e3004d56a531a94901cf80cc3138636f13e7a79e42e56c13c2aa9749"
+    },
+    {
+      "path": "vendor/README.txt",
+      "bytes": 115,
+      "sha256": "7bb456c4db5f7cb136cea11939af75ccb0add319cc7bb72fa758b84b70c6a324"
+    },
+    {
+      "path": "打开说明.txt",
+      "bytes": 411,
+      "sha256": "5fc927b0808c8afed88e6faf6a9b8efe4b0845c77710d63452dc639d4f852ee7"
+    }
+  ],
+  "status": "expanded_not_yet_translation_verified"
+}
