@@ -74,3 +74,5 @@ jobs:
           git fetch origin main
           git rebase origin/main
           git push origin HEAD:main
+
+# Workflow is intentionally single-purpose; content is treated as untrusted archive data.
