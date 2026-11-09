@@ -12,6 +12,8 @@
 
 图 1：不同端到端范式的比较。(a) 单模式回归（single-mode regression）[8,16,20]；(b) 从轨迹词表中采样（sampling from vocabulary）[4,25]；(c) 常规扩散策略（vanilla diffusion policy）[7,19]；(d) 本文提出的截断扩散策略。图内的 Scene Representation 为场景表示，Ego Query 为自车查询，Reg 为回归，Trajectory 为轨迹，Multi-mode Trajectories 为多模式轨迹，Score of Each Anchor 为每个锚点的分数，Denoise 为去噪，Scoring 为评分，Gaussian Distribution 为高斯分布，Anchored Gaussian Dist. 为锚定高斯分布，Confidence Score 为置信分数。
 
+![主文图 1 所在原始第 1 页](images/main-figure-1.jpg)
+
 ## 1. 引言（主文第 1–2 页）
 
 近年来，随着感知模型（如检测 [5,17,24,42]、跟踪 [54–56]、在线建图 [27,28,32] 等）的发展，直接从原始传感器输入学习驾驶策略的端到端自动驾驶得到了广泛关注。这种数据驱动的方法，为传统基于规则的运动规划提供了一种可扩展而稳健的替代方案；后者往往难以泛化到复杂的真实道路驾驶环境。
@@ -60,6 +62,10 @@ Diffusion Policy [7] 展示了扩散模型在机器人策略学习中的巨大�
 **图 3：** 与普通扩散策略比较，说明截断扩散策略。我们截断扩散过程，只向锚轨迹添加少量高斯噪声，接着训练扩散模型，使其基于条件场景上下文，从锚定高斯分布重建真实轨迹。推理时也截断去噪过程：与纯高斯噪声相比，从锚定高斯分布中质量更高的初始样本出发。图内 Adding noise to the anchors with truncated diffusion schedule 为使用截断时间表向锚点加噪；Denoising from anchored Gaussian distribution with fewer steps 为从锚定高斯分布用更少步数去噪。原文图示的 q 和 p 为前向加噪与反向去噪分布。
 
 ---
+![主文图 2 所在原始第 3 页](images/main-figure-2.jpg)
+
+![主文图 3 所在原始第 4 页](images/main-figure-3.jpg)
+
 ## 3. 方法（主文第 4–6 页）
 
 ### 3.1 预备知识
@@ -119,6 +125,8 @@ $$\mathcal L=\sum_{k=1}^{N_{\mathrm{anchor}}}\left[y_k\mathcal L_{\mathrm{rec}}(
 **扩散解码器。** 给定从锚定高斯分布采样得到的带噪轨迹集合 $\{\hat\tau_k\}_{k=1}^{N_{\mathrm{infer}}}$，首先根据轨迹坐标应用可变形空间交叉注意力（deformable spatial cross-attention）[29,42,62]，与 BEV 或 PV 特征交互。接着在轨迹特征和感知模块输出的智能体/地图 query 之间应用交叉注意力，并执行前馈网络（FFN）。为了编码扩散时间步信息，我们使用时间步调制层（Timestep Modulation），之后用多层感知机（MLP）预测置信分数，以及相对于初始带噪轨迹坐标的偏移量。当前扩散解码层的输出作为下一个级联扩散解码层的输入。在推理期间，DiffusionDrive 还会复用这一系列级联解码层来迭代去噪；各个去噪时间步之间共享参数。最终选择置信分数最高的轨迹作为输出。
 
 **图 4：** DiffusionDrive 总体架构。(a) DiffusionDrive 可结合多种已有感知模块和传感器输入；(b) 扩散解码器以锚定高斯分布采样得到的带噪轨迹为输入，通过级联方式加强与条件场景上下文交互，并逐步去噪生成最终预测。图中 On-board Sensor Data 为车载传感器数据；Perception (Map/Det) 为感知模块（地图/检测）；BEV/PV 为鸟瞰图/透视视图特征；Agent/Map Cross-Attn 为智能体/地图交叉注意力；Spatial Cross-Attn 为空间交叉注意力；Timestep Modulation 为时间步调制；Iterative Diffusion Denoising 为迭代扩散去噪；Diffusion Decoder Layer 为扩散解码层；Score/Traj. 为评分/轨迹。
+
+![主文图 4 所在原始第 5 页](images/main-figure-4.jpg)
 
 ## 4. 实验（主文第 6–8 页）
 
@@ -292,5 +300,11 @@ nuScenes 数据集此前是端到端规划领域流行的基准。由于 nuScene
 **补充图 2：** 在 NAVSIM navtest 左转场景中，Transfuser、TransfuserDP 和 DiffusionDrive 的定性比较。三个场景 (a)、(b)、(c) 中均同时展示采样噪声、去噪轨迹和相机输入，并将多样轨迹以不同颜色叠加到行车画面。置信度、Top-1/Top-10 与起止时间 $t=0s/4s$ 的标识与补充图 1 一致。
 
 **补充图 3：** 在 NAVSIM navtest 右转场景中，Transfuser、TransfuserDP 和 DiffusionDrive 的定性比较。三个场景 (a)、(b)、(c) 中红色虚线圈出转弯区域，箭头对应从去噪轨迹到相机视图的预测。顶部对照普通扩散的模式坍塌，底部展示截断扩散形成的多条合理轨迹。图例与前述补充图相同。
+
+![补充图 1：直行定性比较](images/supp-figure-1.jpg)
+
+![补充图 2：左转定性比较](images/supp-figure-2.jpg)
+
+![补充图 3：右转定性比较](images/supp-figure-3.jpg)
 
 *补充材料参考文献列表不翻译；保留原文 PDF 中的引用编号供查阅。*
