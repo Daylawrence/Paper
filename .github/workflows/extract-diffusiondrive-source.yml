@@ -1,0 +1,59 @@
+name: Extract DiffusionDrive PDF text for full translation review
+on:
+  push:
+    branches: [main]
+    paths:
+      - ".github/workflows/extract-diffusiondrive-source.yml"
+  workflow_dispatch:
+permissions:
+  contents: write
+jobs:
+  extract:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+        with: {fetch-depth: 0}
+      - uses: actions/setup-python@v5
+        with: {python-version: '3.11'}
+      - name: Extract original CVPR PDF pages as textual analysis material
+        shell: bash
+        run: |
+          set -euo pipefail
+          python -m pip install -q pymupdf
+          python - <<'PY'
+          import fitz,pathlib,json,re,hashlib
+          d=pathlib.Path('reading-packs/2026-09-18_CVPR2025_DiffusionDrive')
+          source=d/'paper.pdf'
+          pdf=fitz.open(source)
+          assert len(pdf)==11, f'Unexpected source PDF page count {len(pdf)}'
+          pages=[]
+          for i,p in enumerate(pdf,1):
+              # Provide both native reading order and column-aware grouped text.
+              blocks=p.get_text('blocks')
+              blocks=[b for b in blocks if isinstance(b[4],str) and b[4].strip()]
+              mid=p.rect.width/2
+              wide=[b for b in blocks if (b[2]-b[0])>p.rect.width*.7]
+              left=[b for b in blocks if b not in wide and (b[0]+b[2])/2<mid]
+              right=[b for b in blocks if b not in wide and (b[0]+b[2])/2>=mid]
+              ordered=sorted(wide,key=lambda b:b[1])+sorted(left,key=lambda b:b[1])+sorted(right,key=lambda b:b[1])
+              body='\n\n'.join(b[4].strip() for b in ordered)
+              native=p.get_text('text',sort=False)
+              pages.append({'page':i,'size':[p.rect.width,p.rect.height],'native_chars':len(native),'column_aware_chars':len(body)})
+              (d/f'source-page-{i:02d}.txt').write_text(f'PAGE {i}: COLUMN-AWARE BLOCK EXTRACTION (VERIFY FORMULAS AND TWO-COLUMN ORDER AGAINST PDF)\n\n'+body+'\n\n=== NATIVE TEXT ORDER ===\n\n'+native,encoding='utf-8')
+          meta={'source':'paper.pdf','pages':pages,'original_pdf_sha256':hashlib.sha256(source.read_bytes()).hexdigest(),'extraction':'PyMuPDF 1.26 block-level extraction, structural aid only; source PDF authoritative','status':'not_a_translation_completion_certificate'}
+          (d/'source-extraction-2026-11-09.json').write_text(json.dumps(meta,ensure_ascii=False,indent=2)+'\n','utf-8')
+          print(json.dumps({'pages':len(pdf),'chars':sum(x['native_chars'] for x in pages)},ensure_ascii=False))
+          PY
+      - name: Commit source extraction files
+        shell: bash
+        run: |
+          set -euo pipefail
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add reading-packs/2026-09-18_CVPR2025_DiffusionDrive/source-page-*.txt reading-packs/2026-09-18_CVPR2025_DiffusionDrive/source-extraction-2026-11-09.json
+          if git diff --cached --quiet; then exit 0; fi
+          git commit -m "Add DiffusionDrive original PDF page text for paragraph-level translation review [skip ci]"
+          git fetch origin main
+          git rebase origin/main
+          git push origin HEAD:main
