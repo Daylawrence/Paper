@@ -1,8 +1,8 @@
 {
-  "updated_date": "2026-11-08",
+  "updated_date": "2026-11-09",
   "policy": "GaussianDWM first until completed; then oldest uncompleted historical item, one paper per run; do not resume new recommendations while pending items exist",
   "total_packs": 14,
-  "pending": 13,
+  "pending": 12,
   "entries": [
     {
       "priority": 1,
@@ -38,9 +38,15 @@
       "paper": "DiffusionDrive",
       "directory": "reading-packs/2026-09-18_CVPR2025_DiffusionDrive",
       "original_date": "2026-09-18",
-      "legacy_status": "not_recorded",
-      "repair_status": "pending_expansion_and_remote_validation",
-      "new_standard_completed": false
+      "legacy_status": "completed",
+      "repair_status": "2026-11-09_completed_full_translation_expanded_html_no_zip_remote_verified",
+      "new_standard_completed": true,
+      "completed_date": "2026-11-09",
+      "last_repair_date": "2026-11-09",
+      "pending_items": [],
+      "completion_basis": "Main CVPR formal 11 pages plus official supplementary 5 pages, Chinese full translation except bibliographies, all main formulae and tables, inlined HTML + MD, Chrome offline pass, 114/114 remote tree SHA/size match; legacy ZIP deleted",
+      "completion_path": "reading-packs/2026-09-18_CVPR2025_DiffusionDrive",
+      "completion_report_path": "reading-packs/audits/diffusiondrive-remote-2026-11-09.json"
     },
     {
       "priority": 3,

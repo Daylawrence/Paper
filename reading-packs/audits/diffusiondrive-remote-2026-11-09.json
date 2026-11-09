@@ -1,0 +1,55 @@
+{
+  "paper": "DiffusionDrive",
+  "version": "CVPR 2025 Open Access main (11 pages) + official CVF supplement (5 pages)",
+  "original_date": "2026-09-18",
+  "repair_date": "2026-11-09",
+  "status": "completed_minimum_full_chinese_translation_except_bibliographies",
+  "reading_dir": "reading-packs/2026-09-18_CVPR2025_DiffusionDrive",
+  "old_archive_removed": true,
+  "source_main_pdf": {
+    "path": "reading-packs/2026-09-18_CVPR2025_DiffusionDrive/paper.pdf",
+    "pages": 11,
+    "bytes": 1453766,
+    "sha": "969407112fa30c0df187eac6f4cc422fffae5a7d"
+  },
+  "source_supp_pdf": {
+    "path": "reading-packs/2026-09-18_CVPR2025_DiffusionDrive/supplement.pdf",
+    "pages": 5,
+    "bytes": 2162452,
+    "sha": "1f9d164904fdd0df6a794dccfa2a3e7525ac75be"
+  },
+  "translation": {
+    "path": "reading-packs/2026-09-18_CVPR2025_DiffusionDrive/translation.md",
+    "chars": 21411,
+    "html_content_embedded": true,
+    "main_sections": "Abstract,1,2,3,4.1-4.7,5,Acknowledgement",
+    "supplement_sections": "A-C",
+    "bibliography_excluded": true,
+    "main_tables": 7,
+    "supplement_tables": 2,
+    "original_numbered_equations": 6
+  },
+  "offline_test": {
+    "workflow_url": "https://github.com/Daylawrence/Paper/actions/runs/42544648676",
+    "result": "passed",
+    "tested_with": "headless Chromium file://",
+    "original_pages": 16,
+    "math_equations_rendered_at_least": 5,
+    "translation_scroll_restored_px": 791,
+    "sidebar_narrow_screen": true,
+    "js_page_errors": 0
+  },
+  "remote_check": {
+    "method": "main branch Git tree recursive metadata compared to manifest Git blob SHA and file byte sizes; representative critical files also fetched from branch",
+    "manifest_entries": 114,
+    "git_blob_sha_matches": 114,
+    "size_matches": 114,
+    "mismatches": 0,
+    "extra_after_delete": [
+      "manifest.json"
+    ],
+    "original_tree_sha": "468b1386c484c12989f527efc64bb2c7fc9966d5",
+    "large_binary_full_content_redownloaded": false
+  },
+  "limitations": "Minimum readable full Chinese source content, not a publication-grade word-by-word certification or a model reproduction. No ZIP generated. Old ZIP removed only after all expanded resources were validated."
+}

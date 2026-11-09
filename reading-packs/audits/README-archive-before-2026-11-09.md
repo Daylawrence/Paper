@@ -1,0 +1,86 @@
+# 论文阅读包（展开 Markdown / PDF 优先）
+
+## 2026-11-08 · GaussianDWM 达到新版全文中文译文最低标准
+
+按最新交付要求（**参考文献列表不译，其余主文与补充 A–E 全文中文可读**），GaussianDWM 已完成本轮最低标准验收，历史队列从 14 篇待验收更新为 **13 篇待验收**。本次继续沿用 DriveVLA-W0 真实网页模板；没有新增论文推荐。[完整中文译文](2026-10-28_CVPR2026_GaussianDWM/translation.md) · [阅读包展开目录](2026-10-28_CVPR2026_GaussianDWM/) · [覆盖检查](2026-10-28_CVPR2026_GaussianDWM/coverage.md) · [验收依据及限制](2026-10-28_CVPR2026_GaussianDWM/acceptance-2026-11-08.md) · [修复队列](repair-queue.json)。下篇按队列为 DiffusionDrive。
+
+旧 ZIP **未同步 11 月 8 日译文，是过时备份**，不用于本次交付；用户应在 GitHub 直接阅读 Markdown/PDF 或 clone 后本地打开 index.html。11 月 7 日离线 Chromium 测试与 11 月 8 日远端完整性历史报告可复用为未变资源的证据；本轮没有重新运行浏览器，不能声称视觉重测。图中极小字号字符未达到出版级逐字校勘，现行最低标准不以此阻断完整译文交付。
+
+---
+
+## 历史记录 · 2026-11-07：原文逐段对齐继续修复（已由 11-08 验收结论更新）
+
+**11 月 7 日最新独立远端复验已通过：** [GitHub Actions 运行](https://github.com/Daylawrence/Paper/actions/runs/42267540158) 对新译文构建后的不可变 commit [`90bab195c`](https://github.com/Daylawrence/Paper/commit/90bab195cd91d4a6bd8f72ced0c17d156fed1690) 校验 **109/109 个展开文件** Git blob SHA/字节数/SHA256；重新下载备份 ZIP **22,183,917 字节，110 项 CRC/SHA256 通过**，19 页原文 PDF 和 8 页中文简报 PDF 均验证成功。[远端验收报告](audits/gaussiandwm-remote-2026-11-07.json)。这是对新版文件的校验（不是旧的 1a06dc37 快照）；**逐段语义终审及小字号图文仍未完成，因此仍为 repairing，暂不切换下一篇或恢复新论文。**
+
+
+
+本轮根据 [主文及附录英文来源](https://arxiv.org/html/2512.23180v3) 修正 4.2 实现细节与 4.5 消融实验中合并过度的段落；补回 4.4 对图 3/图 4 的独立定性描述；恢复补充材料 B 的源文顺序（800 场景介绍 → 数据处理 → 语言标签与 S1–S3 → S4/S5）。更新内容已经同时写入 [完整译文 Markdown](2026-10-28_CVPR2026_GaussianDWM/translation.md)、[独立译文 HTML](2026-10-28_CVPR2026_GaussianDWM/translation.html) 和 [index.html 内嵌译文](2026-10-28_CVPR2026_GaussianDWM/index.html)。[逐段对照核查记录](2026-10-28_CVPR2026_GaussianDWM/source-paragraph-fidelity-2026-11-07.md) 列明了完成和未完成部分。
+
+更新后的 8 页中文简报、HTML 离线访问检测、逐文件 manifest、展开内容、可选 ZIP 已由 [GitHub 重新构建工作流](https://github.com/Daylawrence/Paper/actions/runs/42267068012) 成功生成；含新译文的 ZIP 为 22,183,917 字节。此处“工作流构建成功”**不等于**新版本独立远端复验或全文逐段翻译验收成功，需以下独立远端报告确认才可声称所有文件完整。**GaussianDWM 仍处于 repairing；后续仍优先修复本篇。**
+
+
+
+## 2026-11-07：GaussianDWM 附录样例恢复、离线浏览器验收与远端完整性通过（仍修复中）
+
+本轮按 [DriveVLA-W0 实际页面模板](2026-09-16_ICLR2026_DriveVLA-W0_%E9%98%85%E8%AF%BB%E5%8C%85/) 继续修复 GaussianDWM，保留原制作日期 **2026-10-28**。已对照[论文原文第14页](2026-10-28_CVPR2026_GaussianDWM/pages/page-14.jpg) 恢复 QA 字段、完整前 4 帧/后 6 帧轨迹七元组；[第17页](2026-10-28_CVPR2026_GaussianDWM/pages/page-17.jpg)、[第18页](2026-10-28_CVPR2026_GaussianDWM/pages/page-18.jpg) 的补充定性图已加入译文并给出相机、时间及动作标签中英对照。详见 [11月7日原文视觉核对记录](2026-10-28_CVPR2026_GaussianDWM/source-visual-audit-2026-11-07.md)。
+
+实际 GitHub Actions 离线 `file://` Chromium/Playwright 复测 **通过**：三个选项及嵌入内容一致、KaTeX 渲染 10 个公式、切换后恢复右侧滚动至 850px、390px 窄屏左目录宽 152px、JavaScript 运行错误为零。[浏览器验收记录](2026-10-28_CVPR2026_GaussianDWM/offline-quality-check-2026-11-07.json)。
+
+[独立远端校验](audits/gaussiandwm-remote-2026-11-07.json) **通过**：108 个展开内容文件的远端 Git blob SHA/字节数/本地 SHA256 一致，最新 22,181,699 字节 ZIP 重新下载、CRC、内部 109 项内容完整性校验成功；远端原文 PDF 17,452,487 字节（19 页）、中文简报 PDF 441,199 字节（8 页）均通过重新下载、哈希和页数验证。校验对象为不可变 Git commit `1a06dc37ab17ee96715a6dda0974ad9d862061f9`，后来新增的 README、审计文件不改变其已验收的阅读包载荷。
+
+11 月 7 日补充了两幅补充图中主要问答的逐项中英对应，完善 [逐段覆盖清单](2026-10-28_CVPR2026_GaussianDWM/coverage.md)；同日再次重建 ZIP/PDF 并通过最新独立远端核验。
+
+**仍不能标记 completed：**全篇非参考文献部分的逐段英文—中文来源对齐、其余图/表内标签的逐项内容校对尚未完成。现有成果可从 [译文 Markdown](2026-10-28_CVPR2026_GaussianDWM/translation.md)、[关键解释 Markdown](2026-10-28_CVPR2026_GaussianDWM/algorithms.md)、[原文 PDF](2026-10-28_CVPR2026_GaussianDWM/paper.pdf)、[完整展开目录](2026-10-28_CVPR2026_GaussianDWM/) 阅读；GitHub 普通文件页面不能运行 HTML，本地克隆仓库后打开 `index.html`。GaussianDWM 继续 repairing，新论文暂停。
+
+
+## 2026-11-06：GaussianDWM 表1及图4原文视觉核验（继续修复）
+
+根据仓库中的 [原文第6页](2026-10-28_CVPR2026_GaussianDWM/pages/page-06.jpg) 人工核对补齐 BEVFormer、PETR、CAPE 的3DVG检测指标；保留 BEVFormer F1=1.576（原文如此），跨任务不支持不按0分处理。根据 [原文第8页](2026-10-28_CVPR2026_GaussianDWM/pages/page-08.jpg) 恢复图4的RGB-D定性比较图注、六组方法标签，在译文HTML和Markdown中直接引用已有原文页图，无需在线图源。[详细视觉核验](2026-10-28_CVPR2026_GaussianDWM/source-visual-audit-2026-11-06.md)。 [11月6日远端逐文件校验报告](2026-10-28_CVPR2026_GaussianDWM/remote-verification-2026-11-06.json)：37/37 Git blob SHA 匹配、36/36 实际字节数匹配（原文 PDF 本轮仅复核 blob SHA，原字节数沿用此前验收）；已修正3个文件的 Unicode 字节数/SHA256。
+
+已同步修改 [译文 Markdown](2026-10-28_CVPR2026_GaussianDWM/translation.md)、[HTML译文](2026-10-28_CVPR2026_GaussianDWM/translation.html)、[阅读主页源码](2026-10-28_CVPR2026_GaussianDWM/index.html) 和 [覆盖清单](2026-10-28_CVPR2026_GaussianDWM/coverage.md)。**仍为 repairing**：尚未完成补充材料 QA/轨迹全量核对、其他段落与图文字逐项比对、离线 KaTeX/浏览器验收及中文简报PDF同步。11月2日ZIP仍旧版备份，不视为最新交付。旧包修复优先，不推荐新论文。
+
+
+## 2026-11-04：GaussianDWM 网页迁移及译文扩充（仍在修复）
+
+已使用 [DriveVLA-W0 已上传真实模板](2026-09-16_ICLR2026_DriveVLA-W0_%E9%98%85%E8%AF%BB%E5%8C%85/) 中的实际 CSS/JS/HTML 为 GaussianDWM 迁移暖米色/深绿色/金色网页样式及三选项、左目录、右独立滚动、分选项记忆交互。翻译从先前概述扩展至主文引言、相关工作、完整方法（公式1–5）、实验与四张主表、结论及致谢，并补充附录A–E/公式S1–S5与三张补充实验表。**未完成严格逐段核验**：表1若干专用检测器行、图4、完整轨迹数据和图中文字仍有缺口；完整 KaTeX/离线视觉校验未通过，中文简报PDF及ZIP未同步本次文字内容。原有2026-11-02 ZIP仍是**过期备份**，不是最新HTML/Markdown完整包。GaussianDWM状态继续 repairing。
+
+最新直接阅读：[完整目录](2026-10-28_CVPR2026_GaussianDWM/) · [翻译Markdown（仍待校对）](2026-10-28_CVPR2026_GaussianDWM/translation.md) · [关键解释Markdown](2026-10-28_CVPR2026_GaussianDWM/algorithms.md) · [逐节覆盖与缺口](2026-10-28_CVPR2026_GaussianDWM/coverage.md) · [原文PDF](2026-10-28_CVPR2026_GaussianDWM/paper.pdf)。未部署并核实GitHub Pages；普通GitHub网页不运行index.html，若需网页交互请clone后本地打开。保留优先处理本篇，历史问题包未验收完成前不推荐新论文。
+
+
+## 2026-11-08 GaussianDWM 修复进度：译文段落对齐与译注区分（仍未完成）
+
+本轮逐项比对 [arXiv v3 主文](https://arxiv.org/html/2512.23180v3) 与当前中文译文，确认合并原文段落及未标注译者评论问题，已在 [translation.md](2026-10-28_CVPR2026_GaussianDWM/translation.md)、translation.html、index.html 同步完成 **16 处目标段落/译注修正**，并更新 109 项展开文件的 manifest（其中本轮变更的三份文本已回读检查字节数、SHA256 和 Git blob SHA）。[本轮来源对照审计](audits/gaussiandwm-source-fidelity-2026-11-08.md)。
+
+**未通过 completed：** 全文每一个非参考文献段落的语义对应审校、图表小字最终核对及这次更新后的全量独立远端验收仍未完成。**原 ZIP 是 11 月 7 日的旧版可选备份，与当前 11 月 8 日展开文件不同步，不得作为最新版使用。** 请以 GitHub 展开目录中的最新 Markdown/PDF 或 clone 后本地打开 index.html 为准；不需要下载 ZIP。旧版报告仅证明当时的不可变版本。优先级仍为 GaussianDWM，新论文保持暂停。
+
+## 2026-11-02 修复进度：GaussianDWM 原文与远端完整性已恢复
+
+保留原制作日期 **2026-10-28**；实际修复与远端验收日期 **2026-11-02**。继续**先修复历史旧包，暂停新论文推荐与上传**。[修复队列](repair-queue.json)。
+
+- **原文页修复通过**：按 CVPR 2026 官方文件 SHA256 核验，下载并合并 12 页主论文和 7 页补充材料，恢复 19 页可搜索文字的 [paper.pdf](2026-10-28_CVPR2026_GaussianDWM/paper.pdf)，重新生成 page-01.jpg 到 page-19.jpg；原第 18、19 页相同的空白占位图已替换。
+- **GitHub 远端验收通过的部分**：完整展开目录的 34/34 个文件大小及 Git blob SHA 一致；重新下载远端 ZIP（20,861,399 字节，SHA256: f7c5289268b9372b26d41a7917dba5d784ee6421fd420fe6105167b8d9c61be8），通过 ZIP CRC 和内部逐文件 34 项字节数、SHA256、Git blob SHA；重新下载 paper.pdf，核验全部 19 页，末三页均有正文；静态相对资源链接无缺失。[远端验收明细](2026-10-28_CVPR2026_GaussianDWM/remote-verification-2026-11-02.json)。
+- **仍待修复，不得标 completed**：[translation.md](2026-10-28_CVPR2026_GaussianDWM/translation.md)、translation.html 和 index.html 内嵌译文仍是压缩的分节文本，尚未达到整篇正文和补充材料逐节逐段完整翻译的标准。维持 repairing 状态，本篇优先级不变。
+
+直接阅读入口：[完整展开目录](2026-10-28_CVPR2026_GaussianDWM/) · [原文 PDF](2026-10-28_CVPR2026_GaussianDWM/paper.pdf) · [现有译文 Markdown（未完成）](2026-10-28_CVPR2026_GaussianDWM/translation.md) · [关键算法 Markdown](2026-10-28_CVPR2026_GaussianDWM/algorithms.md) · [中文学习简报 PDF](2026-10-28_CVPR2026_GaussianDWM/2026-10-28_CVPR2026_GaussianDWM_%E4%B8%AD%E6%96%87%E5%AD%A6%E4%B9%A0%E7%AE%80%E6%8A%A5.pdf) · [逐文件清单](2026-10-28_CVPR2026_GaussianDWM/manifest.json)。
+
+GitHub 文件页面**不执行 HTML**；可以直接阅读 Markdown/PDF，或 `git clone https://github.com/Daylawrence/Paper.git` 后本地打开对应 `index.html`。未部署且未验证 GitHub Pages，不提供虚构的网页阅读入口。ZIP 仅作备份，不作为取得展开资料的前提。
+
+以下为早期未逐包重新核验的 ZIP 归档；请优先使用已修复的展开目录。下载 ZIP 后完整解压，双击 `index.html` 阅读「原文 / 译文 / 关键解释」。中文简报 PDF 可直接在 GitHub 打开。ZIP 中包含原文、译文、算法解释及离线资源。
+
+以下为已生成历史成果的原文件归档，上传于 2026-10-10；保留原制作日期。本次校验了 ZIP 完整性与上传内容哈希，未重新审校全部译文。
+
+| 制作日期 | 论文 | 阅读包 | 中文简报 |
+|---|---|---|---|
+| 2026-09-18 | DiffusionDrive | [下载 ZIP](2026-09-18_CVPR2025_DiffusionDrive/2026-09-18_CVPR2025_DiffusionDrive_%E9%98%85%E8%AF%BB%E5%8C%85.zip?raw=true) | [查看 PDF](2026-09-18_CVPR2025_DiffusionDrive/2026-09-18_CVPR2025_DiffusionDrive-Truncated-Diffusion-Model.pdf) |
+| 2026-09-21 | PE3R | [下载 ZIP](2026-09-21_CVPR2026_PE3R/2026-09-21_CVPR2026_PE3R_%E9%98%85%E8%AF%BB%E5%8C%85.zip?raw=true) | [查看 PDF](2026-09-21_CVPR2026_PE3R/2026-09-21_CVPR2026_PE3R-Perception-Efficient-3D-Reconstruction.pdf) |
+| 2026-09-23 | ACoT-VLA | [下载 ZIP](2026-09-23_CVPR2026_ACoT-VLA/2026-09-23_CVPR2026_ACoT-VLA_%E9%98%85%E8%AF%BB%E5%8C%85.zip?raw=true) | [查看 PDF](2026-09-23_CVPR2026_ACoT-VLA/2026-09-23_CVPR2026_ACoT-VLA-Action-Chain-of-Thought.pdf) |
+| 2026-09-28 | VLM-3R | [下载 ZIP](2026-09-28_CVPR2026_VLM-3R/2026-09-28_CVPR2026_VLM-3R_%E9%98%85%E8%AF%BB%E5%8C%85.zip?raw=true) | [查看 PDF](2026-09-28_CVPR2026_VLM-3R/2026-09-28_CVPR2026_VLM-3R-Vision-Language-Models-Augmented-with-3D-Reconstruction.pdf) |
+| 2026-09-30 | VGG-T3 | [下载 ZIP](2026-09-30_CVPR2026_VGG-T3/2026-09-30_CVPR2026_VGG-T3_%E9%98%85%E8%AF%BB%E5%8C%85.zip?raw=true) | [查看 PDF](2026-09-30_CVPR2026_VGG-T3/2026-09-30_CVPR2026_VGG-T3-Offline-Feed-Forward-3D-Reconstruction-at-Scale.pdf) |
+| 2026-10-05 | SRPO | [下载 ZIP](2026-10-05_CVPR2026_SRPO/2026-10-05_CVPR2026_SRPO_%E9%98%85%E8%AF%BB%E5%8C%85.zip?raw=true) | [查看 PDF](2026-10-05_CVPR2026_SRPO/2026-10-05_CVPR2026_SRPO-Self-Referential-Policy-Optimization.pdf) |
+| 2026-10-07 | G2VLM | [下载 ZIP](2026-10-07_CVPR2026_G2VLM/2026-10-07_CVPR2026_G2VLM_%E9%98%85%E8%AF%BB%E5%8C%85.zip?raw=true) | [查看 PDF](2026-10-07_CVPR2026_G2VLM/2026-10-07_CVPR2026_G2VLM-Geometry-Grounded-Vision-Language-Model.pdf) |
+| 2026-10-12 | WAM-Flow（历史论文按新提示词重制版，不是新推荐） | [下载 ZIP](2026-10-12_CVPR2026_WAM-Flow/2026-10-12_CVPR2026_WAM-Flow_%E9%98%85%E8%AF%BB%E5%8C%85.zip?raw=true) | [查看 PDF](2026-10-12_CVPR2026_WAM-Flow/2026-10-12_CVPR2026_WAM-Flow-Parallel-Coarse-to-Fine-Motion-Planning.pdf) |
+| 2026-10-14 | DrivePI（历史论文按新提示词重制版，不是新推荐） | [下载 ZIP](2026-10-14_CVPR2026_DrivePI/2026-10-14_CVPR2026_DrivePI_%E9%98%85%E8%AF%BB%E5%8C%85.zip?raw=true) | [查看 PDF](2026-10-14_CVPR2026_DrivePI/2026-10-14_CVPR2026_DrivePI-Spatial-aware-4D-MLLM.pdf) |
+| 2026-10-19 | UniVLA（历史论文按新提示词重制版，不是新推荐） | [下载 ZIP](2026-10-19_ICLR2026_UniVLA/2026-10-19_ICLR2026_UniVLA_%E9%98%85%E8%AF%BB%E5%8C%85.zip?raw=true) | [查看 PDF](2026-10-19_ICLR2026_UniVLA/2026-10-19_ICLR2026_UniVLA-Unified-Vision-Language-Action-Model.pdf) |
+| 2026-10-21 | GLUEMAP（新论文推荐） | [下载 ZIP](2026-10-21_CVPR2026_GLUEMAP/2026-10-21_CVPR2026_GLUEMAP_%E9%98%85%E8%AF%BB%E5%8C%85.zip?raw=true) | [查看 PDF](2026-10-21_CVPR2026_GLUEMAP/2026-10-21_CVPR2026_GLUEMAP-Global-Structure-from-Motion-Meets-Feedforward-Reconstruction.pdf) |
+| 2026-10-23 | MoRe（新论文推荐） | [下载 ZIP](2026-10-23_CVPR2026_MoRe/2026-10-23_CVPR2026_MoRe_%E9%98%85%E8%AF%BB%E5%8C%85.zip?raw=true) | [查看 PDF](2026-10-23_CVPR2026_MoRe/2026-10-23_CVPR2026_MoRe-Motion-aware-Feed-forward-4D-Reconstruction-Transformer.pdf) |
+| 2026-10-26 | VLA-World（新论文推荐，CVPR 2026 Findings） | [下载 ZIP](2026-10-26_CVPR2026F_VLA-World/2026-10-26_CVPR2026F_VLA-World_%E9%98%85%E8%AF%BB%E5%8C%85.zip?raw=true) | [查看 PDF](2026-10-26_CVPR2026F_VLA-World/2026-10-26_CVPR2026F_VLA-World-Learning-Vision-Language-Action-World-Models.pdf) |

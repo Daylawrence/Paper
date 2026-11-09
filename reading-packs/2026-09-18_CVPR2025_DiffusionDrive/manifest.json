@@ -2,8 +2,8 @@
   "paper": "DiffusionDrive",
   "original_date": "2026-09-18",
   "repair_date": "2026-11-09",
-  "stage": "expanded_built_pending_independent_remote_audit_and_old_zip_removal",
-  "delivery": "expanded GitHub tree only; no ZIP in final delivery",
+  "stage": "completed_expanded_remote_verified_no_zip",
+  "delivery": "expanded GitHub directory; original legacy ZIP deleted after validating all 114 tracked payload files; no new ZIP generated",
   "main_pdf_pages": 11,
   "supplement_pdf_pages": 5,
   "page_images": 16,
@@ -581,5 +581,9 @@
       "sha256": "660d9929fcc9dec8dd6a64d51b9ade2dc176f5979c9e51e2ca97a596a9463c53"
     }
   },
-  "file_count": 114
+  "file_count": 114,
+  "completed_date": "2026-11-09",
+  "remote_integrity_check": "default branch Git tree: all 114 manifest files SHA and byte size match",
+  "offline_chromium_test": "passed at run 42544648676, original 16 pages, three tabs, KaTeX>=5, restored scroll 791px, narrow sidebar",
+  "source_pdf_validation": "11-page CVPR main paper and 5-page official supplemental"
 }
