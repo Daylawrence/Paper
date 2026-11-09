@@ -1,8 +1,8 @@
-DiffusionDrive 论文阅读包
-
-1. 请先完整解压 ZIP。
-2. 双击 index.html。
-3. 顶部可切换“原文 / 译文 / 关键解释”。
-4. 左侧目录固定，右侧正文独立滚动；每个选项会保存自己的阅读位置。
-5. 阅读正文、公式和逐页论文图像不需要网络；访问论文或代码外链需要网络。
-6. paper.pdf 是 CVPR 2025 Open Access 正式版，共 11 页。
+DiffusionDrive 离线完整阅读包（2026-11-09 修复）
+中文译文：translation.md / translation.html
+关键解释：algorithms.md / algorithms.html
+直接双击 index.html，切换 原文 / 译文 / 关键解释。
+原文：paper.pdf（CVPR 2025 主文 11 页）+ supplement.pdf（官方补充 5 页）；pages/page-01.jpg 至 page-16.jpg。
+GitHub 普通文件页面不能执行 HTML；要使用交互界面，请 git clone 后在本地打开 index.html。
+所有核心页面依赖均是本地相对路径，公式渲染使用 vendor 内的 KaTeX 与字体。
+本包不制作或提供 ZIP，参考文献列表不译。

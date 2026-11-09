@@ -1,4 +1,7 @@
-<!doctype html><meta charset="utf-8"><link rel="stylesheet" href="style.css">
+<!doctype html><html lang="zh-CN"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>DiffusionDrive · 关键解释</title><link rel="stylesheet" href="style.css">
+<link rel="stylesheet" href="vendor/katex.min.css"></head><body class="standalone">
 <article class="reading algorithms">
 <h1>关键解释与完整学习简报</h1>
 <p class="note">代码核验固定版本：<code>9b52ed0ec06b073d82d6f392ab084c7b301c8681</code>。以下为源码静态分析；本次未下载 NAVSIM 数据、未运行训练或复现实验数字。</p>
@@ -35,6 +38,8 @@ for t in [10, 0]:
     x = ddim_step(x0, t, x)
 return x0[argmax(scores)]</code></pre><p>二维玩具直觉：若三条锚点分别代表左转、直行、右转，扩散只需在各自附近学习小幅修正；从纯噪声开始则先要识别“属于哪个意图”，再恢复精确轨迹，任务更难且更慢。</p></section>
 <section id="a-diff"><h2>12. 论文与公开实现差异、复现注意点</h2><ul><li>论文式(6)写 BCE；代码使用 alpha=0.25、gamma=2 的 sigmoid focal loss，属于实现层面的不一致。</li><li>论文轨迹定义为 (x,y)，实现回归张量注释为 (x,y,θ)，但 DDIM 更新只取 <code>poses_reg[..., :2]</code>；要区分扩散状态与最终监督维度。</li><li><code>norm_odo</code> 包含固定范围常数，换数据集或坐标定义时必须重估，否则 grid sample 和噪声尺度会错位。</li><li>配置中的默认 anchor 路径是作者机器绝对路径，复现前必须修改。</li><li>本文所有数字来自论文/README；这里只完成源码静态核验，没有声称实跑复现。</li></ul></section>
-<section id="a-interview"><h2>13. 面试价值</h2><p><b>Q1：为什么锚点数从 8192 降到 20 仍能覆盖动作空间？</b><br>答：锚点只定义局部高斯中心，扩散解码器可连续修正坐标；8192-anchor 方法把锚点当离散答案，表达能力更依赖词表密度。</p><p><b>Q2：两步去噪为何不等价于把网络直接回归两次？</b><br>答：训练仍在多个截断时间步上学习带时间条件的反向映射，推理通过 DDIM scheduler 在概率路径上更新；锚点提供多模式起点，分类头负责选择。消融显示截断 UNet 与专用解码器各有增益。</p></section>
+<section id="a-interview"><h2>13. 面试价值</h2><p><b>Q1：为什么锚点数从 8192 降到 20 仍能覆盖动作空间？</b><br/>答：锚点只定义局部高斯中心，扩散解码器可连续修正坐标；8192-anchor 方法把锚点当离散答案，表达能力更依赖词表密度。</p><p><b>Q2：两步去噪为何不等价于把网络直接回归两次？</b><br/>答：训练仍在多个截断时间步上学习带时间条件的反向映射，推理通过 DDIM scheduler 在概率路径上更新；锚点提供多模式起点，分类头负责选择。消融显示截断 UNet 与专用解码器各有增益。</p></section>
 <section id="a-transfer"><h2>14. 迁移想法（最小对照实验）</h2><p><b>改动：</b>在 <code>GridSampleCrossBEVAttention</code> 前加入一张由 Depth Pro 深度和 VGGT world points 投影得到的几何 BEV（高度、密度、置信度 3-4 通道），与原 LiDAR/视觉 BEV 做轻量 gated fusion；YOLO 车辆框转换为 agent query 附加尺寸、距离和速度估计。</p><p><b>预期：</b>远处车辆与遮挡区域的轨迹候选可获得更明确的几何约束；无 LiDAR 版本有机会保留部分三维条件。</p><p><b>需验证假设：</b>VGGT/Depth Pro 的尺度和时序抖动在驾驶数据上是否小到足以帮助规划，而不是污染 BEV。</p><p><b>最小对照：</b>固定 DiffusionDrive checkpoint 与 20 anchors，仅训练新几何适配层；A=原输入，B=加入 Depth Pro BEV，C=加入 VGGT confidence mask。比较 PDMS 子项、远距车辆场景碰撞率、top-10 diversity，并按 0-30m/30-60m 分桶。若 B/C 只提升 L2 不提升 NC/TTC，则不应宣称规划更安全。</p></section>
-</article>
+</article><script src="vendor/katex.min.js"></script><script src="vendor/auto-render.min.js"></script>
+<script>if(window.renderMathInElement)renderMathInElement(document.body,{delimiters:[{left:"$$",right:"$$",display:true},{left:"$",right:"$",display:false}],throwOnError:false})</script>
+</body></html>

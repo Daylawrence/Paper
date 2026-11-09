@@ -1,0 +1,138 @@
+{
+  "paper": "DiffusionDrive",
+  "source_main": "CVPR 2025 OA (11 pages)",
+  "source_supplement": "CVF supplemental (5 pages)",
+  "translated_range": "Main abstract + sections 1–5 + acknowledgement; supplemental A–C; bibliographies excluded",
+  "reviewed_date": "2026-11-09",
+  "sections": [
+    {
+      "level": 1,
+      "name": "DiffusionDrive：用于端到端自动驾驶的截断扩散模型"
+    },
+    {
+      "level": 2,
+      "name": "摘要（主文第 1 页）"
+    },
+    {
+      "level": 2,
+      "name": "图 1：不同端到端范式比较（主文第 1 页）"
+    },
+    {
+      "level": 2,
+      "name": "1. 引言（主文第 1–2 页）"
+    },
+    {
+      "level": 2,
+      "name": "2. 相关工作（主文第 2–4 页）"
+    },
+    {
+      "level": 3,
+      "name": "端到端自动驾驶（End-to-end autonomous driving）"
+    },
+    {
+      "level": 3,
+      "name": "用于交通仿真的扩散模型（Diffusion model for traffic simulation）"
+    },
+    {
+      "level": 3,
+      "name": "用于机器人策略学习的扩散模型（Diffusion model for robotic policy learning）"
+    },
+    {
+      "level": 3,
+      "name": "用于图像生成的扩散模型（Diffusion model for image generation）"
+    },
+    {
+      "level": 2,
+      "name": "图 2 与图 3（主文第 3–4 页）"
+    },
+    {
+      "level": 2,
+      "name": "3. 方法（主文第 4–6 页）"
+    },
+    {
+      "level": 3,
+      "name": "3.1 预备知识"
+    },
+    {
+      "level": 3,
+      "name": "3.2 初步调查"
+    },
+    {
+      "level": 3,
+      "name": "3.3 截断扩散"
+    },
+    {
+      "level": 3,
+      "name": "3.4 架构"
+    },
+    {
+      "level": 2,
+      "name": "4. 实验（主文第 6–8 页）"
+    },
+    {
+      "level": 3,
+      "name": "4.1 数据集"
+    },
+    {
+      "level": 3,
+      "name": "4.2 实现细节"
+    },
+    {
+      "level": 3,
+      "name": "4.3 定量比较"
+    },
+    {
+      "level": 3,
+      "name": "4.4 从 Transfuser 到 DiffusionDrive 的演进路径"
+    },
+    {
+      "level": 3,
+      "name": "4.5 消融研究"
+    },
+    {
+      "level": 3,
+      "name": "4.6 定性比较"
+    },
+    {
+      "level": 3,
+      "name": "4.7 在 nuScenes 数据集上的定量比较"
+    },
+    {
+      "level": 2,
+      "name": "5. 结论（主文第 8 页）"
+    },
+    {
+      "level": 2,
+      "name": "致谢（主文第 9 页）"
+    },
+    {
+      "level": 1,
+      "name": "官方补充材料：DiffusionDrive"
+    },
+    {
+      "level": 2,
+      "name": "A. 更多实现细节（Further Implementation Detail）"
+    },
+    {
+      "level": 2,
+      "name": "B. 更多消融研究（Further Ablation Study）"
+    },
+    {
+      "level": 2,
+      "name": "C. 更多定性比较（Further Qualitative Comparison）"
+    }
+  ],
+  "tables_main": 7,
+  "tables_supplement": 2,
+  "equations_main": 6,
+  "figure_sources": {
+    "main-figure-1.jpg": 1,
+    "main-figure-2.jpg": 3,
+    "main-figure-3.jpg": 4,
+    "main-figure-4.jpg": 5,
+    "supp-figure-1.jpg": 14,
+    "supp-figure-2.jpg": 15,
+    "supp-figure-3.jpg": 16
+  },
+  "known_scope": "Readable full Chinese section/paragraph translation. Source microtype not separately certified."
+}
