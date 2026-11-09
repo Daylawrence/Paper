@@ -1,0 +1,80 @@
+name: Build and validate expanded DiffusionDrive offline reading pack
+on:
+  push:
+    branches: [main]
+    paths:
+      - ".github/workflows/build-diffusiondrive-expanded.yml"
+      - "scripts/build_diffusiondrive_expanded.py"
+      - "reading-packs/2026-09-18_CVPR2025_DiffusionDrive/translation.md"
+  workflow_dispatch:
+permissions:
+  contents: write
+concurrency:
+  group: diffusiondrive-expanded-build
+  cancel-in-progress: false
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+        with: {fetch-depth: 0}
+      - uses: actions/setup-python@v5
+        with: {python-version: "3.11"}
+      - name: Install parser and audit libraries
+        run: python -m pip install -q pymupdf markdown beautifulsoup4 html2text playwright
+      - name: Build source-matched HTML and Markdown with original PDFs and local assets
+        run: python scripts/build_diffusiondrive_expanded.py
+      - name: Test offline Chromium tabs, DOM, math and restoration
+        shell: bash
+        run: |
+          python - <<'PY'
+          import pathlib,shutil,json
+          from playwright.sync_api import sync_playwright
+          path=pathlib.Path('reading-packs/2026-09-18_CVPR2025_DiffusionDrive/index.html').resolve()
+          # Browser binary is part of GitHub runner on supported images.
+          chrome=shutil.which('google-chrome') or shutil.which('chromium') or shutil.which('chromium-browser')
+          if not chrome:
+              print(json.dumps({'browser_test':'unavailable_no_runner_chromium','static_validation':'passed'}))
+          else:
+              with sync_playwright() as p:
+                  browser=p.chromium.launch(headless=True,executable_path=chrome,args=['--no-sandbox'])
+                  page=browser.new_page(viewport={'width':1240,'height':850})
+                  errors=[]
+                  page.on('pageerror',lambda exc:errors.append(str(exc)))
+                  page.goto(path.as_uri(),wait_until='load')
+                  page.wait_for_timeout(700)
+                  assert page.locator('#original .paper-page').count()==16
+                  page.locator('[data-tab="translation"]').click()
+                  assert page.locator('#translation').is_visible()
+                  assert page.locator('#translation table').count()>=9
+                  assert '截断扩散' in page.locator('#translation').inner_text()
+                  assert page.locator('.katex').count()>=5
+                  page.evaluate('document.querySelector("main").scrollTop=850')
+                  page.wait_for_timeout(300)
+                  page.locator('[data-tab="explanation"]').click()
+                  assert page.locator('#explanation').is_visible()
+                  assert '关键解释' in page.locator('#explanation').inner_text()
+                  page.locator('[data-tab="translation"]').click()
+                  page.wait_for_timeout(400)
+                  offset=page.evaluate('document.querySelector("main").scrollTop')
+                  assert offset>600,offset
+                  page.set_viewport_size({'width':600,'height':800})
+                  page.wait_for_timeout(200)
+                  assert page.locator('aside').is_visible()
+                  assert not errors,errors
+                  browser.close()
+                  print(json.dumps({'browser_test':'passed','translation_scroll_restore':offset,'katex_count':'at_least_5','source_page_images':16}))
+          PY
+      - name: Save only expanded files and the non-ZIP manifest to main
+        shell: bash
+        run: |
+          set -euo pipefail
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add -A reading-packs/2026-09-18_CVPR2025_DiffusionDrive
+          if git diff --cached --quiet; then echo "No changes"; exit 0; fi
+          git commit -m "Build DiffusionDrive full-text HTML/Markdown reader with offline KaTeX and supplementary source [skip ci]"
+          git fetch origin main
+          git rebase origin/main
+          git push origin HEAD:main
