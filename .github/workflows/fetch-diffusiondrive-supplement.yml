@@ -1,0 +1,52 @@
+name: Restore DiffusionDrive official supplementary PDF and page images
+on:
+  push:
+    branches: [main]
+    paths:
+      - ".github/workflows/fetch-diffusiondrive-supplement.yml"
+  workflow_dispatch:
+permissions:
+  contents: write
+jobs:
+  supplement:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+        with: {fetch-depth: 0}
+      - uses: actions/setup-python@v5
+        with: {python-version: '3.11'}
+      - name: Obtain official CVF supplemental and render pages safely
+        shell: bash
+        run: |
+          set -euo pipefail
+          python -m pip install -q requests pymupdf
+          python - <<'PY'
+          import pathlib,hashlib,json,requests,fitz
+          target=pathlib.Path('reading-packs/2026-09-18_CVPR2025_DiffusionDrive')
+          url='https://openaccess.thecvf.com/content/CVPR2025/supplemental/Liao_DiffusionDrive_Truncated_Diffusion_CVPR_2025_supplemental.pdf'
+          response=requests.get(url,headers={'User-Agent':'Mozilla/5.0 (compatible; open-access-scholar/1.0)'},timeout=35)
+          response.raise_for_status()
+          blob=response.content
+          assert blob[:5]==b'%PDF-',f'Expected PDF, got {blob[:20]}'
+          pdf=fitz.open(stream=blob,filetype='pdf')
+          assert len(pdf)==5,(len(pdf),'official supplement page count changed; review needed')
+          (target/'supplement.pdf').write_bytes(blob)
+          for i,p in enumerate(pdf,1):
+              pix=p.get_pixmap(matrix=fitz.Matrix(1.45,1.45),alpha=False)
+              (target/'pages'/f'page-{i+11:02d}.jpg').write_bytes(pix.tobytes('jpg',jpg_quality=76))
+          info={'official_source':url,'supplement_pdf_bytes':len(blob),'sha256':hashlib.sha256(blob).hexdigest(),'pages':5,'page_images':'pages/page-12.jpg..page-16.jpg','original_main_pdf_pages':11,'status':'source_restored_translation_validation_pending'}
+          (target/'supplement-source-2026-11-09.json').write_text(json.dumps(info,ensure_ascii=False,indent=2)+'\n',encoding='utf-8')
+          print(json.dumps(info))
+          PY
+      - name: Commit verified CVF supplemental and 5 images
+        shell: bash
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add reading-packs/2026-09-18_CVPR2025_DiffusionDrive/supplement.pdf reading-packs/2026-09-18_CVPR2025_DiffusionDrive/pages/page-1*.jpg reading-packs/2026-09-18_CVPR2025_DiffusionDrive/supplement-source-2026-11-09.json
+          if git diff --cached --quiet; then exit 0; fi
+          git commit -m "Restore official DiffusionDrive supplement and rendered offline pages [skip ci]"
+          git fetch origin main
+          git rebase origin/main
+          git push origin HEAD:main
