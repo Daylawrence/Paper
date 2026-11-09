@@ -1,0 +1,549 @@
+PAGE 7: COLUMN-AWARE BLOCK EXTRACTION (VERIFY FORMULAS AND TWO-COLUMN ORDER AGAINST PDF)
+
+ID
+UNet
+Ego Query
+Spatial
+Agent/Map
+Cascade
+Param.↓
+Planning Metric
+Decoder Interaction Cross-attn
+Cross-attn
+Decoder
+NC↑DAC↑TTC↑Comf.↑
+EP↑
+PDMS↑
+
+1
+✓
+✓
+✗
+✗
+✗
+102M
+97.9
+94.2
+93.9
+100
+80.2
+85.7
+
+2
+✗
+✓
+✗
+✗
+✗
+57M
+88.7
+83.2
+80.0
+84.8
+43.3
+55.1
+3
+✗
+✓
+✓
+✗
+✗
+58M
+98.2
+95.4
+94.4
+100
+81.3
+87.1
+4
+✗
+✓
+✗
+✓
+✗
+58M
+97.9
+93.5
+93.8
+100
+79.8
+85.1
+5
+✗
+✓
+✓
+✓
+✗
+59M
+98.0
+95.8
+94.4
+100
+81.7
+87.4
+6
+✗
+✓
+✓
+✓
+✓
+60M
+98.2
+96.2
+94.7
+100
+82.2
+88.1
+
+Table 3. Ablation for design choices. “Cascade Decoder” indicates that we stack 2 cascade diffusion decoder layers. ID-1 refers to
+TransfuserTD in Tab. 2, utilizing conditional UNet and interaction with the ego-query, which Transfuser uses to directly regress the single-
+mode trajectory.
+
+Steps
+Param.
+NC
+DAC TTC Comf.
+EP
+PDMS
+
+1
+60M
+98.3
+96.0
+94.7
+100
+82.1
+87.9
+2
+60M
+98.2
+96.2
+94.7
+100
+82.2
+88.1
+3
+60M
+98.2
+96.3
+94.7
+100
+92.2
+88.1
+
+1
+59M
+98.0
+95.8
+94.4
+100
+81.7
+87.4
+2
+60M
+98.2
+96.2
+94.7
+100
+82.2
+88.1
+4
+65M
+98.4
+96.2
+94.9
+100
+82.4
+88.2
+
+Table 4. Denoising step number.
+
+Table 5. Cascade stages.
+
+merged LiDAR point cloud derived from ﬁve sensors. An-
+notations are provided at a frequency of 2Hz and include
+both HD maps and object bounding boxes.
+The dataset
+is designed to emphasize challenging driving scenarios in-
+volving dynamic changes in driving intentions, while delib-
+erately excluding trivial situations such as stationary scenes
+or constant-speed driving.
+
+NAVSIM benchmarks planning performance using non-
+reactive simulations and closed-loop metrics for compre-
+hensive evaluation. In this paper, we employ the proposed
+PDM score (PDMS) [11], which is a weighted combination
+of several sub-scores: no at-fault collisions (NC), drivable
+area compliance (DAC), time-to-collision (TTC), comfort
+(Comf.), and ego progress (EP).
+
+4.2. Implementation Detail
+
+We adopt the same perception modules and ResNet-34
+backbone [13] as Transfuser for fair comparison. In the
+diffusion decoder layer, we employ spatial cross-attention
+to only interact with BEV features following Transfuser’s
+BEV-based setting. We only perform agent cross-attention,
+since the perception module of Transfuser does not include
+vectorized map construction. We stack 2 cascade diffusion
+decoder layers and apply truncated diffusion policy with 20
+clustered anchors. The training diffusion schedule is trun-
+cated by 50/1000 to diffuse the anchors, while during in-
+ference, we use only 2 denoising steps and select the top-
+1 scoring predicted trajectory for evaluation.
+The train-
+ing and inference recipe directly follows Transfuser: We
+use three cropped and downscaled forward-facing camera
+images, concatenated as a 1024×256 image, and a raster-
+ized BEV LiDAR as input; DiffusionDrive is trained on
+navtrain split from scratch for 100 epochs with AdamW
+optimizer on 8 NVIDIA 4090 GPUs with total batch size
+of 512, setting the learning rate to 6 × 10−4. No test-time
+
+Ninfer
+Param.
+NC
+DAC TTC Comf.
+EP
+PDMS
+
+Stages
+Param.
+NC
+DAC TTC Comf.
+EP
+PDMS
+
+10
+60M
+97.9
+93.5
+93.1
+100
+80.0
+84.9
+20
+60M
+98.2
+96.2
+94.7
+100
+82.2
+88.1
+40
+60M
+98.5
+96.2
+94.8
+100
+82.5
+88.2
+
+Table 6. Number of sampled noises Ninfer.
+
+augmentation is applied and the ﬁnal output for evaluation
+on navtest split is 8-waypoint trajectory over 4 seconds.
+
+4.3. Quantitative Comparison
+
+Tab. 1 compares DiffusionDrive with state-of-the-art meth-
+ods on NAVSIM navtest split. With the same ResNet-
+34 backbone, DiffusionDrive achieves 88.1 PDMS score,
+demonstrating signiﬁcant superior performance over the
+previous learning-based methods.
+Compared to VADv2,
+DiffusionDrive surpasses it by 7.2 PDMS while reducing
+the number of anchors from 8192 to 20, representing a
+400× reduction. DiffusionDrive also outperforms Hydra-
+MDP, which follows VADv2’s sampling-from-vocabulary
+paradigm, with a 5.1 PDMS improvement.
+Even com-
+pared to the Hydra-MDP-V8192-W-EP, which is a variant of
+Hydra-MDP [25] by further training to ﬁt the EP evaluation
+metric with additional supervision and using weighted con-
+ﬁdence post-processing, DiffusionDrive still outperforms
+it by 3.5 EP and 1.6 overall PDMS, relying solely on
+a straightforward learning-from-human approach without
+any post-processing. Compared to the Transfuser baseline,
+where we only differ in the planning module, Diffusion-
+Drive delivers a notable 4.1 PDMS improvement, outper-
+forming it across all sub-scores.
+
+4.4. Roadmap
+
+In Tab. 2,
+converting Transfuser into the generative
+TransfuserDP using vanilla diffusion policy improves the
+PDMS score by 0.6 and the mode diversity score D by 11%.
+However, it also signiﬁcantly increases the overhead of the
+planning module, requiring 20× more denoising steps and
+32× the step time, resulting in a total 650× increase in
+runtime overhead. With the proposed truncated diffusion
+policy, TransfuserTD reduces the number of denoising steps
+from 20 to 2 while improving PDMS by 1.1 and mode diver-
+
+12043
+
+=== NATIVE TEXT ORDER ===
+
+ID
+UNet
+Ego Query
+Spatial
+Agent/Map
+Cascade
+Param.↓
+Planning Metric
+Decoder Interaction Cross-attn
+Cross-attn
+Decoder
+NC↑DAC↑TTC↑Comf.↑
+EP↑
+PDMS↑
+1
+✓
+✓
+✗
+✗
+✗
+102M
+97.9
+94.2
+93.9
+100
+80.2
+85.7
+2
+✗
+✓
+✗
+✗
+✗
+57M
+88.7
+83.2
+80.0
+84.8
+43.3
+55.1
+3
+✗
+✓
+✓
+✗
+✗
+58M
+98.2
+95.4
+94.4
+100
+81.3
+87.1
+4
+✗
+✓
+✗
+✓
+✗
+58M
+97.9
+93.5
+93.8
+100
+79.8
+85.1
+5
+✗
+✓
+✓
+✓
+✗
+59M
+98.0
+95.8
+94.4
+100
+81.7
+87.4
+6
+✗
+✓
+✓
+✓
+✓
+60M
+98.2
+96.2
+94.7
+100
+82.2
+88.1
+Table 3. Ablation for design choices. “Cascade Decoder” indicates that we stack 2 cascade diffusion decoder layers. ID-1 refers to
+TransfuserTD in Tab. 2, utilizing conditional UNet and interaction with the ego-query, which Transfuser uses to directly regress the single-
+mode trajectory.
+Steps
+Param.
+NC
+DAC TTC Comf.
+EP
+PDMS
+1
+60M
+98.3
+96.0
+94.7
+100
+82.1
+87.9
+2
+60M
+98.2
+96.2
+94.7
+100
+82.2
+88.1
+3
+60M
+98.2
+96.3
+94.7
+100
+92.2
+88.1
+Table 4. Denoising step number.
+Stages
+Param.
+NC
+DAC TTC Comf.
+EP
+PDMS
+1
+59M
+98.0
+95.8
+94.4
+100
+81.7
+87.4
+2
+60M
+98.2
+96.2
+94.7
+100
+82.2
+88.1
+4
+65M
+98.4
+96.2
+94.9
+100
+82.4
+88.2
+Table 5. Cascade stages.
+Ninfer
+Param.
+NC
+DAC TTC Comf.
+EP
+PDMS
+10
+60M
+97.9
+93.5
+93.1
+100
+80.0
+84.9
+20
+60M
+98.2
+96.2
+94.7
+100
+82.2
+88.1
+40
+60M
+98.5
+96.2
+94.8
+100
+82.5
+88.2
+Table 6. Number of sampled noises Ninfer.
+merged LiDAR point cloud derived from ﬁve sensors. An-
+notations are provided at a frequency of 2Hz and include
+both HD maps and object bounding boxes.
+The dataset
+is designed to emphasize challenging driving scenarios in-
+volving dynamic changes in driving intentions, while delib-
+erately excluding trivial situations such as stationary scenes
+or constant-speed driving.
+NAVSIM benchmarks planning performance using non-
+reactive simulations and closed-loop metrics for compre-
+hensive evaluation. In this paper, we employ the proposed
+PDM score (PDMS) [11], which is a weighted combination
+of several sub-scores: no at-fault collisions (NC), drivable
+area compliance (DAC), time-to-collision (TTC), comfort
+(Comf.), and ego progress (EP).
+4.2. Implementation Detail
+We adopt the same perception modules and ResNet-34
+backbone [13] as Transfuser for fair comparison. In the
+diffusion decoder layer, we employ spatial cross-attention
+to only interact with BEV features following Transfuser’s
+BEV-based setting. We only perform agent cross-attention,
+since the perception module of Transfuser does not include
+vectorized map construction. We stack 2 cascade diffusion
+decoder layers and apply truncated diffusion policy with 20
+clustered anchors. The training diffusion schedule is trun-
+cated by 50/1000 to diffuse the anchors, while during in-
+ference, we use only 2 denoising steps and select the top-
+1 scoring predicted trajectory for evaluation.
+The train-
+ing and inference recipe directly follows Transfuser: We
+use three cropped and downscaled forward-facing camera
+images, concatenated as a 1024×256 image, and a raster-
+ized BEV LiDAR as input; DiffusionDrive is trained on
+navtrain split from scratch for 100 epochs with AdamW
+optimizer on 8 NVIDIA 4090 GPUs with total batch size
+of 512, setting the learning rate to 6 × 10−4. No test-time
+augmentation is applied and the ﬁnal output for evaluation
+on navtest split is 8-waypoint trajectory over 4 seconds.
+4.3. Quantitative Comparison
+Tab. 1 compares DiffusionDrive with state-of-the-art meth-
+ods on NAVSIM navtest split. With the same ResNet-
+34 backbone, DiffusionDrive achieves 88.1 PDMS score,
+demonstrating signiﬁcant superior performance over the
+previous learning-based methods.
+Compared to VADv2,
+DiffusionDrive surpasses it by 7.2 PDMS while reducing
+the number of anchors from 8192 to 20, representing a
+400× reduction. DiffusionDrive also outperforms Hydra-
+MDP, which follows VADv2’s sampling-from-vocabulary
+paradigm, with a 5.1 PDMS improvement.
+Even com-
+pared to the Hydra-MDP-V8192-W-EP, which is a variant of
+Hydra-MDP [25] by further training to ﬁt the EP evaluation
+metric with additional supervision and using weighted con-
+ﬁdence post-processing, DiffusionDrive still outperforms
+it by 3.5 EP and 1.6 overall PDMS, relying solely on
+a straightforward learning-from-human approach without
+any post-processing. Compared to the Transfuser baseline,
+where we only differ in the planning module, Diffusion-
+Drive delivers a notable 4.1 PDMS improvement, outper-
+forming it across all sub-scores.
+4.4. Roadmap
+In Tab. 2,
+converting Transfuser into the generative
+TransfuserDP using vanilla diffusion policy improves the
+PDMS score by 0.6 and the mode diversity score D by 11%.
+However, it also signiﬁcantly increases the overhead of the
+planning module, requiring 20× more denoising steps and
+32× the step time, resulting in a total 650× increase in
+runtime overhead. With the proposed truncated diffusion
+policy, TransfuserTD reduces the number of denoising steps
+from 20 to 2 while improving PDMS by 1.1 and mode diver-
+12043

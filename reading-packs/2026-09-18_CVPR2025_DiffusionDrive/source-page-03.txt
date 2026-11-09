@@ -1,0 +1,189 @@
+PAGE 3: COLUMN-AWARE BLOCK EXTRACTION (VERIFY FORMULAS AND TWO-COLUMN ORDER AGAINST PDF)
+
+(b) Top-1’s turning left and diverse top-10’s lane changing.
+Figure 2. Qualitative comparison of Transfuser, TransfuserDP and DiffusionDrive on challenging scenes of NAVSIM navtest split.
+With the same inputs from front cameras and LiDAR, DiffusionDrive achieves the highest planning quality of top-1 scoring trajectory as
+illustrated in Tab. 2. We render the highlighted diverse trajectories predicted by DiffusionDrive in the front view. (a) and (b) shows that
+the top-1 scoring trajectory of DiffusionDrive closely matches the ground truth for both going straight and turning left. Additionally,
+DiffusionDrive’s top-10 scoring trajectory demonstrates high-quality lane changing—an ability not observed in multi-mode TransfuserDP
+and impossible for Transfuser.
+
+Sampled Noises
+Denoised Trajs
+Camera Input
+
+20 steps
+
+Mode Collapse
+
+TransfuserDP
+
+2 steps
+
+Diverse Modes
+
+DiffusionDrive
+
+t=4s
+
+t=4s
+
+p=1
+
+Transfuser
+GT Traj
+Confidence Score
+p=0
+
+Top-10 Scoring Traj
+
+Top-1 Scoring Traj
+
+t=0s
+
+t=0s
+
+(a) Top-1’s going straight and diverse top-10’s lane changing.
+Sampled Noises
+Denoised Trajs
+Camera Input
+
+20 steps
+
+Mode Collapse
+
+TransfuserDP
+
+2 steps
+
+Diverse Modes
+
+DiffusionDrive
+
+p=1
+
+t=4s
+
+t=4s
+
+Transfuser
+GT Traj
+Confidence Score
+p=0
+
+Top-10 Scoring Traj
+
+Top-1 Scoring Traj
+
+t=0s
+
+t=0s
+
+Diffusion model for trafﬁc simulation. Driving diffusion
+policy has been explored in the trafﬁc simulation by lever-
+aging only abstract perception groundtruth [9, 18, 21, 44].
+MotionDiffuser [21] and CTG [60] are pioneering applica-
+tions of diffusion models for multi-agent motion prediction,
+using a conditional diffusion model to sample target trajec-
+tories from Gaussian noise. CTG++ [59] further incorpo-
+rates a large language model (LLM) for language-driven
+guidance, improving usability and enabling realistic trafﬁc
+simulations. Diffusion-ES [48] replaces reward-gradient-
+guided denoising with evolutionary search. Moving beyond
+diffusion models limited to trafﬁc simulation with percep-
+tion groundtruth, our approach unlocks the potential of dif-
+
+fusion models for real-time, end-to-end autonomous driving
+through our proposed truncated diffusion policy and efﬁ-
+cient diffusion decoder.
+
+Diffusion model for robotic policy learning. Diffusion
+policy [7] demonstrates the great potential in robotic pol-
+icy learning, effectively capturing multi-mode action distri-
+butions and high-dimensional action spaces. Diffuser [19]
+proposes an unconditional diffusion model for trajectory
+sampling, incorporating techniques such as classiﬁer-free
+guidance and image inpainting to achieve guided sampling.
+Subsequently, numerous works have applied diffusion mod-
+els to various robotic tasks, including stationary manipula-
+tion [1, 53], mobile manipulation [47], autonomous nav-
+
+12039
+
+=== NATIVE TEXT ORDER ===
+
+Sampled Noises
+Denoised Trajs
+Camera Input
+Transfuser
+GT Traj
+Confidence Score
+p=0
+p=1
+t=0s
+t=4s
+Top-1 Scoring Traj
+t=0s
+t=4s
+Top-10 Scoring Traj
+TransfuserDP
+DiffusionDrive
+20 steps
+2 steps
+Mode Collapse
+Diverse Modes
+(a) Top-1’s going straight and diverse top-10’s lane changing.
+Sampled Noises
+Denoised Trajs
+Camera Input
+Transfuser
+GT Traj
+Confidence Score
+p=0
+p=1
+t=0s
+t=4s
+Top-1 Scoring Traj
+t=0s
+t=4s
+Top-10 Scoring Traj
+20 steps
+2 steps
+TransfuserDP
+DiffusionDrive
+Mode Collapse
+Diverse Modes
+(b) Top-1’s turning left and diverse top-10’s lane changing.
+Figure 2. Qualitative comparison of Transfuser, TransfuserDP and DiffusionDrive on challenging scenes of NAVSIM navtest split.
+With the same inputs from front cameras and LiDAR, DiffusionDrive achieves the highest planning quality of top-1 scoring trajectory as
+illustrated in Tab. 2. We render the highlighted diverse trajectories predicted by DiffusionDrive in the front view. (a) and (b) shows that
+the top-1 scoring trajectory of DiffusionDrive closely matches the ground truth for both going straight and turning left. Additionally,
+DiffusionDrive’s top-10 scoring trajectory demonstrates high-quality lane changing—an ability not observed in multi-mode TransfuserDP
+and impossible for Transfuser.
+Diffusion model for trafﬁc simulation. Driving diffusion
+policy has been explored in the trafﬁc simulation by lever-
+aging only abstract perception groundtruth [9, 18, 21, 44].
+MotionDiffuser [21] and CTG [60] are pioneering applica-
+tions of diffusion models for multi-agent motion prediction,
+using a conditional diffusion model to sample target trajec-
+tories from Gaussian noise. CTG++ [59] further incorpo-
+rates a large language model (LLM) for language-driven
+guidance, improving usability and enabling realistic trafﬁc
+simulations. Diffusion-ES [48] replaces reward-gradient-
+guided denoising with evolutionary search. Moving beyond
+diffusion models limited to trafﬁc simulation with percep-
+tion groundtruth, our approach unlocks the potential of dif-
+fusion models for real-time, end-to-end autonomous driving
+through our proposed truncated diffusion policy and efﬁ-
+cient diffusion decoder.
+Diffusion model for robotic policy learning. Diffusion
+policy [7] demonstrates the great potential in robotic pol-
+icy learning, effectively capturing multi-mode action distri-
+butions and high-dimensional action spaces. Diffuser [19]
+proposes an unconditional diffusion model for trajectory
+sampling, incorporating techniques such as classiﬁer-free
+guidance and image inpainting to achieve guided sampling.
+Subsequently, numerous works have applied diffusion mod-
+els to various robotic tasks, including stationary manipula-
+tion [1, 53], mobile manipulation [47], autonomous nav-
+12039

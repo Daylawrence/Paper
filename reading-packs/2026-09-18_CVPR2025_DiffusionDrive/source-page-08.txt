@@ -1,0 +1,356 @@
+PAGE 8: COLUMN-AWARE BLOCK EXTRACTION (VERIFY FORMULAS AND TWO-COLUMN ORDER AGAINST PDF)
+
+Method
+Input
+Img. Backbone
+L2 (m) ↓
+Collision Rate (%) ↓
+1s
+2s
+3s
+Avg.
+1s
+2s
+3s
+Avg.
+FPS ↑
+
+ST-P3 [15]
+Camera
+EffNet-b4 [40]
+1.33
+2.11
+2.90
+2.11
+0.23
+0.62
+1.27
+0.71
+1.6
+UniAD [16]
+Camera
+ResNet-101 [13]
+0.45
+0.70
+1.04
+0.73
+0.62
+0.58
+0.63
+0.61
+1.8
+OccNet [41]
+Camera
+ResNet-50 [13]
+1.29
+2.13
+2.99
+2.14
+0.21
+0.59
+1.37
+0.72
+2.6
+VAD [20]
+Camera
+ResNet-50 [13]
+0.41
+0.70
+1.05
+0.72
+0.07
+0.17
+0.41
+0.22
+4.5
+SparseDrive [39]
+Camera
+ResNet-50 [13]
+0.29
+0.58
+0.96
+0.61
+0.01
+0.05
+0.18
+0.08
+9.0
+
+DiffusionDrive (Ours)
+Camera
+ResNet-50 [13]
+0.27
+0.54
+0.90
+0.57
+0.03
+0.05
+0.16
+0.08
+8.2
+
+Table 7. Comparison on nuScenes dataset with open-loop metrics. FPS is measured on a single NVIDIA 4090 GPU following the
+recipe of SparseDrive [39]. Metric calculation follows ST-P3 [15].
+
+sity by 59%. By further incorporating the proposed diffu-
+sion decoder, the ﬁnal model, DiffusionDrive, reaches 88.1
+PDMS and 74% mode diversity score D. Compared to the
+TransfuserDP, DiffusionDrive shows improvements in 3.5
+PDMS and 64% mode diversity, and a 10× reduction in
+denoising steps, resulting in a 6× speedup in FPS. This en-
+ables real-time, high-quality, multi-mode planning.
+
+4.5. Ablation Study
+
+Effect of designs in diffusion decoder. Tab. 3 shows the
+effectiveness of our design choices in the diffusion decoder.
+ID-1 is the TransfuserTD in the Tab. 2. By comapring ID-6
+and ID-1, we can see that the proposed diffusion decoder
+reduce the 39% parameters and signiﬁcantly improves the
+planning quality by 2.4 PDMS. ID-2 shows severe perfor-
+mance degeneration due to the lack of rich and hierarchical
+interaction with the environment. By comparing ID-2 and
+ID-3, we show that spatial cross-attention is vital for accu-
+rate planning. ID-5 shows that the proposed cascade mech-
+anism is effective and can further improve the performance.
+Denoising step number. Tab. 4 shows that due to a rea-
+sonable start point, DiffusionDrive achieves good planning
+quality even with only 1 step, and further denoising steps
+offer quality improvement and inference ﬂexibility for com-
+plex environments.
+Cascade stages. Tab. 5 ablates the impact of cascade stage
+number. Increasing the stage number can improve the plan-
+ning quality but saturate at the 4 stages and cost more pa-
+rameters and inference time at each step.
+Number of sampled noises Ninfer. As stated in Sec. 3.3,
+DiffusionDrive can generate varied trajectories by simply
+sampling a variable number of noises from anchored Gaus-
+sian distribution. Tab. 6 shows that 10 sampled noises can
+already achieve a decent planning quality.
+By sampling
+more noises, DiffusionDrive can cover potential planning
+action space and lead to improved planning quality.
+
+4.6. Qualitative Comparison
+
+Since the PDMS planning metric calculates based on the
+top-1 scoring trajectory and our proposed D score evaluates
+mode diversity, these metrics alone cannot fully capture the
+
+quality of diverse trajectories. To further validate the qual-
+ity of multi-mode trajectories, we visualize the planning
+results of Transfuser, TransfuserDP and DiffusionDrive on
+challenging scenarios of NAVSIM navtest split in Fig. 2.
+The results indicate that the multi-mode trajectories gener-
+ated by DiffusionDrive are not only diverse but also of high
+quality. In Fig. 2a, the top-1 scoring trajectory generated
+by DiffusionDrive closely resembles the ground-truth tra-
+jectory, while the highlighted top-10 scoring trajectory sur-
+prisingly tries to perform high-quality lane changing. In
+Fig. 2b, the highlighted top-10 scoring trajectory also per-
+forms a lane change, and a neighboring low-scoring trajec-
+tory further interacts with surrounding agents to effectively
+avoid collisions.
+
+4.7. Quantitative Comparison on nuScenes dataset
+
+The nuScenes dataset is previously popular benchmark for
+end-to-end planning. Since the major scenarios of nuScenes
+are simple and trivial situations, we only perform compar-
+ison in Tab. 7. We implement DiffusionDrive on top of
+SparseDrive [39] following its training and inference recipe
+using open-loop metrics proposed in ST-P3 [15]. We stack
+2 cascade diffusion decoder layers and apply the truncated
+diffusion policy with 18 clustered anchors.
+
+As shown in Tab. 7, DiffusionDrive reduces the average
+L2 error of SparseDrive by 0.04m, achieving the lowest L2
+error and average collision rate. While DiffusionDrive is
+also efﬁcient and runs 1.8× faster than VAD with 20.8%
+lower L2 error and 63.6% lower collision rate.
+
+5. Conclusion
+
+In this work, we propose a novel generative driving
+decision-making model, DiffusionDrive, for end-to-end au-
+tonomous driving by incorporating the proposed truncated
+diffusion policy and efﬁcient cascade diffusion decoder.
+DiffusionDrive can denoise a variable number of samples
+from an anchored Gaussian distribution to generate diverse
+planning trajectories at real-time speeds. Comprehensive
+experiments and qualitative comparisons validate the supe-
+riority of DiffusionDrive in planning quality, running efﬁ-
+ciency, and mode diversity.
+
+12044
+
+=== NATIVE TEXT ORDER ===
+
+Method
+Input
+Img. Backbone
+L2 (m) ↓
+Collision Rate (%) ↓
+1s
+2s
+3s
+Avg.
+1s
+2s
+3s
+Avg.
+FPS ↑
+ST-P3 [15]
+Camera
+EffNet-b4 [40]
+1.33
+2.11
+2.90
+2.11
+0.23
+0.62
+1.27
+0.71
+1.6
+UniAD [16]
+Camera
+ResNet-101 [13]
+0.45
+0.70
+1.04
+0.73
+0.62
+0.58
+0.63
+0.61
+1.8
+OccNet [41]
+Camera
+ResNet-50 [13]
+1.29
+2.13
+2.99
+2.14
+0.21
+0.59
+1.37
+0.72
+2.6
+VAD [20]
+Camera
+ResNet-50 [13]
+0.41
+0.70
+1.05
+0.72
+0.07
+0.17
+0.41
+0.22
+4.5
+SparseDrive [39]
+Camera
+ResNet-50 [13]
+0.29
+0.58
+0.96
+0.61
+0.01
+0.05
+0.18
+0.08
+9.0
+DiffusionDrive (Ours)
+Camera
+ResNet-50 [13]
+0.27
+0.54
+0.90
+0.57
+0.03
+0.05
+0.16
+0.08
+8.2
+Table 7. Comparison on nuScenes dataset with open-loop metrics. FPS is measured on a single NVIDIA 4090 GPU following the
+recipe of SparseDrive [39]. Metric calculation follows ST-P3 [15].
+sity by 59%. By further incorporating the proposed diffu-
+sion decoder, the ﬁnal model, DiffusionDrive, reaches 88.1
+PDMS and 74% mode diversity score D. Compared to the
+TransfuserDP, DiffusionDrive shows improvements in 3.5
+PDMS and 64% mode diversity, and a 10× reduction in
+denoising steps, resulting in a 6× speedup in FPS. This en-
+ables real-time, high-quality, multi-mode planning.
+4.5. Ablation Study
+Effect of designs in diffusion decoder. Tab. 3 shows the
+effectiveness of our design choices in the diffusion decoder.
+ID-1 is the TransfuserTD in the Tab. 2. By comapring ID-6
+and ID-1, we can see that the proposed diffusion decoder
+reduce the 39% parameters and signiﬁcantly improves the
+planning quality by 2.4 PDMS. ID-2 shows severe perfor-
+mance degeneration due to the lack of rich and hierarchical
+interaction with the environment. By comparing ID-2 and
+ID-3, we show that spatial cross-attention is vital for accu-
+rate planning. ID-5 shows that the proposed cascade mech-
+anism is effective and can further improve the performance.
+Denoising step number. Tab. 4 shows that due to a rea-
+sonable start point, DiffusionDrive achieves good planning
+quality even with only 1 step, and further denoising steps
+offer quality improvement and inference ﬂexibility for com-
+plex environments.
+Cascade stages. Tab. 5 ablates the impact of cascade stage
+number. Increasing the stage number can improve the plan-
+ning quality but saturate at the 4 stages and cost more pa-
+rameters and inference time at each step.
+Number of sampled noises Ninfer. As stated in Sec. 3.3,
+DiffusionDrive can generate varied trajectories by simply
+sampling a variable number of noises from anchored Gaus-
+sian distribution. Tab. 6 shows that 10 sampled noises can
+already achieve a decent planning quality.
+By sampling
+more noises, DiffusionDrive can cover potential planning
+action space and lead to improved planning quality.
+4.6. Qualitative Comparison
+Since the PDMS planning metric calculates based on the
+top-1 scoring trajectory and our proposed D score evaluates
+mode diversity, these metrics alone cannot fully capture the
+quality of diverse trajectories. To further validate the qual-
+ity of multi-mode trajectories, we visualize the planning
+results of Transfuser, TransfuserDP and DiffusionDrive on
+challenging scenarios of NAVSIM navtest split in Fig. 2.
+The results indicate that the multi-mode trajectories gener-
+ated by DiffusionDrive are not only diverse but also of high
+quality. In Fig. 2a, the top-1 scoring trajectory generated
+by DiffusionDrive closely resembles the ground-truth tra-
+jectory, while the highlighted top-10 scoring trajectory sur-
+prisingly tries to perform high-quality lane changing. In
+Fig. 2b, the highlighted top-10 scoring trajectory also per-
+forms a lane change, and a neighboring low-scoring trajec-
+tory further interacts with surrounding agents to effectively
+avoid collisions.
+4.7. Quantitative Comparison on nuScenes dataset
+The nuScenes dataset is previously popular benchmark for
+end-to-end planning. Since the major scenarios of nuScenes
+are simple and trivial situations, we only perform compar-
+ison in Tab. 7. We implement DiffusionDrive on top of
+SparseDrive [39] following its training and inference recipe
+using open-loop metrics proposed in ST-P3 [15]. We stack
+2 cascade diffusion decoder layers and apply the truncated
+diffusion policy with 18 clustered anchors.
+As shown in Tab. 7, DiffusionDrive reduces the average
+L2 error of SparseDrive by 0.04m, achieving the lowest L2
+error and average collision rate. While DiffusionDrive is
+also efﬁcient and runs 1.8× faster than VAD with 20.8%
+lower L2 error and 63.6% lower collision rate.
+5. Conclusion
+In this work, we propose a novel generative driving
+decision-making model, DiffusionDrive, for end-to-end au-
+tonomous driving by incorporating the proposed truncated
+diffusion policy and efﬁcient cascade diffusion decoder.
+DiffusionDrive can denoise a variable number of samples
+from an anchored Gaussian distribution to generate diverse
+planning trajectories at real-time speeds. Comprehensive
+experiments and qualitative comparisons validate the supe-
+riority of DiffusionDrive in planning quality, running efﬁ-
+ciency, and mode diversity.
+12044

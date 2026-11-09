@@ -1,0 +1,53 @@
+PAGE 11: COLUMN-AWARE BLOCK EXTRACTION (VERIFY FORMULAS AND TWO-COLUMN ORDER AGAINST PDF)
+
+Eleventh International Conference on Learning Representa-
+tions, 2023. 4
+[58] Wenzhao Zheng, Ruiqi Song, Xianda Guo, Chenming
+
+Zhang, and Long Chen. Genad: Generative end-to-end au-
+tonomous driving. In ECCV, 2024. 2
+[59] Ziyuan Zhong, Davis Rempe, Yuxiao Chen, Boris Ivanovic,
+
+Yulong Cao, Danfei Xu, Marco Pavone, and Baishakhi Ray.
+Language-guided trafﬁc simulation via scene-level diffusion.
+In CoRL, 2023. 3
+[60] Ziyuan Zhong, Davis Rempe, Danfei Xu, Yuxiao Chen,
+
+Sushant Veer, Tong Che, Baishakhi Ray, and Marco Pavone.
+Guided conditional diffusion for controllable trafﬁc simula-
+tion. In ICRA, 2023. 3
+[61] Lianghui Zhu, Zilong Huang, Bencheng Liao, Jun Hao Liew,
+
+Hanshu Yan, Jiashi Feng, and Xinggang Wang. Dig: Scal-
+able and efﬁcient diffusion models with gated linear atten-
+tion. arXiv preprint arXiv:2405.18428, 2024. 4
+[62] Xizhou Zhu, Weijie Su, Lewei Lu, Bin Li, Xiaogang Wang,
+
+and Jifeng Dai. Deformable detr: Deformable transformers
+for end-to-end object detection. In ICLR, 2021. 2, 6
+
+12047
+
+=== NATIVE TEXT ORDER ===
+
+Eleventh International Conference on Learning Representa-
+tions, 2023. 4
+[58] Wenzhao Zheng, Ruiqi Song, Xianda Guo, Chenming
+Zhang, and Long Chen. Genad: Generative end-to-end au-
+tonomous driving. In ECCV, 2024. 2
+[59] Ziyuan Zhong, Davis Rempe, Yuxiao Chen, Boris Ivanovic,
+Yulong Cao, Danfei Xu, Marco Pavone, and Baishakhi Ray.
+Language-guided trafﬁc simulation via scene-level diffusion.
+In CoRL, 2023. 3
+[60] Ziyuan Zhong, Davis Rempe, Danfei Xu, Yuxiao Chen,
+Sushant Veer, Tong Che, Baishakhi Ray, and Marco Pavone.
+Guided conditional diffusion for controllable trafﬁc simula-
+tion. In ICRA, 2023. 3
+[61] Lianghui Zhu, Zilong Huang, Bencheng Liao, Jun Hao Liew,
+Hanshu Yan, Jiashi Feng, and Xinggang Wang. Dig: Scal-
+able and efﬁcient diffusion models with gated linear atten-
+tion. arXiv preprint arXiv:2405.18428, 2024. 4
+[62] Xizhou Zhu, Weijie Su, Lewei Lu, Bin Li, Xiaogang Wang,
+and Jifeng Dai. Deformable detr: Deformable transformers
+for end-to-end object detection. In ICLR, 2021. 2, 6
+12047

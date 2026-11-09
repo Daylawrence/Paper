@@ -1,0 +1,287 @@
+PAGE 9: COLUMN-AWARE BLOCK EXTRACTION (VERIFY FORMULAS AND TWO-COLUMN ORDER AGAINST PDF)
+
+Acknowledgement
+
+This work was partially supported by the National
+Natural Science Foundation of China (NSFC) under
+Grant No.
+62276108.
+We would like to acknowl-
+edge Tianheng Cheng for helpful feedback on the draft.
+
+References
+
+[1] Anurag Ajay, Yilun Du, Abhi Gupta, Joshua B. Tenenbaum,
+
+Tommi S. Jaakkola, and Pulkit Agrawal. Is conditional gen-
+erative modeling all you need for decision making? In ICLR,
+2023. 3
+[2] Holger Caesar, Varun Bankiti, Alex H Lang, Sourabh Vora,
+
+Venice Erin Liong, Qiang Xu, Anush Krishnan, Yu Pan, Gi-
+ancarlo Baldan, and Oscar Beijbom.
+nuscenes: A multi-
+modal dataset for autonomous driving. In CVPR, 2020. 2
+[3] Shaoyu Chen, Tianheng Cheng, Xinggang Wang, Wenming
+
+Meng, Qian Zhang, and Wenyu Liu. Efﬁcient and robust
+2d-to-bev representation learning via geometry-guided ker-
+nel transformer. CoRR, abs/2206.04584, 2022. 2
+[4] Shaoyu Chen, Bo Jiang, Hao Gao, Bencheng Liao, Qing
+
+Xu, Qian Zhang, Chang Huang, Wenyu Liu, and Xinggang
+Wang. Vadv2: End-to-end vectorized autonomous driving
+via probabilistic planning. arXiv preprint arXiv:2402.13243,
+2024. 1, 2, 6
+[5] Shaoyu Chen, Xinggang Wang, Tianheng Cheng, Qian
+
+Zhang, Chang Huang, and Wenyu Liu.
+Polardetr: Polar
+parametrization for vision-based surround-view 3d detec-
+tion. Image and Vision Computing, 156:105438, 2025. 1
+[6] Zhili Chen, Maosheng Ye, Shuangjie Xu, Tongyi Cao, and
+
+Qifeng Chen. Ppad: Iterative interactions of prediction and
+planning for end-to-end autonomous driving.
+In ECCV,
+2024. 2
+[7] Cheng Chi, Zhenjia Xu, Siyuan Feng, Eric Cousineau, Yilun
+
+Du, Benjamin Burchﬁel, Russ Tedrake, and Shuran Song.
+Diffusion policy: Visuomotor policy learning via action dif-
+fusion. In RSS, 2023. 1, 3, 5, 6
+[8] Kashyap Chitta, Aditya Prakash, Bernhard Jaeger, Zehao Yu,
+
+Katrin Renz, and Andreas Geiger.
+Transfuser: Imitation
+with transformer-based sensor fusion for autonomous driv-
+ing. TPAMI, 2022. 1, 2, 5, 6
+[9] Younwoo Choi, Ray Coden Mercurius, Soheil Mohamad Al-
+
+izadeh Shabestary, and Amir Rasouli.
+Dice: Diverse dif-
+fusion model with scoring for trajectory prediction. In IV,
+2024. 3
+[10] OpenScene Contributors.
+Openscene: The largest up-to-
+date 3d occupancy prediction benchmark in autonomous
+driving.
+https://github.com/OpenDriveLab/
+OpenScene, 2023. 6
+[11] Daniel Dauner, Marcel Hallgarten, Tianyu Li, Xinshuo
+
+Weng, Zhiyu Huang, Zetong Yang, Hongyang Li, Igor
+Gilitschenski, Boris Ivanovic, Marco Pavone, Andreas
+Geiger, and Kashyap Chitta.
+Navsim: Data-driven non-
+reactive autonomous vehicle simulation and benchmarking.
+In NeurIPS, 2024. 2, 6, 7
+
+[12] Xunjiang Gu, Guanyu Song, Igor Gilitschenski, Marco
+
+Pavone, and Boris Ivanovic. Producing and leveraging online
+map uncertainty in trajectory prediction. In CVPR, 2024. 2
+[13] Kaiming He, Xiangyu Zhang, Shaoqing Ren, and Jian Sun.
+
+Deep residual learning for image recognition.
+In CVPR,
+2016. 6, 7, 8
+[14] Jonathan Ho, Ajay Jain, and Pieter Abbeel. Denoising dif-
+
+fusion probabilistic models. Advances in neural information
+processing systems, 33:6840–6851, 2020. 4
+[15] Shengchao Hu, Li Chen, Penghao Wu, Hongyang Li, Junchi
+
+Yan, and Dacheng Tao. St-p3: End-to-end vision-based au-
+tonomous driving via spatial-temporal feature learning. In
+ECCV, 2022. 8
+[16] Yihan Hu, Jiazhi Yang, Li Chen, Keyu Li, Chonghao Sima,
+
+Xizhou Zhu, Siqi Chai, Senyao Du, Tianwei Lin, Wenhai
+Wang, et al.
+Planning-oriented autonomous driving.
+In
+CVPR, 2023. 1, 2, 6, 8
+[17] Junjie Huang, Guan Huang, Zheng Zhu, Yun Ye, and Dalong
+
+Du. Bevdet: High-performance multi-camera 3d object de-
+tection in bird-eye-view. arXiv preprint arXiv:2112.11790,
+2021. 1
+[18] Zhiyu Huang, Zixu Zhang, Ameya Vaidya, Yuxiao Chen,
+
+Chen Lv, and Jaime Fern´andez Fisac.
+Versatile scene-
+consistent trafﬁc scenario generation as optimization with
+diffusion. arXiv preprint arXiv:2404.02524, 2024. 3
+[19] Michael Janner, Yilun Du, Joshua B. Tenenbaum, and Sergey
+
+Levine. Planning with diffusion for ﬂexible behavior synthe-
+sis. In ICLR, 2022. 1, 3
+[20] Bo Jiang, Shaoyu Chen, Qing Xu, Bencheng Liao, Jiajie
+
+Chen, Helong Zhou, Qian Zhang, Wenyu Liu, Chang Huang,
+and Xinggang Wang. Vad: Vectorized scene representation
+for efﬁcient autonomous driving. In ICCV, 2023. 1, 2, 6, 8
+[21] Chiyu Jiang, Andre Cornman, Cheolho Park, Benjamin
+
+Sapp, Yin Zhou, Dragomir Anguelov, et al. Motiondiffuser:
+Controllable multi-agent motion prediction using diffusion.
+In CVPR, 2023. 3
+[22] Napat Karnchanachari, Dimitris Geromichalos, Kok Seang
+
+Tan, Nanxiang Li, Christopher Eriksen, Shakiba Yaghoubi,
+Noushin Mehdipour, Gianmarco Bernasconi, Whye Kit
+Fong, Yiluan Guo, et al. Towards learning-based planning:
+The nuplan benchmark for real-world autonomous driving.
+In ICRA, 2024. 6
+[23] Yingyan Li, Lue Fan, Jiawei He, Yuqi Wang, Yuntao Chen,
+
+Zhaoxiang Zhang, and Tieniu Tan. Enhancing end-to-end
+autonomous driving with latent world model. arXiv preprint
+arXiv:2406.08481, 2024. 2
+[24] Zhiqi Li, Wenhai Wang, Hongyang Li, Enze Xie, Chong-
+
+hao Sima, Tong Lu, Yu Qiao, and Jifeng Dai. Bevformer:
+Learning bird’s-eye-view representation from multi-camera
+images via spatiotemporal transformers. In ECCV, 2022. 1
+[25] Zhenxin Li, Kailin Li, Shihao Wang, Shiyi Lan, Zhiding Yu,
+
+Yishen Ji, Zhiqi Li, Ziyue Zhu, Jan Kautz, Zuxuan Wu, et al.
+Hydra-mdp: End-to-end multimodal planning with multi-
+target hydra-distillation. arXiv preprint arXiv:2406.06978,
+2024. 1, 2, 6, 7
+[26] Zhiqi Li, Zhiding Yu, Shiyi Lan, Jiahan Li, Jan Kautz, Tong
+
+Lu, and Jose M Alvarez. Is ego status all you need for open-
+loop end-to-end autonomous driving? In CVPR, 2024. 2
+
+12045
+
+=== NATIVE TEXT ORDER ===
+
+Acknowledgement
+This work was partially supported by the National
+Natural Science Foundation of China (NSFC) under
+Grant No.
+62276108.
+We would like to acknowl-
+edge Tianheng Cheng for helpful feedback on the draft.
+References
+[1] Anurag Ajay, Yilun Du, Abhi Gupta, Joshua B. Tenenbaum,
+Tommi S. Jaakkola, and Pulkit Agrawal. Is conditional gen-
+erative modeling all you need for decision making? In ICLR,
+2023. 3
+[2] Holger Caesar, Varun Bankiti, Alex H Lang, Sourabh Vora,
+Venice Erin Liong, Qiang Xu, Anush Krishnan, Yu Pan, Gi-
+ancarlo Baldan, and Oscar Beijbom.
+nuscenes: A multi-
+modal dataset for autonomous driving. In CVPR, 2020. 2
+[3] Shaoyu Chen, Tianheng Cheng, Xinggang Wang, Wenming
+Meng, Qian Zhang, and Wenyu Liu. Efﬁcient and robust
+2d-to-bev representation learning via geometry-guided ker-
+nel transformer. CoRR, abs/2206.04584, 2022. 2
+[4] Shaoyu Chen, Bo Jiang, Hao Gao, Bencheng Liao, Qing
+Xu, Qian Zhang, Chang Huang, Wenyu Liu, and Xinggang
+Wang. Vadv2: End-to-end vectorized autonomous driving
+via probabilistic planning. arXiv preprint arXiv:2402.13243,
+2024. 1, 2, 6
+[5] Shaoyu Chen, Xinggang Wang, Tianheng Cheng, Qian
+Zhang, Chang Huang, and Wenyu Liu.
+Polardetr: Polar
+parametrization for vision-based surround-view 3d detec-
+tion. Image and Vision Computing, 156:105438, 2025. 1
+[6] Zhili Chen, Maosheng Ye, Shuangjie Xu, Tongyi Cao, and
+Qifeng Chen. Ppad: Iterative interactions of prediction and
+planning for end-to-end autonomous driving.
+In ECCV,
+2024. 2
+[7] Cheng Chi, Zhenjia Xu, Siyuan Feng, Eric Cousineau, Yilun
+Du, Benjamin Burchﬁel, Russ Tedrake, and Shuran Song.
+Diffusion policy: Visuomotor policy learning via action dif-
+fusion. In RSS, 2023. 1, 3, 5, 6
+[8] Kashyap Chitta, Aditya Prakash, Bernhard Jaeger, Zehao Yu,
+Katrin Renz, and Andreas Geiger.
+Transfuser: Imitation
+with transformer-based sensor fusion for autonomous driv-
+ing. TPAMI, 2022. 1, 2, 5, 6
+[9] Younwoo Choi, Ray Coden Mercurius, Soheil Mohamad Al-
+izadeh Shabestary, and Amir Rasouli.
+Dice: Diverse dif-
+fusion model with scoring for trajectory prediction. In IV,
+2024. 3
+[10] OpenScene Contributors.
+Openscene: The largest up-to-
+date 3d occupancy prediction benchmark in autonomous
+driving.
+https://github.com/OpenDriveLab/
+OpenScene, 2023. 6
+[11] Daniel Dauner, Marcel Hallgarten, Tianyu Li, Xinshuo
+Weng, Zhiyu Huang, Zetong Yang, Hongyang Li, Igor
+Gilitschenski, Boris Ivanovic, Marco Pavone, Andreas
+Geiger, and Kashyap Chitta.
+Navsim: Data-driven non-
+reactive autonomous vehicle simulation and benchmarking.
+In NeurIPS, 2024. 2, 6, 7
+[12] Xunjiang Gu, Guanyu Song, Igor Gilitschenski, Marco
+Pavone, and Boris Ivanovic. Producing and leveraging online
+map uncertainty in trajectory prediction. In CVPR, 2024. 2
+[13] Kaiming He, Xiangyu Zhang, Shaoqing Ren, and Jian Sun.
+Deep residual learning for image recognition.
+In CVPR,
+2016. 6, 7, 8
+[14] Jonathan Ho, Ajay Jain, and Pieter Abbeel. Denoising dif-
+fusion probabilistic models. Advances in neural information
+processing systems, 33:6840–6851, 2020. 4
+[15] Shengchao Hu, Li Chen, Penghao Wu, Hongyang Li, Junchi
+Yan, and Dacheng Tao. St-p3: End-to-end vision-based au-
+tonomous driving via spatial-temporal feature learning. In
+ECCV, 2022. 8
+[16] Yihan Hu, Jiazhi Yang, Li Chen, Keyu Li, Chonghao Sima,
+Xizhou Zhu, Siqi Chai, Senyao Du, Tianwei Lin, Wenhai
+Wang, et al.
+Planning-oriented autonomous driving.
+In
+CVPR, 2023. 1, 2, 6, 8
+[17] Junjie Huang, Guan Huang, Zheng Zhu, Yun Ye, and Dalong
+Du. Bevdet: High-performance multi-camera 3d object de-
+tection in bird-eye-view. arXiv preprint arXiv:2112.11790,
+2021. 1
+[18] Zhiyu Huang, Zixu Zhang, Ameya Vaidya, Yuxiao Chen,
+Chen Lv, and Jaime Fern´andez Fisac.
+Versatile scene-
+consistent trafﬁc scenario generation as optimization with
+diffusion. arXiv preprint arXiv:2404.02524, 2024. 3
+[19] Michael Janner, Yilun Du, Joshua B. Tenenbaum, and Sergey
+Levine. Planning with diffusion for ﬂexible behavior synthe-
+sis. In ICLR, 2022. 1, 3
+[20] Bo Jiang, Shaoyu Chen, Qing Xu, Bencheng Liao, Jiajie
+Chen, Helong Zhou, Qian Zhang, Wenyu Liu, Chang Huang,
+and Xinggang Wang. Vad: Vectorized scene representation
+for efﬁcient autonomous driving. In ICCV, 2023. 1, 2, 6, 8
+[21] Chiyu Jiang, Andre Cornman, Cheolho Park, Benjamin
+Sapp, Yin Zhou, Dragomir Anguelov, et al. Motiondiffuser:
+Controllable multi-agent motion prediction using diffusion.
+In CVPR, 2023. 3
+[22] Napat Karnchanachari, Dimitris Geromichalos, Kok Seang
+Tan, Nanxiang Li, Christopher Eriksen, Shakiba Yaghoubi,
+Noushin Mehdipour, Gianmarco Bernasconi, Whye Kit
+Fong, Yiluan Guo, et al. Towards learning-based planning:
+The nuplan benchmark for real-world autonomous driving.
+In ICRA, 2024. 6
+[23] Yingyan Li, Lue Fan, Jiawei He, Yuqi Wang, Yuntao Chen,
+Zhaoxiang Zhang, and Tieniu Tan. Enhancing end-to-end
+autonomous driving with latent world model. arXiv preprint
+arXiv:2406.08481, 2024. 2
+[24] Zhiqi Li, Wenhai Wang, Hongyang Li, Enze Xie, Chong-
+hao Sima, Tong Lu, Yu Qiao, and Jifeng Dai. Bevformer:
+Learning bird’s-eye-view representation from multi-camera
+images via spatiotemporal transformers. In ECCV, 2022. 1
+[25] Zhenxin Li, Kailin Li, Shihao Wang, Shiyi Lan, Zhiding Yu,
+Yishen Ji, Zhiqi Li, Ziyue Zhu, Jan Kautz, Zuxuan Wu, et al.
+Hydra-mdp: End-to-end multimodal planning with multi-
+target hydra-distillation. arXiv preprint arXiv:2406.06978,
+2024. 1, 2, 6, 7
+[26] Zhiqi Li, Zhiding Yu, Shiyi Lan, Jiahan Li, Jan Kautz, Tong
+Lu, and Jose M Alvarez. Is ego status all you need for open-
+loop end-to-end autonomous driving? In CVPR, 2024. 2
+12045

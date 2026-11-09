@@ -1,0 +1,452 @@
+PAGE 6: COLUMN-AWARE BLOCK EXTRACTION (VERIFY FORMULAS AND TWO-COLUMN ORDER AGAINST PDF)
+
+Method
+Input
+Img. Backbone
+Anchor
+NC ↑
+DAC ↑
+TTC ↑
+Comf. ↑
+EP ↑
+PDMS ↑
+
+UniAD [16]
+Camera
+ResNet-34 [13]
+0
+97.8
+91.9
+92.9
+100
+78.8
+83.4
+PARA-Drive [45]
+Camera
+ResNet-34 [13]
+0
+97.9
+92.4
+93.0
+99.8
+79.3
+84.0
+LTF [8]
+Camera
+ResNet-34 [13]
+0
+97.4
+92.8
+92.4
+100
+79.0
+83.8
+Transfuser [8]
+C & L
+ResNet-34 [13]
+0
+97.7
+92.8
+92.8
+100
+79.2
+84.0
+DRAMA [52]
+C & L
+ResNet-34 [13]
+0
+98.0
+93.1
+94.8
+100
+80.1
+85.5
+VADv2-V8192 [4]
+C & L
+ResNet-34 [13]
+8192
+97.2
+89.1
+91.6
+100
+76.0
+80.9
+Hydra-MDP-V8192 [25]
+C & L
+ResNet-34 [13]
+8192
+97.9
+91.7
+92.9
+100
+77.6
+83.0
+Hydra-MDP-V8192-W-EP [25]
+C & L
+ResNet-34 [13]
+8192
+98.3
+96.0
+94.6
+100
+78.7
+86.5
+
+DiffusionDrive (Ours)
+C & L
+ResNet-34 [13]
+20
+98.2
+96.2
+94.7
+100
+82.2
+88.1
+
+Table 1. Comparison on planning-oriented NAVSIM navtest split with closed-loop metrics. “C & L” denotes the use of both
+camera and LiDAR as sensor inputs. “V8192” denotes 8192 anchors. “Hydra-MDP-V8192-W-EP” is a variant of Hydra-MDP [25], which is
+further trained to ﬁt the EP evaluation metric with additional supervision from the rule-based evaluator and uses weighted conﬁdence post-
+processing. DiffusionDrive simply learns from human demonstrations and infers without post-processing. The best and the second best
+results are denoted by bold and underline.
+
+Method
+NC↑DAC↑TTC↑Comf.↑EP↑
+Plan Module Time
+D ↑
+Para.↓FPS↑
+PDMS↑Arch. Step Time↓Steps ↓
+Total ↓
+
+Transfuser
+97.7
+92.8
+92.8
+100
+79.2 84.0
+MLP
+0.2ms
+1
+0.2ms
+0%
+56M
+60
+TransfuserDP
+97.5
+93.7
+92.7
+100
+79.4 84.6+0.6 UNet
+6.5ms
+20 130.0ms 11%
+101M
+7
+TransfuserTD
+97.9
+94.2
+93.9
+100
+80.2 85.7+1.7 UNet
+6.9ms
+2
+13.8ms 70%
+102M
+27
+DiffusionDrive 98.2
+96.2
+94.7
+100
+82.2 88.1+4.1 Dec.
+3.8ms
+2
+7.6ms 74%
+60M
+45
+
+Table 2. Roadmap from Transfuser to DiffusionDrive on NAVSIM navtest split. “TransfuserDP” denotes Transfuser with vanilla
+DDIM diffusion policy [7]. “TransfuserTD” denotes Transfuser with truncated diffusion policy. “Step Time” denotes the runtime of each
+denoising step. “FPS” and runtime are measured on an NVIDIA 4090 GPU. “D” denotes the mode diversity score deﬁned in Eq. (3).
+
+where λ balances the simple L1 reconstruction loss Lrec and
+binary cross-entropy (BCE) classiﬁcation loss.
+Inference. We use a truncated denoising process that starts
+with noisy trajectories sampled from the anchored Gaussian
+distribution and progressively denoises them to ﬁnal predic-
+tions. At each denoising timestep, the estimated trajectories
+from the previous step are passed to the diffusion decoder
+fθ, which predicts classiﬁcation scores {ˆsk}Ninfer
+
+k=1 and co-
+ordinates {ˆτk}Ninfer
+
+k=1 . After obtaining the current timestep’s
+predictions, we apply the DDIM [35] update rule to sample
+trajectories for the next timestep.
+Inference ﬂexibility. A key advantage of our approach lies
+in its inference ﬂexibility. While the model is trained with
+Nanchor trajectories, the inference process can accommo-
+date an arbitrary number of trajectory samples Ninfer, where
+Ninfer can be dynamically adjusted based on computational
+resources or application requirements.
+
+3.4. Architecture
+
+The overall architecture of our proposed method, Diffusion-
+Drive, is illustrated in Fig. 4. DiffusionDrive can integrate
+various existing perception modules used in previous end-
+to-end planners [8, 16, 20, 39] and take different sensor
+inputs. The designed diffusion decoder is tailored for the
+complex and challenging driving application, which has en-
+hanced interactions with the conditional scene context.
+Diffusion decoder. Given the set of sampled noisy trajecto-
+
+ries {ˆτk}Ninfer
+
+k=1 from the anchored Gaussian distribution, we
+begin by applying deformable spatial cross-attention [29,
+42, 62] to interact with Bird’s Eye View (BEV) or Perspec-
+tive View (PV) features based on the trajectory coordinates.
+Subsequently, cross-attention is performed between the tra-
+jectory features and the agent/map queries derived from
+the perception module, followed by a feed-forward network
+(FFN). To encode the diffusion timestep information, we
+utilize a Timestep Modulation layer, which is followed by a
+Multi-Layer Perceptron (MLP) that predicts the conﬁdence
+score and the offset relative to the initial noisy trajectory
+coordinates. The output from this diffusion decoder layer
+serves as the input for the subsequent cascade diffusion de-
+coder layer. DiffusionDrive further reuses the cascade dif-
+fusion decoder to iteratively denoise the trajectory during
+inference, with parameters shared across the different de-
+noising timesteps. The ﬁnal trajectory with the highest con-
+ﬁdence score is selected as the output.
+
+4. Experiment
+
+4.1. Dataset
+
+NAVSIM. The NAVSIM dataset [11] is a real-world
+planning-oriented dataset builds upon OpenScene [10], a
+compact redistribution of nuPlan [22], the largest publicly
+available annotated driving dataset.
+NAVSIM leverages
+eight cameras to achieve a full 360◦FOV, along with a
+
+12042
+
+=== NATIVE TEXT ORDER ===
+
+Method
+Input
+Img. Backbone
+Anchor
+NC ↑
+DAC ↑
+TTC ↑
+Comf. ↑
+EP ↑
+PDMS ↑
+UniAD [16]
+Camera
+ResNet-34 [13]
+0
+97.8
+91.9
+92.9
+100
+78.8
+83.4
+PARA-Drive [45]
+Camera
+ResNet-34 [13]
+0
+97.9
+92.4
+93.0
+99.8
+79.3
+84.0
+LTF [8]
+Camera
+ResNet-34 [13]
+0
+97.4
+92.8
+92.4
+100
+79.0
+83.8
+Transfuser [8]
+C & L
+ResNet-34 [13]
+0
+97.7
+92.8
+92.8
+100
+79.2
+84.0
+DRAMA [52]
+C & L
+ResNet-34 [13]
+0
+98.0
+93.1
+94.8
+100
+80.1
+85.5
+VADv2-V8192 [4]
+C & L
+ResNet-34 [13]
+8192
+97.2
+89.1
+91.6
+100
+76.0
+80.9
+Hydra-MDP-V8192 [25]
+C & L
+ResNet-34 [13]
+8192
+97.9
+91.7
+92.9
+100
+77.6
+83.0
+Hydra-MDP-V8192-W-EP [25]
+C & L
+ResNet-34 [13]
+8192
+98.3
+96.0
+94.6
+100
+78.7
+86.5
+DiffusionDrive (Ours)
+C & L
+ResNet-34 [13]
+20
+98.2
+96.2
+94.7
+100
+82.2
+88.1
+Table 1. Comparison on planning-oriented NAVSIM navtest split with closed-loop metrics. “C & L” denotes the use of both
+camera and LiDAR as sensor inputs. “V8192” denotes 8192 anchors. “Hydra-MDP-V8192-W-EP” is a variant of Hydra-MDP [25], which is
+further trained to ﬁt the EP evaluation metric with additional supervision from the rule-based evaluator and uses weighted conﬁdence post-
+processing. DiffusionDrive simply learns from human demonstrations and infers without post-processing. The best and the second best
+results are denoted by bold and underline.
+Method
+NC↑DAC↑TTC↑Comf.↑EP↑
+Plan Module Time
+D ↑
+Para.↓FPS↑
+PDMS↑Arch. Step Time↓Steps ↓
+Total ↓
+Transfuser
+97.7
+92.8
+92.8
+100
+79.2 84.0
+MLP
+0.2ms
+1
+0.2ms
+0%
+56M
+60
+TransfuserDP
+97.5
+93.7
+92.7
+100
+79.4 84.6+0.6 UNet
+6.5ms
+20 130.0ms 11%
+101M
+7
+TransfuserTD
+97.9
+94.2
+93.9
+100
+80.2 85.7+1.7 UNet
+6.9ms
+2
+13.8ms 70%
+102M
+27
+DiffusionDrive 98.2
+96.2
+94.7
+100
+82.2 88.1+4.1 Dec.
+3.8ms
+2
+7.6ms 74%
+60M
+45
+Table 2. Roadmap from Transfuser to DiffusionDrive on NAVSIM navtest split. “TransfuserDP” denotes Transfuser with vanilla
+DDIM diffusion policy [7]. “TransfuserTD” denotes Transfuser with truncated diffusion policy. “Step Time” denotes the runtime of each
+denoising step. “FPS” and runtime are measured on an NVIDIA 4090 GPU. “D” denotes the mode diversity score deﬁned in Eq. (3).
+where λ balances the simple L1 reconstruction loss Lrec and
+binary cross-entropy (BCE) classiﬁcation loss.
+Inference. We use a truncated denoising process that starts
+with noisy trajectories sampled from the anchored Gaussian
+distribution and progressively denoises them to ﬁnal predic-
+tions. At each denoising timestep, the estimated trajectories
+from the previous step are passed to the diffusion decoder
+fθ, which predicts classiﬁcation scores {ˆsk}Ninfer
+k=1 and co-
+ordinates {ˆτk}Ninfer
+k=1 . After obtaining the current timestep’s
+predictions, we apply the DDIM [35] update rule to sample
+trajectories for the next timestep.
+Inference ﬂexibility. A key advantage of our approach lies
+in its inference ﬂexibility. While the model is trained with
+Nanchor trajectories, the inference process can accommo-
+date an arbitrary number of trajectory samples Ninfer, where
+Ninfer can be dynamically adjusted based on computational
+resources or application requirements.
+3.4. Architecture
+The overall architecture of our proposed method, Diffusion-
+Drive, is illustrated in Fig. 4. DiffusionDrive can integrate
+various existing perception modules used in previous end-
+to-end planners [8, 16, 20, 39] and take different sensor
+inputs. The designed diffusion decoder is tailored for the
+complex and challenging driving application, which has en-
+hanced interactions with the conditional scene context.
+Diffusion decoder. Given the set of sampled noisy trajecto-
+ries {ˆτk}Ninfer
+k=1 from the anchored Gaussian distribution, we
+begin by applying deformable spatial cross-attention [29,
+42, 62] to interact with Bird’s Eye View (BEV) or Perspec-
+tive View (PV) features based on the trajectory coordinates.
+Subsequently, cross-attention is performed between the tra-
+jectory features and the agent/map queries derived from
+the perception module, followed by a feed-forward network
+(FFN). To encode the diffusion timestep information, we
+utilize a Timestep Modulation layer, which is followed by a
+Multi-Layer Perceptron (MLP) that predicts the conﬁdence
+score and the offset relative to the initial noisy trajectory
+coordinates. The output from this diffusion decoder layer
+serves as the input for the subsequent cascade diffusion de-
+coder layer. DiffusionDrive further reuses the cascade dif-
+fusion decoder to iteratively denoise the trajectory during
+inference, with parameters shared across the different de-
+noising timesteps. The ﬁnal trajectory with the highest con-
+ﬁdence score is selected as the output.
+4. Experiment
+4.1. Dataset
+NAVSIM. The NAVSIM dataset [11] is a real-world
+planning-oriented dataset builds upon OpenScene [10], a
+compact redistribution of nuPlan [22], the largest publicly
+available annotated driving dataset.
+NAVSIM leverages
+eight cameras to achieve a full 360◦FOV, along with a
+12042

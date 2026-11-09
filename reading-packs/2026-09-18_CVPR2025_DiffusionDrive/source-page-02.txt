@@ -1,0 +1,236 @@
+PAGE 2: COLUMN-AWARE BLOCK EXTRACTION (VERIFY FORMULAS AND TWO-COLUMN ORDER AGAINST PDF)
+
+tive decision-making policy in the robotics domain, which
+can directly sample multi-mode physically plausible actions
+from a Gaussian distribution via iterative denoising process.
+
+This inspires us to replicate the success of the diffusion
+model in the robotics domain to end-to-end autonomous
+driving.
+We apply the vanilla robotic diffusion policy
+to the well-known single-mode-regression method, Trans-
+fuser [8], by proposing a variant, TransfuserDP, which re-
+places the deterministic MLP regression head with a condi-
+tional diffusion model [34]. Though TransfuserDP improves
+planning performance, two major issues arise: 1) The nu-
+merous 20 denoising steps in the vanilla DDIM diffusion
+policy introduce heavy computational consumption during
+inference as shown in Tab. 2, hindering the real-time ap-
+plication for autonomous driving. 2) The trajectories sam-
+pled from different Gaussian noises severely overlap with
+each other, as illustrated in Fig. 2. This underscores the
+non-trivial challenge of taming the diffusion models for the
+dynamic and open-world trafﬁc scenes.
+
+Unlike the vanilla diffusion policy, which samples ac-
+tions from a random Gaussian noise conditioned on scene
+context, human drivers adhere to established driving pat-
+terns that they dynamically adjust in response to real-time
+trafﬁc conditions. This insight motivates us to embed these
+prior driving patterns into the diffusion policy by partition-
+ing the Gaussian distribution into multiple sub-Gaussian
+distributions centered around prior anchors, referred to as
+anchored Gaussian distribution. It is implemented by trun-
+cating the diffusion schedule to introduce a small portion of
+Gaussian noise around the prior anchors as shown in Fig. 3.
+Thanks to the multi-mode distributional expressivity of the
+diffusion model, the proposed truncated diffusion policy ef-
+fectively covers the potential action space without requiring
+a large set of ﬁxed anchors, as VADv2 does. With more
+reasonable initial noise samples from the anchored Gaus-
+sian distribution, we can truncate the denoising process,
+reducing the required steps from 20 to just 2—a substan-
+tial speedup that satisﬁes the real-time requirements of au-
+tonomous driving.
+
+To enhance the interaction with conditional scene con-
+text, we propose an efﬁcient transformer-based diffusion
+decoder that interacts not only with structured queries from
+the perception module but also with Bird’s Eye View (BEV)
+and perspective view (PV) features through a sparse de-
+formable attention mechanism [3, 62].
+Additionally, we
+introduce a cascade mechanism to iteratively reﬁne the tra-
+jectory reconstruction within the diffusion decoder at each
+denoising step.
+
+With these innovations, we present DiffusionDrive,
+a diffusion model for real-time end-to-end autonomous
+driving.
+We benchmark our method on the planning-
+oriented NAVSIM dataset [11] using non-reactive simula-
+tion and closed-loop evaluations. Without bells and whis-
+
+tles, DiffusionDrive achieves 88.1 PDMS on NAVSIM
+navtest split with the aligned ResNet-34 backbone, sig-
+niﬁcantly outperforming previous state-of-the-art methods.
+Even compared to the NAVSIM challenge-winning solu-
+tion Hydra-MDP-V8192-W-EP [25], which follows VADv2
+with 8192 anchor trajectories and further incorporates post-
+processing and additional supervision, DiffusionDrive still
+outperforms it by 1.6 PDMS through directly learning
+from human demonstrations and inferring without post-
+processing, while running at real-time speed of 45 FPS on
+an NVIDIA 4090. We further validate the superiority of
+DiffusionDrive on popular nuScenes dataset [2] with open-
+loop evaluations, DiffusionDrive runs 1.8× faster than VAD
+and outperforms it [20] by 20.8% lower L2 error and 63.6%
+lower collision rate with the same ResNet-50 backbone,
+demonstrating state-of-the-art planning performance.
+
+Our contributions can be summarized as follows:
+• We ﬁrstly introduce the diffusion model to the ﬁeld of
+end-to-end autonomous driving and propose a novel trun-
+cated diffusion policy to address the issues of mode col-
+lapse and heavy computational overhead found in direct
+adaptation of vanilla diffusion policy to the trafﬁc scene.
+• We design an efﬁcient transformer-based diffusion de-
+coder that interacts with the conditional information in
+a cascaded manner for better trajectory reconstruction.
+• Without bells and whistles, DiffusionDrive signiﬁcantly
+outperforms previous state-of-the-art methods, achieving
+a record-breaking 88.1 PDMS on the NAVSIM navtest
+split with the same backbone, while maintaining real-time
+performance at 45 FPS on an NVIDIA 4090.
+• We qualitatively demonstrate that DiffusionDrive can
+generate more diverse and plausible trajectories, exhibit-
+ing high-quality multi-mode driving actions in various
+challenging scenarios.
+
+2. Related Work
+
+End-to-end autonomous driving. UniAD [16], as a pio-
+neering work, demonstrates the potential of end-to-end au-
+tonomous driving by integrating multiple perception tasks
+to enhance planning performance. VAD [20] further ex-
+plores the use of compact vectorized scene representations
+to improve efﬁciency. Subsequently, a series of works [6,
+8, 12, 23, 26, 43, 45, 58] have adopted the single-trajectory
+planning paradigm to enhance planning performance fur-
+ther.
+More recently, VADv2 [4] shifts the paradigm to-
+wards multi-mode planning by scoring and sampling from
+a large ﬁxed vocabulary of anchor trajectories.
+Hydra-
+MDP [25] improves the scoring mechanism of VADv2
+by introducing extra supervision from a rule-based scorer.
+SparseDrive [39] explores an alternative BEV-free solution.
+Unlike existing multi-mode planning approaches, we pro-
+pose a novel paradigm that leverages powerful generative
+diffusion models for end-to-end autonomous driving.
+
+12038
+
+=== NATIVE TEXT ORDER ===
+
+tive decision-making policy in the robotics domain, which
+can directly sample multi-mode physically plausible actions
+from a Gaussian distribution via iterative denoising process.
+This inspires us to replicate the success of the diffusion
+model in the robotics domain to end-to-end autonomous
+driving.
+We apply the vanilla robotic diffusion policy
+to the well-known single-mode-regression method, Trans-
+fuser [8], by proposing a variant, TransfuserDP, which re-
+places the deterministic MLP regression head with a condi-
+tional diffusion model [34]. Though TransfuserDP improves
+planning performance, two major issues arise: 1) The nu-
+merous 20 denoising steps in the vanilla DDIM diffusion
+policy introduce heavy computational consumption during
+inference as shown in Tab. 2, hindering the real-time ap-
+plication for autonomous driving. 2) The trajectories sam-
+pled from different Gaussian noises severely overlap with
+each other, as illustrated in Fig. 2. This underscores the
+non-trivial challenge of taming the diffusion models for the
+dynamic and open-world trafﬁc scenes.
+Unlike the vanilla diffusion policy, which samples ac-
+tions from a random Gaussian noise conditioned on scene
+context, human drivers adhere to established driving pat-
+terns that they dynamically adjust in response to real-time
+trafﬁc conditions. This insight motivates us to embed these
+prior driving patterns into the diffusion policy by partition-
+ing the Gaussian distribution into multiple sub-Gaussian
+distributions centered around prior anchors, referred to as
+anchored Gaussian distribution. It is implemented by trun-
+cating the diffusion schedule to introduce a small portion of
+Gaussian noise around the prior anchors as shown in Fig. 3.
+Thanks to the multi-mode distributional expressivity of the
+diffusion model, the proposed truncated diffusion policy ef-
+fectively covers the potential action space without requiring
+a large set of ﬁxed anchors, as VADv2 does. With more
+reasonable initial noise samples from the anchored Gaus-
+sian distribution, we can truncate the denoising process,
+reducing the required steps from 20 to just 2—a substan-
+tial speedup that satisﬁes the real-time requirements of au-
+tonomous driving.
+To enhance the interaction with conditional scene con-
+text, we propose an efﬁcient transformer-based diffusion
+decoder that interacts not only with structured queries from
+the perception module but also with Bird’s Eye View (BEV)
+and perspective view (PV) features through a sparse de-
+formable attention mechanism [3, 62].
+Additionally, we
+introduce a cascade mechanism to iteratively reﬁne the tra-
+jectory reconstruction within the diffusion decoder at each
+denoising step.
+With these innovations, we present DiffusionDrive,
+a diffusion model for real-time end-to-end autonomous
+driving.
+We benchmark our method on the planning-
+oriented NAVSIM dataset [11] using non-reactive simula-
+tion and closed-loop evaluations. Without bells and whis-
+tles, DiffusionDrive achieves 88.1 PDMS on NAVSIM
+navtest split with the aligned ResNet-34 backbone, sig-
+niﬁcantly outperforming previous state-of-the-art methods.
+Even compared to the NAVSIM challenge-winning solu-
+tion Hydra-MDP-V8192-W-EP [25], which follows VADv2
+with 8192 anchor trajectories and further incorporates post-
+processing and additional supervision, DiffusionDrive still
+outperforms it by 1.6 PDMS through directly learning
+from human demonstrations and inferring without post-
+processing, while running at real-time speed of 45 FPS on
+an NVIDIA 4090. We further validate the superiority of
+DiffusionDrive on popular nuScenes dataset [2] with open-
+loop evaluations, DiffusionDrive runs 1.8× faster than VAD
+and outperforms it [20] by 20.8% lower L2 error and 63.6%
+lower collision rate with the same ResNet-50 backbone,
+demonstrating state-of-the-art planning performance.
+Our contributions can be summarized as follows:
+• We ﬁrstly introduce the diffusion model to the ﬁeld of
+end-to-end autonomous driving and propose a novel trun-
+cated diffusion policy to address the issues of mode col-
+lapse and heavy computational overhead found in direct
+adaptation of vanilla diffusion policy to the trafﬁc scene.
+• We design an efﬁcient transformer-based diffusion de-
+coder that interacts with the conditional information in
+a cascaded manner for better trajectory reconstruction.
+• Without bells and whistles, DiffusionDrive signiﬁcantly
+outperforms previous state-of-the-art methods, achieving
+a record-breaking 88.1 PDMS on the NAVSIM navtest
+split with the same backbone, while maintaining real-time
+performance at 45 FPS on an NVIDIA 4090.
+• We qualitatively demonstrate that DiffusionDrive can
+generate more diverse and plausible trajectories, exhibit-
+ing high-quality multi-mode driving actions in various
+challenging scenarios.
+2. Related Work
+End-to-end autonomous driving. UniAD [16], as a pio-
+neering work, demonstrates the potential of end-to-end au-
+tonomous driving by integrating multiple perception tasks
+to enhance planning performance. VAD [20] further ex-
+plores the use of compact vectorized scene representations
+to improve efﬁciency. Subsequently, a series of works [6,
+8, 12, 23, 26, 43, 45, 58] have adopted the single-trajectory
+planning paradigm to enhance planning performance fur-
+ther.
+More recently, VADv2 [4] shifts the paradigm to-
+wards multi-mode planning by scoring and sampling from
+a large ﬁxed vocabulary of anchor trajectories.
+Hydra-
+MDP [25] improves the scoring mechanism of VADv2
+by introducing extra supervision from a rule-based scorer.
+SparseDrive [39] explores an alternative BEV-free solution.
+Unlike existing multi-mode planning approaches, we pro-
+pose a novel paradigm that leverages powerful generative
+diffusion models for end-to-end autonomous driving.
+12038

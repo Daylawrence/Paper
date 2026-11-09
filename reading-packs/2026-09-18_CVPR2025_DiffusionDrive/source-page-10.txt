@@ -1,0 +1,308 @@
+PAGE 10: COLUMN-AWARE BLOCK EXTRACTION (VERIFY FORMULAS AND TWO-COLUMN ORDER AGAINST PDF)
+
+[27] Bencheng Liao, Shaoyu Chen, Xinggang Wang, Tianheng
+
+Cheng, Qian Zhang, Wenyu Liu, and Chang Huang. MapTR:
+Structured modeling and learning for online vectorized HD
+map construction. In ICLR, 2023. 1
+[28] Bencheng Liao, Shaoyu Chen, Yunchi Zhang, Bo Jiang, Qian
+
+Zhang, Wenyu Liu, Chang Huang, and Xinggang Wang.
+Maptrv2: An end-to-end framework for online vectorized hd
+map construction. IJCV, 2024. 1
+[29] Xuewu Lin, Tianwei Lin, Zixiang Pei, Lichao Huang, and
+
+Zhizhong Su.
+Sparse4d:
+Multi-view 3d object detec-
+tion with sparse spatial-temporal fusion.
+arXiv preprint
+arXiv:2211.10581, 2022. 6
+[30] Yaron Lipman, Ricky T. Q. Chen, Heli Ben-Hamu, Maxim-
+
+ilian Nickel, and Matthew Le. Flow matching for genera-
+tive modeling. In The Eleventh International Conference on
+Learning Representations, 2023. 4
+[31] Xingchao Liu, Chengyue Gong, and Qiang Liu.
+Flow
+straight and fast: Learning to generate and transfer data with
+rectiﬁed ﬂow. arXiv preprint arXiv:2209.03003, 2022. 4
+[32] Yicheng Liu, Tianyuan Yuan, Yue Wang, Yilun Wang, and
+
+Hang Zhao. Vectormapnet: End-to-end vectorized hd map
+learning. In ICML, 2023. 1
+[33] Robin Rombach, Andreas Blattmann, Dominik Lorenz,
+
+Patrick Esser, and Bj¨orn Ommer.
+High-resolution image
+synthesis with latent diffusion models.
+In Proceedings of
+the IEEE/CVF conference on computer vision and pattern
+recognition, pages 10684–10695, 2022. 4
+[34] Olaf Ronneberger, Philipp Fischer, and Thomas Brox. U-net:
+
+Convolutional networks for biomedical image segmentation.
+In MICCAI, 2015. 2
+[35] Jiaming Song, Chenlin Meng, and Stefano Ermon. Denois-
+
+ing diffusion implicit models. In ICLR, 2021. 4, 5, 6
+[36] Yang Song, Jascha Sohl-Dickstein, Diederik P Kingma, Ab-
+
+hishek Kumar, Stefano Ermon, and Ben Poole. Score-based
+generative modeling through stochastic differential equa-
+tions. In International Conference on Learning Represen-
+tations, 2021. 4
+[37] Ajay Sridhar, Dhruv Shah, Catherine Glossop, and Sergey
+
+Levine. Nomad: Goal masked diffusion policies for naviga-
+tion and exploration. In ICRA, 2024. 4
+[38] Maria Stamatopoulou, Jianwei Liu, and Dimitrios Kanoulas.
+
+Dippest: Diffusion-based path planner for synthesizing tra-
+jectories applied on quadruped robots.
+arXiv preprint
+arXiv:2405.19232, 2024. 4
+[39] Wenchao Sun, Xuewu Lin, Yining Shi, Chuang Zhang, Hao-
+
+ran Wu, and Sifa Zheng.
+Sparsedrive:
+End-to-end au-
+tonomous driving via sparse scene representation.
+arXiv
+preprint arXiv:2405.19620, 2024. 2, 6, 8
+[40] Mingxing Tan and Quoc Le. Efﬁcientnet: Rethinking model
+
+scaling for convolutional neural networks. In ICML, 2019. 8
+[41] Wenwen Tong, Chonghao Sima, Tai Wang, Li Chen, Silei
+
+Wu, Hanming Deng, Yi Gu, Lewei Lu, Ping Luo, Dahua Lin,
+et al. Scene as occupancy. In ICCV, 2023. 8
+[42] Yue Wang, Vitor Campagnolo Guizilini, Tianyuan Zhang,
+
+Yilun Wang, Hang Zhao, and Justin Solomon.
+Detr3d:
+3d object detection from multi-view images via 3d-to-2d
+queries. In CoRL, 2022. 1, 6
+
+[43] Yuqi Wang, Jiawei He, Lue Fan, Hongxin Li, Yuntao Chen,
+
+and Zhaoxiang Zhang. Driving into the future: Multiview
+visual forecasting and planning with world model for au-
+tonomous driving. In CVPR, 2024. 2
+[44] Yixiao Wang, Chen Tang, Lingfeng Sun, Simone Rossi,
+
+Yichen Xie, Chensheng Peng, Thomas Hannagan, Stefano
+Sabatini, Nicola Poerio, Masayoshi Tomizuka, et al. Opti-
+mizing diffusion models for joint trajectory prediction and
+controllable generation. In ECCV, 2024. 3
+[45] Xinshuo Weng, Boris Ivanovic, Yan Wang, Yue Wang, and
+
+Marco Pavone. Para-drive: Parallelized architecture for real-
+time autonomous driving. In CVPR, 2024. 2, 6
+[46] Zehang Weng, Haofei Lu, Danica Kragic, and Jens Lun-
+
+dell. Dexdiffuser: Generating dexterous grasps with diffu-
+sion models. arXiv preprint arXiv:2402.02989, 2024. 4
+[47] Sixu Yan, Zeyu Zhang, Muzhi Han, Zaijin Wang, Qi Xie,
+
+Zhitian Li, Zhehan Li, Hangxin Liu, Xinggang Wang, and
+Song-Chun Zhu.
+M2diffuser: Diffusion-based trajectory
+optimization for mobile manipulation in 3d scenes. arXiv
+preprint arXiv:2410.11402, 2024. 3
+[48] Brian Yang, Huangyuan Su, Nikolaos Gkanatsios, Tsung-
+
+Wei Ke, Ayush Jain, Jeff Schneider, and Katerina Fragki-
+adaki. Diffusion-es: Gradient-free planning with diffusion
+for autonomous driving and zero-shot instruction following.
+In CVPR, 2024. 3
+[49] Jingfeng Yao and Xinggang Wang. Reconstruction vs. gener-
+
+ation: Taming optimization dilemma in latent diffusion mod-
+els. arXiv preprint arXiv:2501.01423, 2025. 4
+[50] Jingfeng Yao, Cheng Wang, Wenyu Liu, and Xinggang
+
+Wang.
+Fasterdit:
+Towards faster diffusion transformers
+training without architecture modiﬁcation.
+arXiv preprint
+arXiv:2410.10356, 2024. 4
+[51] Wenhao Yu, Jie Peng, Huanyu Yang, Junrui Zhang, Yifan
+
+Duan, Jianmin Ji, and Yanyong Zhang. Ldp: A local dif-
+fusion planner for efﬁcient robot navigation and collision
+avoidance. arXiv preprint arXiv:2407.01950, 2024. 4
+[52] Chengran Yuan, Zhanqi Zhang, Jiawei Sun, Shuo Sun, Ze-
+
+fan Huang, Christina Dao Wen Lee, Dongen Li, Yuhang
+Han, Anthony Wong, Keng Peng Tee, et al.
+Drama: An
+efﬁcient end-to-end motion planner for autonomous driving
+with mamba. arXiv preprint arXiv:2408.03601, 2024. 6
+[53] Yanjie Ze, Gu Zhang, Kangning Zhang, Chenyuan Hu,
+
+Muhan Wang, and Huazhe Xu. 3d diffusion policy. In RSS,
+2024. 3
+[54] Fangao Zeng, Bin Dong, Yuang Zhang, Tiancai Wang, Xi-
+
+angyu Zhang, and Yichen Wei. Motr: End-to-end multiple-
+object tracking with transformer. In ECCV, 2022. 1
+[55] Yifu Zhang, Chunyu Wang, Xinggang Wang, Wenjun Zeng,
+
+and Wenyu Liu. Fairmot: On the fairness of detection and
+re-identiﬁcation in multiple object tracking. IJCV, 2021.
+[56] Yifu Zhang, Peize Sun, Yi Jiang, Dongdong Yu, Fucheng
+
+Weng, Zehuan Yuan, Ping Luo, Wenyu Liu, and Xinggang
+Wang. Bytetrack: Multi-object tracking by associating every
+detection box. In ECCV, 2022. 1
+[57] Huangjie Zheng,
+Pengcheng He,
+Weizhu Chen,
+and
+Mingyuan Zhou.
+Truncated diffusion probabilistic mod-
+els and diffusion-based adversarial auto-encoders.
+In The
+
+12046
+
+=== NATIVE TEXT ORDER ===
+
+[27] Bencheng Liao, Shaoyu Chen, Xinggang Wang, Tianheng
+Cheng, Qian Zhang, Wenyu Liu, and Chang Huang. MapTR:
+Structured modeling and learning for online vectorized HD
+map construction. In ICLR, 2023. 1
+[28] Bencheng Liao, Shaoyu Chen, Yunchi Zhang, Bo Jiang, Qian
+Zhang, Wenyu Liu, Chang Huang, and Xinggang Wang.
+Maptrv2: An end-to-end framework for online vectorized hd
+map construction. IJCV, 2024. 1
+[29] Xuewu Lin, Tianwei Lin, Zixiang Pei, Lichao Huang, and
+Zhizhong Su.
+Sparse4d:
+Multi-view 3d object detec-
+tion with sparse spatial-temporal fusion.
+arXiv preprint
+arXiv:2211.10581, 2022. 6
+[30] Yaron Lipman, Ricky T. Q. Chen, Heli Ben-Hamu, Maxim-
+ilian Nickel, and Matthew Le. Flow matching for genera-
+tive modeling. In The Eleventh International Conference on
+Learning Representations, 2023. 4
+[31] Xingchao Liu, Chengyue Gong, and Qiang Liu.
+Flow
+straight and fast: Learning to generate and transfer data with
+rectiﬁed ﬂow. arXiv preprint arXiv:2209.03003, 2022. 4
+[32] Yicheng Liu, Tianyuan Yuan, Yue Wang, Yilun Wang, and
+Hang Zhao. Vectormapnet: End-to-end vectorized hd map
+learning. In ICML, 2023. 1
+[33] Robin Rombach, Andreas Blattmann, Dominik Lorenz,
+Patrick Esser, and Bj¨orn Ommer.
+High-resolution image
+synthesis with latent diffusion models.
+In Proceedings of
+the IEEE/CVF conference on computer vision and pattern
+recognition, pages 10684–10695, 2022. 4
+[34] Olaf Ronneberger, Philipp Fischer, and Thomas Brox. U-net:
+Convolutional networks for biomedical image segmentation.
+In MICCAI, 2015. 2
+[35] Jiaming Song, Chenlin Meng, and Stefano Ermon. Denois-
+ing diffusion implicit models. In ICLR, 2021. 4, 5, 6
+[36] Yang Song, Jascha Sohl-Dickstein, Diederik P Kingma, Ab-
+hishek Kumar, Stefano Ermon, and Ben Poole. Score-based
+generative modeling through stochastic differential equa-
+tions. In International Conference on Learning Represen-
+tations, 2021. 4
+[37] Ajay Sridhar, Dhruv Shah, Catherine Glossop, and Sergey
+Levine. Nomad: Goal masked diffusion policies for naviga-
+tion and exploration. In ICRA, 2024. 4
+[38] Maria Stamatopoulou, Jianwei Liu, and Dimitrios Kanoulas.
+Dippest: Diffusion-based path planner for synthesizing tra-
+jectories applied on quadruped robots.
+arXiv preprint
+arXiv:2405.19232, 2024. 4
+[39] Wenchao Sun, Xuewu Lin, Yining Shi, Chuang Zhang, Hao-
+ran Wu, and Sifa Zheng.
+Sparsedrive:
+End-to-end au-
+tonomous driving via sparse scene representation.
+arXiv
+preprint arXiv:2405.19620, 2024. 2, 6, 8
+[40] Mingxing Tan and Quoc Le. Efﬁcientnet: Rethinking model
+scaling for convolutional neural networks. In ICML, 2019. 8
+[41] Wenwen Tong, Chonghao Sima, Tai Wang, Li Chen, Silei
+Wu, Hanming Deng, Yi Gu, Lewei Lu, Ping Luo, Dahua Lin,
+et al. Scene as occupancy. In ICCV, 2023. 8
+[42] Yue Wang, Vitor Campagnolo Guizilini, Tianyuan Zhang,
+Yilun Wang, Hang Zhao, and Justin Solomon.
+Detr3d:
+3d object detection from multi-view images via 3d-to-2d
+queries. In CoRL, 2022. 1, 6
+[43] Yuqi Wang, Jiawei He, Lue Fan, Hongxin Li, Yuntao Chen,
+and Zhaoxiang Zhang. Driving into the future: Multiview
+visual forecasting and planning with world model for au-
+tonomous driving. In CVPR, 2024. 2
+[44] Yixiao Wang, Chen Tang, Lingfeng Sun, Simone Rossi,
+Yichen Xie, Chensheng Peng, Thomas Hannagan, Stefano
+Sabatini, Nicola Poerio, Masayoshi Tomizuka, et al. Opti-
+mizing diffusion models for joint trajectory prediction and
+controllable generation. In ECCV, 2024. 3
+[45] Xinshuo Weng, Boris Ivanovic, Yan Wang, Yue Wang, and
+Marco Pavone. Para-drive: Parallelized architecture for real-
+time autonomous driving. In CVPR, 2024. 2, 6
+[46] Zehang Weng, Haofei Lu, Danica Kragic, and Jens Lun-
+dell. Dexdiffuser: Generating dexterous grasps with diffu-
+sion models. arXiv preprint arXiv:2402.02989, 2024. 4
+[47] Sixu Yan, Zeyu Zhang, Muzhi Han, Zaijin Wang, Qi Xie,
+Zhitian Li, Zhehan Li, Hangxin Liu, Xinggang Wang, and
+Song-Chun Zhu.
+M2diffuser: Diffusion-based trajectory
+optimization for mobile manipulation in 3d scenes. arXiv
+preprint arXiv:2410.11402, 2024. 3
+[48] Brian Yang, Huangyuan Su, Nikolaos Gkanatsios, Tsung-
+Wei Ke, Ayush Jain, Jeff Schneider, and Katerina Fragki-
+adaki. Diffusion-es: Gradient-free planning with diffusion
+for autonomous driving and zero-shot instruction following.
+In CVPR, 2024. 3
+[49] Jingfeng Yao and Xinggang Wang. Reconstruction vs. gener-
+ation: Taming optimization dilemma in latent diffusion mod-
+els. arXiv preprint arXiv:2501.01423, 2025. 4
+[50] Jingfeng Yao, Cheng Wang, Wenyu Liu, and Xinggang
+Wang.
+Fasterdit:
+Towards faster diffusion transformers
+training without architecture modiﬁcation.
+arXiv preprint
+arXiv:2410.10356, 2024. 4
+[51] Wenhao Yu, Jie Peng, Huanyu Yang, Junrui Zhang, Yifan
+Duan, Jianmin Ji, and Yanyong Zhang. Ldp: A local dif-
+fusion planner for efﬁcient robot navigation and collision
+avoidance. arXiv preprint arXiv:2407.01950, 2024. 4
+[52] Chengran Yuan, Zhanqi Zhang, Jiawei Sun, Shuo Sun, Ze-
+fan Huang, Christina Dao Wen Lee, Dongen Li, Yuhang
+Han, Anthony Wong, Keng Peng Tee, et al.
+Drama: An
+efﬁcient end-to-end motion planner for autonomous driving
+with mamba. arXiv preprint arXiv:2408.03601, 2024. 6
+[53] Yanjie Ze, Gu Zhang, Kangning Zhang, Chenyuan Hu,
+Muhan Wang, and Huazhe Xu. 3d diffusion policy. In RSS,
+2024. 3
+[54] Fangao Zeng, Bin Dong, Yuang Zhang, Tiancai Wang, Xi-
+angyu Zhang, and Yichen Wei. Motr: End-to-end multiple-
+object tracking with transformer. In ECCV, 2022. 1
+[55] Yifu Zhang, Chunyu Wang, Xinggang Wang, Wenjun Zeng,
+and Wenyu Liu. Fairmot: On the fairness of detection and
+re-identiﬁcation in multiple object tracking. IJCV, 2021.
+[56] Yifu Zhang, Peize Sun, Yi Jiang, Dongdong Yu, Fucheng
+Weng, Zehuan Yuan, Ping Luo, Wenyu Liu, and Xinggang
+Wang. Bytetrack: Multi-object tracking by associating every
+detection box. In ECCV, 2022. 1
+[57] Huangjie Zheng,
+Pengcheng He,
+Weizhu Chen,
+and
+Mingyuan Zhou.
+Truncated diffusion probabilistic mod-
+els and diffusion-based adversarial auto-encoders.
+In The
+12046

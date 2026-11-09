@@ -1,0 +1,107 @@
+{
+  "source": "paper.pdf",
+  "pages": [
+    {
+      "page": 1,
+      "size": [
+        612.0,
+        792.0
+      ],
+      "native_chars": 4403,
+      "column_aware_chars": 4431
+    },
+    {
+      "page": 2,
+      "size": [
+        612.0,
+        792.0
+      ],
+      "native_chars": 5797,
+      "column_aware_chars": 5805
+    },
+    {
+      "page": 3,
+      "size": [
+        612.0,
+        792.0
+      ],
+      "native_chars": 2755,
+      "column_aware_chars": 2788
+    },
+    {
+      "page": 4,
+      "size": [
+        612.0,
+        792.0
+      ],
+      "native_chars": 3261,
+      "column_aware_chars": 3293
+    },
+    {
+      "page": 5,
+      "size": [
+        612.0,
+        792.0
+      ],
+      "native_chars": 4443,
+      "column_aware_chars": 4531
+    },
+    {
+      "page": 6,
+      "size": [
+        612.0,
+        792.0
+      ],
+      "native_chars": 4859,
+      "column_aware_chars": 4875
+    },
+    {
+      "page": 7,
+      "size": [
+        612.0,
+        792.0
+      ],
+      "native_chars": 4849,
+      "column_aware_chars": 4870
+    },
+    {
+      "page": 8,
+      "size": [
+        612.0,
+        792.0
+      ],
+      "native_chars": 5010,
+      "column_aware_chars": 5024
+    },
+    {
+      "page": 9,
+      "size": [
+        612.0,
+        792.0
+      ],
+      "native_chars": 5551,
+      "column_aware_chars": 5580
+    },
+    {
+      "page": 10,
+      "size": [
+        612.0,
+        792.0
+      ],
+      "native_chars": 5954,
+      "column_aware_chars": 5984
+    },
+    {
+      "page": 11,
+      "size": [
+        612.0,
+        792.0
+      ],
+      "native_chars": 1009,
+      "column_aware_chars": 1014
+    }
+  ],
+  "original_pdf_sha256": "e1a6fc71864f39f05c469330c4a0b89c15c67ba6a61efb864ec43efed8c7bdec",
+  "extraction": "PyMuPDF 1.26 block-level extraction, structural aid only; source PDF authoritative",
+  "status": "not_a_translation_completion_certificate"
+}
