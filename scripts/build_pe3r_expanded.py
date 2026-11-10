@@ -67,7 +67,7 @@ assert all(article.find(id=k) for k in ["tr-supp-intro","tr-supp-6","tr-supp-7"]
 for equation in article.select("div.equation"):
     raw=equation.get_text()
     equation.clear()
-    equation.append(raw.replace(r"\[","$").replace(r"\]","$"))
+    equation.append(raw.replace(r"\[","$$").replace(r"\]","$$"))
 assert len(article.select("table"))>=11  # main 7 tables + 4 official supplemental tables
 assert "式（16）" in article.get_text()
 (D/"translation.html").write_text(
