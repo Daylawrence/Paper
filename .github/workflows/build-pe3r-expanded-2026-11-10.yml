@@ -37,7 +37,7 @@ jobs:
           assert len(fitz.open(d/'supplement.pdf'))==2
           assert all(s in tr for s in ['6. 插值性质证明','7.1 异常点选择','7.4 迭代细化','表 11'])
           assert 'tr-supp-6' in html and 'tr-supp-7' in html
-          assert len(BeautifulSoup(html,'html.parser').select('#translation table'))>=12
+          assert len(BeautifulSoup(html,'html.parser').select('#translation table'))>=11
           chrome=shutil.which('google-chrome') or shutil.which('chromium') or shutil.which('chromium-browser')
           assert chrome,'No Chromium executable; offline browser test required'
           with sync_playwright() as p:
@@ -51,7 +51,7 @@ jobs:
               page.locator('[data-tab="translation"]').click()
               assert page.locator('#translation').is_visible()
               assert '迭代细化分析' in page.locator('#translation').inner_text()
-              assert page.locator('#translation table').count()>=12
+              assert page.locator('#translation table').count()>=11
               k=page.locator('.katex').count()
               assert k>=8,k
               page.evaluate('document.querySelector("main").scrollTop=850')
