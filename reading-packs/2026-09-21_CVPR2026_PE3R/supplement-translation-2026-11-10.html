@@ -1,0 +1,56 @@
+<section id="tr-supp-intro" class="supplement"><h2>官方补充材料（CVPR 2026，另附 2 页 PDF）</h2>
+<p>以下为与主论文分开发布的官方补充材料完整中文译文，按照原文第 6、7 节及表 8–11、公式（8）–（17）的编号编排。官方原文：<a href="supplement.pdf">supplement.pdf</a>，逐页图像见 <a href="supplement-pages/page-01.jpg">补充材料第 1 页</a>和<a href="supplement-pages/page-02.jpg">第 2 页</a>。补充材料不包含参考文献表。</p></section>
+
+<section id="tr-supp-6"><h2>6. 插值性质证明（Proof of Interpolation Properties）</h2>
+<p>本节给出本文面积加权插值策略两个关键性质的完整证明。这两个性质支撑主论文第 3.3 节所述的像素嵌入消歧（Pixel Embedding Disambiguation）方法。</p>
+<h3>命题 1：向量归一化（Vector Normalization）</h3>
+<p>插值后的向量 \hat F_B 保持单位范数，因此仍位于原有语义嵌入空间之内。</p>
+<p><strong>证明。</strong>插值向量的范数表示为：</p>
+<div class="equation">\[\|\hat{F}_B\|_2=\|aF_A+bF_B\|_2.\tag{8}\]</div>
+<p>展开后得到：</p>
+<div class="equation">\[\|\hat{F}_B\|_2^2=(aF_A+bF_B)\cdot(aF_A+bF_B)=a^2\|F_A\|_2^2+2ab F_A\cdot F_B+b^2\|F_B\|_2^2.\tag{9}\]</div>
+<p>由于 F_A 与 F_B 为单位向量，有：</p>
+<div class="equation">\[\|F_A\|_2=1,\quad\|F_B\|_2=1,\quad F_A\cdot F_B=\cos\theta.\tag{10}\]</div>
+<p>将这些值代入，可得：</p>
+<div class="equation">\[\|\hat F_B\|_2^2=\frac{\sin^2((1-t)\theta)+\sin^2(t\theta)+2\sin((1-t)\theta)\sin(t\theta)\cos\theta}{\sin^2\theta}.\tag{11}\]</div>
+<p>运用三角恒等式：</p>
+<div class="equation">\[\sin^2\theta=\sin^2((1-t)\theta)+\sin^2(t\theta)+2\sin((1-t)\theta)\sin(t\theta)\cos\theta,\tag{12}\]</div>
+<p>得到：</p>
+<div class="equation">\[\|\hat F_B\|_2^2=\frac{\sin^2\theta}{\sin^2\theta}=1.\tag{13}\]</div>
+<p>因此证实 \hat F_B 是单位向量，命题得证。</p>
+<h3>命题 2：语义引导（Semantic Guidance）</h3>
+<p>如果 F_A 与参考语义向量 F_C 的相似度高于 F_B 与 F_C 的相似度，那么插值后的 \hat F_B 与 F_C 的相似度也将高于原来的 F_B。这会引导聚合表示朝更有语义意义的方向移动。</p>
+<p><strong>证明。</strong>\hat F_B 与 F_C 之间的余弦相似度为：</p>
+<div class="equation">\[\hat F_B\cdot F_C=a(F_A\cdot F_C)+b(F_B\cdot F_C).\tag{14}\]</div>
+<p>由于 F_A·F_C 大于 F_B·F_C，因此：</p>
+<div class="equation">\[a(F_A\cdot F_C)+b(F_B\cdot F_C)>(a+b)(F_B\cdot F_C).\tag{15}\]</div>
+<p>原文随后使用三角函数性质写出：</p>
+<div class="equation">\[a+b=\frac{\sin((1-t)\theta)}{\sin\theta}+\frac{\sin(t\theta)}{\sin\theta}=1,\tag{16}\]</div>
+<p>并得出：</p>
+<div class="equation">\[\hat F_B\cdot F_C=a(F_A\cdot F_C)+b(F_B\cdot F_C)>F_B\cdot F_C.\tag{17}\]</div>
+<p>作者由此认为，\hat F_B 在语义上融合了来自 F_A 与 F_B 的信息，使聚合表示趋向更具语义意义的方向，命题得证。</p>
+<p><strong>译注（与作者原文分开）：</strong>式（16）中的等号按官方补充材料保留。一般的球面线性插值权重之和未必等于 1（例如 t=0.5 且 θ 非零时），因此这里的证明步骤有待独立核查；不应把该等号当成已严格成立的普遍恒等式。此处不擅自修改作者公式。</p>
+</section>
+
+<section id="tr-supp-7"><h2>7. 扩展消融实验（Extended Ablation Studies）</h2>
+<p>本节给出对主论文第 4.3 节分析的补充消融实验，进一步展示 PE3R 设计选择和参数敏感性的影响。</p>
+
+<h3>7.1 异常点选择（Anomaly Point Selection）</h3>
+<p>作者通过经验与理论两方面的分析验证异常点检测机制的准确性。</p>
+<p><strong>经验验证。</strong>对跨语义区域中空间一致点之间的平均三维距离进行统计分析，以确定异常点阈值。该阈值能够有效区分正常点与异常点。表 8 给出了 ScanNet 上不同阈值的结果，阈值 0.003 时性能最佳。</p>
+<table><caption>表 8：ScanNet 上不同异常点选择阈值的结果；主实验默认采用 0.003。</caption><thead><tr><th>阈值</th><th>rel ↓</th><th>τ ↑</th></tr></thead><tbody><tr><td>0.001</td><td>6.1</td><td>49.3</td></tr><tr><td>0.002</td><td>5.9</td><td>50.3</td></tr><tr><td><strong>0.003</strong></td><td><strong>5.5</strong></td><td><strong>55.1</strong></td></tr><tr><td>0.004</td><td>5.6</td><td>53.6</td></tr><tr><td>0.005</td><td>5.8</td><td>52.8</td></tr></tbody></table>
+<p><strong>理论验证。</strong>理论上，异常检测也可以通过对物体内部点的分布进行参数化建模来完成，例如高斯估计或最小二乘拟合。不过，对于复杂的大规模场景，此类方法的计算开销可能高到难以承受。作者采用的经验阈值策略是一种实用、可扩展的替代方案，在不显著增加计算负担的情况下保持良好性能。</p>
+
+<h3>7.2 滑动窗口大小分析（Sliding Window Size Analysis）</h3>
+<p>在局部语义感知距离计算中，滑动窗口的大小会明显影响重建质量和计算效率。如表 9 所示，作者在多视图深度估计任务中评估了三种窗口尺寸。5×5 窗口取得最佳折中：它包含足够的局部上下文，有助于稳健地检测异常点，又不会引入过多计算开销，也不会过度平滑精细几何细节。</p>
+<table><caption>表 9：不同滑动窗口尺寸对所有深度估计基准上异常点检测性能的影响。</caption><thead><tr><th>窗口尺寸</th><th>平均 rel ↓</th><th>平均 τ ↑</th></tr></thead><tbody><tr><td>3×3</td><td>4.9</td><td>65.5</td></tr><tr><td><strong>5×5</strong></td><td><strong>4.5</strong></td><td><strong>68.0</strong></td></tr><tr><td>7×7</td><td>4.8</td><td>66.1</td></tr></tbody></table>
+
+<h3>7.3 RGB 图像平滑分析（RGB Image Smoothing Analysis）</h3>
+<p>为提高模型在反射、透明物体和复杂纹理等困难区域中的稳健性，作者在估计点图之前对输入图像应用语义感知平滑。平滑操作为 \hat y = α·x + (1−α)·y，其中 x 表示语义区域的平均 RGB 值，y 为原始像素值，α 控制平滑强度。</p>
+<p>表 10 显示，适度平滑（α=0.1）在抑制噪声和保留细节之间取得最佳平衡。更低的平滑系数（α 小于 0.1）无法充分处理视觉伪影，而更高的系数（α 大于 0.2）会过度平滑真实结构细节，最终降低几何精度。</p>
+<table><caption>表 10：语义感知平滑参数的影响。0.1 为最优；表头 a、b 表示语义区域均色与原 RGB 的混合权重。</caption><thead><tr><th>a (α)</th><th>b (1−α)</th><th>平均 rel ↓</th><th>平均 τ ↑</th></tr></thead><tbody><tr><td>0.00</td><td>1.00</td><td>5.3</td><td>60.2</td></tr><tr><td><strong>0.10</strong></td><td><strong>0.90</strong></td><td><strong>4.5</strong></td><td><strong>68.0</strong></td></tr><tr><td>0.20</td><td>0.80</td><td>4.7</td><td>62.3</td></tr><tr><td>0.50</td><td>0.50</td><td>4.9</td><td>61.6</td></tr><tr><td>0.80</td><td>0.20</td><td>6.1</td><td>59.4</td></tr><tr><td>0.90</td><td>0.10</td><td>6.5</td><td>57.5</td></tr><tr><td>1.00</td><td>0.00</td><td>10.2</td><td>50.2</td></tr></tbody></table>
+
+<h3>7.4 迭代细化分析（Iterative Refinement Analysis）</h3>
+<p>作者进一步研究了在语义点云重建模块中反复执行细化的效果。如表 11 所示，单次细化已经带来明显提升；再增加迭代次数，改善幅度递减，而计算开销上升。这意味着该方法只需一轮处理就能完成有效的细化，从而保持整个前馈流水线的效率优势。</p>
+<table><caption>表 11：在 Mip-NeRF360 上不同迭代细化次数的重建性能；一次细化最优。</caption><thead><tr><th>迭代次数</th><th>平均 rel ↓</th><th>平均 τ ↑</th></tr></thead><tbody><tr><td><strong>1</strong></td><td><strong>4.5</strong></td><td><strong>68.0</strong></td></tr><tr><td>2</td><td>4.6</td><td>67.9</td></tr><tr><td>3</td><td>4.6</td><td>67.9</td></tr><tr><td>4</td><td>4.6</td><td>67.9</td></tr></tbody></table>
+</section>
