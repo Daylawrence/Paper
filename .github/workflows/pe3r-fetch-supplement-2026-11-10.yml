@@ -1,0 +1,61 @@
+name: Fetch PE3R official supplemental evidence
+on:
+  push:
+    branches: [main]
+    paths: ['.github/workflows/pe3r-fetch-supplement-2026-11-10.yml']
+  workflow_dispatch:
+permissions:
+  contents: write
+jobs:
+  fetch:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+        with: {fetch-depth: 0}
+      - uses: actions/setup-python@v5
+        with: {python-version: '3.11'}
+      - run: python -m pip install -q pymupdf requests
+      - name: Fetch official CVPR 2026 PE3R supplementary PDF and source page text
+        shell: bash
+        run: |
+          set -euo pipefail
+          python - <<'PY'
+          import pathlib,requests,fitz,json,hashlib,time
+          d=pathlib.Path('reading-packs/2026-09-21_CVPR2026_PE3R')
+          url='https://openaccess.thecvf.com/content/CVPR2026/supplemental/Hu_PE3R_Perception-Efficient_3D_CVPR_2026_supplemental.pdf'
+          headers={'User-Agent':'Mozilla/5.0 (X11; Linux x86_64) PE3R academic document archival verification'}
+          r=requests.get(url,headers=headers,timeout=50)
+          r.raise_for_status()
+          data=r.content
+          assert data.startswith(b'%PDF-') and len(data)>10000,(r.status_code,len(data),data[:30])
+          path=d/'supplement.pdf'
+          path.write_bytes(data)
+          pdf=fitz.open(path)
+          assert 1<=len(pdf)<=20,len(pdf)
+          pages=d/'supplement-pages'
+          pages.mkdir(exist_ok=True)
+          meta={'source_url':url,'source_pdf_sha256':hashlib.sha256(data).hexdigest(),'pdf_pages':len(pdf),'created_date':'2026-11-10'}
+          for i,page in enumerate(pdf,1):
+              page.get_pixmap(matrix=fitz.Matrix(1.5,1.5),alpha=False).pil_save(pages/f'page-{i:02d}.jpg',format='JPEG',quality=82)
+              text=page.get_text('text')
+              blocks=[b for b in page.get_text('blocks') if isinstance(b[4],str) and b[4].strip()]
+              x=page.rect.width/2
+              left=sorted([b for b in blocks if (b[0]+b[2])/2<x],key=lambda b:b[1])
+              right=sorted([b for b in blocks if (b[0]+b[2])/2>=x],key=lambda b:b[1])
+              col='\n\n'.join(b[4] for b in left+right)
+              (d/f'supplement-source-page-{i:02d}.txt').write_text('COLUMN AWARE (CHECK FORMULA/TABLE ORDER AGAINST PDF)\n'+col+'\n\nNATIVE PAGE TEXT\n'+text,'utf-8')
+          (d/'supplement-source-metadata-2026-11-10.json').write_text(json.dumps(meta,ensure_ascii=False,indent=2)+'\n','utf-8')
+          print(json.dumps(meta,ensure_ascii=False))
+          PY
+      - name: Commit supplemental source and page scans
+        run: |
+          set -euo pipefail
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add -A reading-packs/2026-09-21_CVPR2026_PE3R
+          if git diff --cached --quiet; then exit 0; fi
+          git commit -m "Restore official PE3R CVPR supplementary PDF and page scans [skip ci]"
+          git fetch origin main
+          git rebase origin/main
+          git push origin HEAD:main
