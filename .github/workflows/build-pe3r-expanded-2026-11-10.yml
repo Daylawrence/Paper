@@ -1,0 +1,108 @@
+name: Build and accept PE3R expanded main and supplemental reader
+on:
+  push:
+    branches: [main]
+    paths: ['.github/workflows/build-pe3r-expanded-2026-11-10.yml']
+  workflow_dispatch:
+permissions:
+  contents: write
+concurrency:
+  group: pe3r-20261110-expanded-build
+  cancel-in-progress: false
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+        with: {fetch-depth: 0}
+      - uses: actions/setup-python@v5
+        with: {python-version: '3.11'}
+      - name: Install offline reader builders and Chromium test
+        run: python -m pip install -q pymupdf beautifulsoup4 markdownify playwright requests
+      - name: Assemble DriveVLA-style PE3R paper, full Chinese translation, equations, supplement and explanations
+        run: python scripts/build_pe3r_expanded.py
+      - name: Offline browser and contents validation
+        shell: bash
+        run: |
+          set -euo pipefail
+          python - <<'PY'
+          import pathlib,shutil,json,fitz
+          from bs4 import BeautifulSoup
+          from playwright.sync_api import sync_playwright
+          d=pathlib.Path('reading-packs/2026-09-21_CVPR2026_PE3R')
+          html=(d/'index.html').read_text('utf-8')
+          tr=(d/'translation.md').read_text('utf-8')
+          assert len(fitz.open(d/'paper.pdf'))==11
+          assert len(fitz.open(d/'supplement.pdf'))==2
+          assert all(s in tr for s in ['6. 插值性质证明','7.1 异常点选择','7.4 迭代细化','表 11'])
+          assert 'tr-supp-6' in html and 'tr-supp-7' in html
+          assert len(BeautifulSoup(html,'html.parser').select('#translation table'))>=12
+          chrome=shutil.which('google-chrome') or shutil.which('chromium') or shutil.which('chromium-browser')
+          assert chrome,'No Chromium executable; offline browser test required'
+          with sync_playwright() as p:
+              b=p.chromium.launch(headless=True,executable_path=chrome,args=['--no-sandbox','--allow-file-access-from-files'])
+              page=b.new_page(viewport={'width':1280,'height':900})
+              errors=[]
+              page.on('pageerror',lambda e:errors.append(str(e)))
+              page.goto((d/'index.html').resolve().as_uri(),wait_until='load')
+              page.wait_for_timeout(700)
+              assert page.locator('#original .paper-page').count()==13
+              page.locator('[data-tab="translation"]').click()
+              assert page.locator('#translation').is_visible()
+              assert '迭代细化分析' in page.locator('#translation').inner_text()
+              assert page.locator('#translation table').count()>=12
+              k=page.locator('.katex').count()
+              assert k>=8,k
+              page.evaluate('document.querySelector("main").scrollTop=850')
+              page.wait_for_timeout(350)
+              page.locator('[data-tab="explanation"]').click()
+              assert page.locator('#explanation').is_visible()
+              page.locator('[data-tab="translation"]').click()
+              page.wait_for_timeout(350)
+              scroll=page.evaluate('document.querySelector("main").scrollTop')
+              assert scroll>=600,scroll
+              page.set_viewport_size({'width':600,'height':820})
+              assert page.locator('aside').is_visible()
+              assert not errors,errors
+              b.close()
+          data={'tested':'2026-11-10','offline_chromium':'passed','source_pages':13,
+                'katex_count':k,'scroll_restoration':scroll,'narrow_screen_sidebar':True,'console_pageerrors':errors}
+          (d/'offline-browser-audit-2026-11-10.json').write_text(json.dumps(data,ensure_ascii=False,indent=2)+'\n','utf-8')
+          print(json.dumps(data,ensure_ascii=False))
+          PY
+      - name: Add offline audit to manifest and commit expanded resources (ZIP preserved until remote verification)
+        shell: bash
+        run: |
+          set -euo pipefail
+          python - <<'PY'
+          import pathlib,hashlib,json
+          d=pathlib.Path('reading-packs/2026-09-21_CVPR2026_PE3R')
+          f=d/'manifest.json'
+          x=json.loads(f.read_text('utf-8'))
+          p=d/'offline-browser-audit-2026-11-10.json'
+          b=p.read_bytes()
+          sha=hashlib.sha1(b'blob '+str(len(b)).encode()+b'\0'+b).hexdigest()
+          x['files'].append({'path':p.name,'bytes':len(b),'sha256':hashlib.sha256(b).hexdigest(),'git_blob_sha':sha})
+          x['file_count_excluding_self_and_legacy_zip']=len(x['files'])
+          f.write_text(json.dumps(x,ensure_ascii=False,indent=2)+'\n','utf-8')
+          PY
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add -A reading-packs/2026-09-21_CVPR2026_PE3R
+          git commit -m "Build PE3R full non-reference translation with official supplement and offline reader [skip ci]"
+          git fetch origin main
+          git rebase origin/main
+          git push origin HEAD:main
+      - name: Independently read all uploaded GitHub main blobs and only then complete PE3R
+        shell: bash
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          set -euo pipefail
+          python scripts/verify_finalize_pe3r.py
+          git add -A reading-packs/2026-09-21_CVPR2026_PE3R reading-packs/repair-queue.json reading-packs/catalog.json reading-packs/README.md
+          git commit -m "Complete PE3R after remote blob audit; remove old ZIP and advance repair queue [skip ci]"
+          git fetch origin main
+          git rebase origin/main
+          git push origin HEAD:main
