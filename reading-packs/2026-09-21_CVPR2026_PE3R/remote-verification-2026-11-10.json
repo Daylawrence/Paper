@@ -1,0 +1,13 @@
+{
+  "paper": "PE3R",
+  "check_date": "2026-11-10",
+  "main_pages": 11,
+  "official_supplement_pages": 2,
+  "files_requested": 106,
+  "files_verified": 106,
+  "issues": [],
+  "verification": "main branch git-tree blob SHA + actual fetched blob size & SHA256",
+  "translation": "CVPR2026 formal main non-reference full text plus official supplemental sections 6 and 7, formulas 8-17 and tables 8-11",
+  "browser_audit": "offline-browser-audit-2026-11-10.json",
+  "status": "passed"
+}

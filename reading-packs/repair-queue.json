@@ -1,8 +1,8 @@
 {
-  "updated_date": "2026-11-09",
+  "updated_date": "2026-11-10",
   "policy": "GaussianDWM first until completed; then oldest uncompleted historical item, one paper per run; do not resume new recommendations while pending items exist",
   "total_packs": 14,
-  "pending": 12,
+  "pending": 11,
   "entries": [
     {
       "priority": 1,
@@ -53,9 +53,15 @@
       "paper": "PE3R",
       "directory": "reading-packs/2026-09-21_CVPR2026_PE3R",
       "original_date": "2026-09-21",
-      "legacy_status": "not_recorded",
-      "repair_status": "pending_expansion_and_remote_validation",
-      "new_standard_completed": false
+      "legacy_status": "completed",
+      "repair_status": "2026-11-10_completed_main_plus_official_supplement_full_translation_offline_html_no_zip",
+      "new_standard_completed": true,
+      "last_repair_date": "2026-11-10",
+      "completed_date": "2026-11-10",
+      "pending_items": [],
+      "completion_basis": "CVPR2026 11-page main + 2-page official supplemental PDF, non-reference full Chinese translation including tables 1-11 and equations 1-17; HTML/MD, offline browser, remote per-blob bytes/SHA256",
+      "completion_path": "reading-packs/2026-09-21_CVPR2026_PE3R",
+      "completion_report_path": "reading-packs/2026-09-21_CVPR2026_PE3R/remote-verification-2026-11-10.json"
     },
     {
       "priority": 4,
