@@ -68,7 +68,7 @@ for equation in article.select("div.equation"):
     raw=equation.get_text()
     equation.clear()
     equation.append(raw.replace(r"\[","$").replace(r"\]","$"))
-assert len(article.select("table"))>=12  # main 7 tables + supplemental 4 + extras
+assert len(article.select("table"))>=11  # main 7 tables + 4 official supplemental tables
 assert "式（16）" in article.get_text()
 (D/"translation.html").write_text(
     '<!doctype html><html lang="zh-CN"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>PE3R 完整中文译文（含官方补充材料）</title><link rel="stylesheet" href="style.css"><link rel="stylesheet" href="vendor/katex.min.css"></head><body class="standalone">'+str(article)+'<script src="vendor/katex.min.js"></script><script src="vendor/auto-render.min.js"></script><script>if(window.renderMathInElement)renderMathInElement(document.body,{delimiters:[{left:"\\\\[",right:"\\\\]",display:true},{left:"$$",right:"$$",display:true},{left:"$",right:"$",display:false}],throwOnError:false});</script></body></html>',
