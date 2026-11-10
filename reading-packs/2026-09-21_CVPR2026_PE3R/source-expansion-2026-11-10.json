@@ -1,0 +1,123 @@
+{
+  "paper": "PE3R",
+  "original_date": "2026-09-21",
+  "repair_date": "2026-11-10",
+  "stage": "source_restoration_not_full_translation_acceptance",
+  "zip_sha256": "81103e46f6c65da8da351013359253a406ab4ceccbf05a79730fc27d62ded5c4",
+  "entries": [
+    {
+      "name": "2026-09-21_CVPR2026_PE3R-Perception-Efficient-3D-Reconstruction.pdf",
+      "bytes": 144486,
+      "sha256": "b6dfb241a637cf74f84ee1b87b6aaa59dd71dfe858ad6032930a3bead42078c9"
+    },
+    {
+      "name": "algorithms.html",
+      "bytes": 16157,
+      "sha256": "5a727d7de26b04b146aba904896881c0a2f82d0c31eede996763aae8dc418add"
+    },
+    {
+      "name": "app.js",
+      "bytes": 1023,
+      "sha256": "963581624021ba919cd356f86d1ea2e96e662e79fa5b244e6e81afe93c6f1803"
+    },
+    {
+      "name": "index.html",
+      "bytes": 44434,
+      "sha256": "27f8420c1005ce03c915ecde8f24d744943258967202db4d3ee4e27636e6a26a"
+    },
+    {
+      "name": "pages/page-01.jpg",
+      "bytes": 218610,
+      "sha256": "2c0f7beaf0246730f33f90694b28823ce7475fd855c91e236bb86bb9e9f10717"
+    },
+    {
+      "name": "pages/page-02.jpg",
+      "bytes": 246597,
+      "sha256": "41c829be610c85e24d4f86038d573477bcc48ecde97a06299c71fff5d413c519"
+    },
+    {
+      "name": "pages/page-03.jpg",
+      "bytes": 222656,
+      "sha256": "8e32ad7e207d24f1d46f3e94b5dc9198c686face3fff679c458c63305ad4c0f4"
+    },
+    {
+      "name": "pages/page-04.jpg",
+      "bytes": 247351,
+      "sha256": "d4bbf06a81faec099c1b7d8044f6d03d31aa31d01001549d51769a81c25038ee"
+    },
+    {
+      "name": "pages/page-05.jpg",
+      "bytes": 229158,
+      "sha256": "6704fe4893da8592b912295989c0ab5480ad2e22a97b0444d6bca30a0112e58e"
+    },
+    {
+      "name": "pages/page-06.jpg",
+      "bytes": 248316,
+      "sha256": "3248f516f9d668c1dc2d67378dd761143090de26eea84b65b5ec21db0d683fc4"
+    },
+    {
+      "name": "pages/page-07.jpg",
+      "bytes": 198894,
+      "sha256": "0dcb70f7c3291918c13e29948faaba2921f86e845b7276dafae89849fb2ae496"
+    },
+    {
+      "name": "pages/page-08.jpg",
+      "bytes": 235956,
+      "sha256": "2beeba4da1633b3dad6a23743f440c132c0fc99ed11d961d2f2b215d8ac27e74"
+    },
+    {
+      "name": "pages/page-09.jpg",
+      "bytes": 237355,
+      "sha256": "ab46f223c4fe7ca0c7b628def0ff68cadbaa083f93d79a93df91bf828c144f6c"
+    },
+    {
+      "name": "pages/page-10.jpg",
+      "bytes": 243052,
+      "sha256": "08c7a41f69bc3cc73332e5eb3fa88465b41520ff1b36ceec968d5708c46038b9"
+    },
+    {
+      "name": "pages/page-11.jpg",
+      "bytes": 126785,
+      "sha256": "494cf8dac6d43226d2a31c7a934ea3b850c61368d9f52d97a7d656a495a5dad0"
+    },
+    {
+      "name": "paper.pdf",
+      "bytes": 1345876,
+      "sha256": "ec8e9784901c1d10eb95b091ea152115415b3b2d3a54d0ba6d8fb1c77fb4406d"
+    },
+    {
+      "name": "style.css",
+      "bytes": 3025,
+      "sha256": "f6ab70b32f8497fd78f652eedb38fadab7d67d8edc7f448f7118cb4b3f7e5b62"
+    },
+    {
+      "name": "translation.html",
+      "bytes": 25108,
+      "sha256": "5d5f629b00acc7ad2761aa5c3531a42cbdc13a4ba9882279dbd3d406af5fc0e9"
+    },
+    {
+      "name": "vendor/README.txt",
+      "bytes": 80,
+      "sha256": "2b47ef0e28338257003f202684f607b665e073c932b129c146977de8384dd84f"
+    },
+    {
+      "name": "打开说明.txt",
+      "bytes": 443,
+      "sha256": "0b1f8a7378ddf5b5338140bb4bb6401fe7eb251063df8ce8196fef64f057ef88"
+    }
+  ],
+  "existing_conflicts": [],
+  "pdfs": [
+    {
+      "file": "2026-09-21_CVPR2026_PE3R-Perception-Efficient-3D-Reconstruction.pdf",
+      "pages": 7,
+      "bytes": 144486
+    },
+    {
+      "file": "paper.pdf",
+      "pages": 11,
+      "bytes": 1345876
+    }
+  ],
+  "paper_pages": 11
+}

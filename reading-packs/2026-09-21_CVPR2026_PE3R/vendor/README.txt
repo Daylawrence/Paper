@@ -1,0 +1,1 @@
+公式已预渲染为离线可读的HTML/Unicode文本；不依赖CDN或fetch。

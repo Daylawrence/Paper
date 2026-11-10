@@ -1,0 +1,70 @@
+                                                          Pixel Embedding Disambiguation                        Global View Perception           Television
+
+                                                                                                                         Text Queries
+
+                                      Segmentation                                   Image Encoder
+                                                                                                                         Text Encoder
+                                                                                                                                                                                                      Table
+                                                              Multi-Level Identity
+                                                                                  Area-Moving              Text Embeddings
+                                                                                          Aggregation
+
+                                         Tracking
+                                                                                                                   Global Similarity
+                                                                                                 Pixel Embeddings             Normalization                   Slippers
+
+                                                        Cross-View Consistency
+                                                                                                                           Point Embeddings
+                                                   Semantic Field Reconstruction
+                                                                                                                                                                                Keyboard
+
+                                     Feed-Forward                                    Semantic-Guided
+                                            Prediction                                        Refinement
+
+
+            2D Images                           3D Point Cloud                             3D Semantic Field      3D Perception
+
+Figure 2. The PE3R Framework. Our pipeline comprises three core stages: (1) Pixel Embedding Disambiguation: Images are decom-
+posed into hierarchical masks (via SAM/SAM2), which are encoded by CLIP and aggregated to yield consistent per-pixel embeddings. (2)
+Semantic Point Cloud Reconstruction: A feed-forward model (DUSt3R) generates 3D point clouds, which are then reﬁned using semantic
+cues. (3) Global View Perception: Text embeddings are compared against the 3D point features via global similarity normalization, en-
+abling open-vocabulary semantic localization.
+
+
+gions, with SAM2 [36] enhancing cross-view and tem-     challenge of 3D semantic reconstruction from unposed im-
+poral consistency. DINOv2 [31] delivers high-quality vi-      ages.  (1) Pixel Embedding Disambiguation:  This stage
+sual features through self-supervised learning, and Ground-     focuses on deriving view-consistent and semantically co-
+ing DINO [25] facilitates open-set object detection using     herent embeddings from the input images.  Each image
+language-based supervision. PE3R strategically leverages       is ﬁrst decomposed into hierarchical object masks using
+these foundational models not merely as feature extractors,   SAM [21] or SAM2 [36]. These masks are encoded by a
+but as core components within a novel pipeline designed to     vision-language model (e.g., CLIP [35]) into a shared se-
+generate robust, language-grounded 3D semantic represen-     mantic space.  The core of this module lies in an area-
+tations, all without requiring any 3D model ﬁne-tuning.        weighted spherical interpolation strategy that aggregates re-
+                                                          gion features across different views and hierarchical lev-
+3. Method                                                             els. This process resolves semantic ambiguities caused by
+                                                              occlusions or nested objects, yielding dense, per-pixel se-3.1. Problem Formulation
+                                                         mantic embeddings that are consistent across images.  (2)
+We address the challenging problem of reconstructing a se-     Semantic Point Cloud Reconstruction: Building upon the
+mantically rich 3D scene representation from a collection of     disambiguated 2D embeddings, this stage transitions to 3D
+2D images captured in unconstrained, in-the-wild settings.     geometric reconstruction. A feed-forward model, such as
+The core difﬁculty stems from the absence of any geomet-    DUSt3R [52], is leveraged to generate an initial dense 3D
+ric supervision of semantics. To bridge this gap, we aim to     point cloud from the multi-view images. The key innova-
+reconstruct a 3D semantic point cloud directly from a set      tion here is the semantic-guided reﬁnement of this raw ge-
+of unposed 2D images, capturing both the spatial structure     ometry. The point cloud is reﬁned by leveraging the previ-
+and high-level semantic content of the scene. Our frame-     ously computed semantic embeddings to ﬁlter spatial out-
+work is designed to operate without any 3D semantic an-       liers and enhance coherence, resulting in a uniﬁed recon-
+notations, camera intrinsics, or extrinsics, ensuring scala-      struction that is both geometrically accurate and semanti-
+bility and practicality in unconstrained environments. The      cally labeled. (3) Global View Perception: The ﬁnal stage
+reconstructed scene supports natural language interaction,     enables open-vocabulary interaction with the reconstructed
+allowing users to issue open-ended text queries (e.g., “black    3D scene. A user’s natural language query is ﬁrst encoded
+chair”, “white bottle”) to retrieve and localize correspond-      into a textual embedding using CLIP’s text encoder. This
+ing semantic entities in 3D, thereby enabling interactive and     query embedding is then compared against the semantic
+human-aligned perception.                                       features of every 3D point via cosine similarity.  To en-
+                                                              sure a consistent and interpretable retrieval process across
+3.2. PE3R Framework                                              all views, a global min-max normalization is applied to
+                                                                the similarity scores. 3D points whose normalized simi-As illustrated in Fig. 2, the PE3R pipeline is architected
+                                                                          larity scores exceed a predeﬁned threshold are retrieved andaround three cohesive stages that collectively address the
+
+
+
+                                                     26879

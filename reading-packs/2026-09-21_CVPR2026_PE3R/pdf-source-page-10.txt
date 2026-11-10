@@ -1,0 +1,72 @@
+[26] Yichen Liu, Benran Hu, Junkai Huang, Yu-Wing Tai, and           ference on computer vision and pattern recognition, pages
+     Chi-Keung Tang. Instance neural radiance ﬁeld. In Proceed-          4104–4113, 2016. 6
+     ings of the IEEE/CVF International Conference on Com-      [38] Johannes L  Sch¨onberger,  Enliang  Zheng,  Jan-Michael
+     puter Vision, pages 787–796, 2023. 2                             Frahm, and Marc Pollefeys.  Pixelwise view selection for
+[27] Yichen Liu, Benran Hu, Chi-Keung Tang, and Yu-Wing Tai.           unstructured multi-view stereo. In Computer Vision–ECCV
+     Sanerf-hq: Segment anything for nerf in high quality. In Pro-          2016: 14th European Conference, Amsterdam, The Nether-
+     ceedings of the IEEE/CVF Conference on Computer Vision            lands, October 11-14, 2016, Proceedings, Part III 14, pages
+    and Pattern Recognition, pages 3216–3226, 2024. 1                 501–518. Springer, 2016. 6
+[28] Xiaoxiao Long, Cheng Lin, Peng Wang, Taku Komura, and      [39] Thomas Schops, Johannes L Schonberger, Silvano Galliani,
+    Wenping Wang. Sparseneus: Fast generalizable neural sur-           Torsten Sattler, Konrad Schindler, Marc Pollefeys, and An-
+     face reconstruction from sparse views. In European Confer-           dreas Geiger. A multi-view stereo benchmark with high-
+     ence on Computer Vision, pages 210–227. Springer, 2022.            resolution images and multi-camera videos.  In Proceed-
+    2                                                                    ings of the IEEE conference on computer vision and pattern
+                                                                             recognition, pages 3260–3269, 2017. 1, 6[29] Ben  Mildenhall,  Pratul P  Srinivasan, Matthew  Tancik,
+                                                                     [40] Philipp Schr¨oppel, Jan Bechtold, Artemij Amiranashvili, and     Jonathan T Barron, Ravi Ramamoorthi, and Ren Ng. Nerf:
+                                                          Thomas Brox. A benchmark and a baseline for robust multi-     Representing scenes as neural radiance ﬁelds for view syn-
+                                                                 view depth estimation. In Proceedings of the International      thesis. Communications of the ACM, 65(1):99–106, 2021. 1,
+                                                                    Conference on 3D Vision (3DV), 2022. 6    2
+                                                                     [41] Qiuhong Shen, Xingyi Yang, and Xinchao Wang. Flashsplat:[30] Michael Niemeyer and Andreas Geiger. Giraffe: Represent-
+                                                              2d to 3d gaussian splatting segmentation solved optimally.     ing scenes as compositional generative neural feature ﬁelds.
+                                                                      arXiv preprint arXiv:2409.08270, 2024. 2     In Proceedings of the IEEE/CVF Conference on Computer
+                                                                     [42] Yawar Siddiqui, Lorenzo Porzi, Samuel Rota Bul´o, Nor-     Vision and Pattern Recognition, pages 11453–11464, 2021.
+                                                      man  M¨uller,  Matthias Nießner, Angela Dai, and Peter    2
+                                                                          Kontschieder.  Panoptic lifting for 3d scene understanding
+[31] Maxime Oquab, Timoth´ee Darcet, Th´eo Moutakanni, Huy
+                                                                      with neural ﬁelds.  In Proceedings of the IEEE/CVF Con-
+     Vo, Marc Szafraniec,  Vasil Khalidov,  Pierre Fernandez,
+                                                                           ference on Computer Vision and Pattern Recognition, pages
+     Daniel Haziza, Francisco Massa, Alaaeldin El-Nouby, et al.
+                                                                 9043–9052, 2023. 2
+     Dinov2: Learning robust visual features without supervision.
+                                                                     [43] Pawan Sinha and Tomaso Poggio. Role of learning in three-
+     arXiv preprint arXiv:2304.07193, 2023. 3
+                                                                      dimensional form perception. Nature, 384(6608):460–463,
+[32] Songyou  Peng,  Kyle  Genova,  Chiyu  Jiang,  Andrea
+                                                                     1996. 1
+      Tagliasacchi, Marc Pollefeys, Thomas Funkhouser, et al.
+                                                                     [44] Julian Straub, Thomas Whelan, Lingni Ma, Yufan Chen, Erik
+     Openscene: 3d scene understanding with open vocabularies.
+                                                                 Wijmans, Simon Green, Jakob J Engel, Raul Mur-Artal, Carl
+     In Proceedings of the IEEE/CVF conference on computer vi-
+                                                                   Ren, Shobhit Verma, et al. The replica dataset: A digital
+     sion and pattern recognition, pages 815–824, 2023. 1
+                                                                                replica of indoor spaces. arXiv preprint arXiv:1906.05797,
+[33] Minghan Qin, Wanhua Li, Jiawei Zhou, Haoqian Wang, and                                                                     2019. 1, 6
+     Hanspeter Pﬁster. Langsplat: 3d language gaussian splatting.                                                                     [45] Ayc¸a Takmaz, Elisabetta Fedele, Robert W Sumner, Marc
+     In Proceedings of the IEEE/CVF Conference on Computer                                                                               Pollefeys, Federico Tombari, and Francis Engelmann. Open-
+     Vision and Pattern Recognition, pages 20051–20060, 2024.                                                                mask3d: Open-vocabulary 3d instance segmentation. arXiv
+      1, 2, 4, 5                                                                             preprint arXiv:2306.13631, 2023. 1
+[34] Yansong Qu, Shaohui Dai, Xinyang Li, Jianghang Lin, Liu-      [46] Songlin Tang, Wenjie Pei, Xin Tao, Tanghui Jia, Guangming
+     juan Cao, Shengchuan Zhang, and Rongrong Ji. Goi: Find          Lu, and Yu-Wing Tai. Scene-generalizable interactive seg-
+    3d gaussians of interest with an optimizable open-vocabulary           mentation of radiance ﬁelds. In Proceedings of the 31st ACM
+     semantic-space hyperplane. In Proceedings of the 32nd ACM            International Conference on Multimedia, pages 6744–6755,
+     International Conference on Multimedia, pages 5328–5337,           2023.
+     2024. 2, 4, 5, 6                                                                     [47] Vadim Tschernezki, Iro Laina, Diane Larlus, and Andrea
+[35] Alec Radford, Jong Wook Kim,  Chris Hallacy, Aditya           Vedaldi.  Neural feature fusion ﬁelds:  3d distillation of
+    Ramesh, Gabriel Goh, Sandhini Agarwal, Girish Sastry,            self-supervised 2d image representations.  In 2022 Inter-
+    Amanda Askell, Pamela Mishkin, Jack Clark, et al. Learning           national Conference on 3D Vision (3DV), pages 443–453.
+      transferable visual models from natural language supervi-          IEEE, 2022. 1
+      sion. In International conference on machine learning, pages      [48] Hengyi Wang and Lourdes Agapito. 3d reconstruction with
+     8748–8763. PMLR, 2021. 2, 3, 5                                          spatial memory. arXiv preprint arXiv:2408.16061, 2024. 2
+[36] Nikhila Ravi, Valentin Gabeur, Yuan-Ting Hu, Ronghang      [49] Jianyuan Wang, Nikita Karaev, Christian Rupprecht, and
+     Hu, Chaitanya Ryali, Tengyu Ma, Haitham Khedr, Roman          David Novotny. Vggsfm: Visual geometry grounded deep
+      R¨adle, Chloe Rolland, Laura Gustafson,  et  al.  Sam 2:            structure from motion. In Proceedings of the IEEE/CVF con-
+    Segment anything in images and videos.  arXiv preprint           ference on computer vision and pattern recognition, pages
+     arXiv:2408.00714, 2024. 3, 4, 6                                 21686–21697, 2024. 2
+[37] Johannes L Schonberger and Jan-Michael Frahm. Structure-      [50] Jianyuan Wang, Minghao Chen,  Nikita Karaev, Andrea
+     from-motion revisited.  In Proceedings of the IEEE con-           Vedaldi, Christian Rupprecht, and David Novotny.  Vggt:
+
+
+
+                                                    26886

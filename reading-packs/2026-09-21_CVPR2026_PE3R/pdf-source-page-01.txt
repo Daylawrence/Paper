@@ -1,0 +1,77 @@
+                  This CVPR paper is the Open Access version, provided by the Computer Vision Foundation.
+                             Except for this watermark, it is identical to the accepted version;
+                            the final published version of the proceedings is available on IEEE Xplore.
+
+
+
+
+
+             PE3R: Perception-Efﬁcient 3D Reconstruction
+
+
+                                  Jie Hu,  Shizun Wang,  Xinchao Wang*
+                  xML Lab, National University of Singapore
+
+
+                 Abstract                              sian Splatting (3DGS) [19] can produce high-quality recon-
+                                                                   structions but typically require per-scene training and in-
+Recent advances in 2D-to-3D perception have enabled the     volve heavy semantic lifting, making them impractical for
+recovery of 3D scene semantics from unposed images. How-      real-time or large-scale applications.
+ever, prevailing methods often suffer from limited general-
+                                                     To overcome these limitations, we introduce PE3R, a
+ization, reliance on per-scene optimization, and semantic
+                                                                tuning-free framework for efﬁcient, accurate, and general-
+inconsistencies across viewpoints. To address these limita-
+                                                                 izable 3D semantic reconstruction. Inspired by recent ad-
+tions, we introduce PE3R, a tuning-free framework for efﬁ-
+                                                          vances in feed-forward geometry estimation [24, 50, 52],
+cient and generalizable 3D semantic reconstruction. By in-
+                                             PE3R employs a feed-forward pipeline  that eliminates
+tegrating multi-view geometry with 2D semantic priors in a
+                                                            scene-speciﬁc ﬁne-tuning while enabling rapid inference.
+feed-forward pipeline, PE3R achieves zero-shot generaliza-
+                                               As illustrated in Fig. 1, our framework integrates three care-
+tion across diverse scenes and object categories without any
+                                                                     fully designed modules: (1) Pixel Embedding Disambigua-
+scene-speciﬁc ﬁne-tuning. Extensive evaluations on open-
+                                                                   tion ensures semantic consistency across views and object
+vocabulary segmentation and multi-view depth estimation
+                                                                   hierarchies; (2) Semantic Point Cloud Reconstruction fuses
+show that PE3R not only achieves up to 9× faster inference
+                                                       geometry with dense 2D semantics to reﬁne 3D structure;
+but also sets new state-of-the-art accuracy in both seman-
+                                                      and (3) Global View Perception enables open-vocabulary
+tic and geometric metrics. Our approach paves the way for
+                                                                object retrieval through language grounding. This cohesive
+scalable, language-driven 3D scene understanding. Code
+                                                            design empowers robust zero-shot generalization to previ-
+is available at github.com/hujiecpp/PE3R.
+                                                            ously unseen environments.
+
+                                          We conduct extensive evaluation across diverse bench-
+1. Introduction                                         marks, including Mip-NeRF360 [3], Replica [44], Scan-
+                                                  Net++  [57]  for  open-vocabulary  segmentation,  and
+While machine vision has achieved remarkable success in                                                  KITTI [14], ScanNet [9], DTU [1], ETH3D [39], Tanks
+2D perception tasks, human perception is inherently three-                                                      and Temples [22] for multi-view depth estimation. Results
+dimensional, seamlessly integrating multiple viewpoints to                                                          demonstrate that PE3R achieves up to 9× faster 3D seman-
+construct a coherent understanding of the world [2, 43, 54].                                                                              tic reconstruction than prior methods while advancing in
+This fundamental gap motivates a central challenge in com-                                                          both semantic ﬁdelity and geometric precision.
+puter vision: can we harness powerful 2D perception mod-
+els to reconstruct and comprehend 3D scenes without rely-       Our main contributions are summarized as follows:
+ing on 3D supervision? The problem is twofold: it requires      • We propose PE3R, a fast and scalable framework for 3D
+not only estimating accurate geometry from unposed im-       semantic reconstruction that operates directly on unposed
+ages but also lifting 2D semantic information into a consis-     2D images, requiring no 3D supervision, per-scene ﬁne-
+tent 3D representation.                                            tuning, or camera parameters.
+   Recent methods have made signiﬁcant strides in 2D-      • We introduce three novel modules that address key chal-
+to-3D perception, recovering both geometry and semantics       lenges in 2D-to-3D perception:  pixel embedding dis-
+from unposed multi-view images [5, 6, 15, 17, 18, 20, 23,       ambiguation for cross-view consistency, semantic point
+27, 32, 33, 45–47, 56, 62]. Despite this progress, these ap-       cloud reconstruction for geometry-semantics fusion, and
+proaches often face a trilemma: they struggle with scene       global view perception for open-vocabulary interaction.
+generalization, fail to maintain semantic consistency across      • Through comprehensive evaluations on multiple bench-
+views, and suffer from high computational costs. For in-       marks, we demonstrate state-of-the-art performance, ef-
+stance, Neural Radiance Fields (NeRF) [29] and 3D Gaus-        fective zero-shot generalization, and practical scalability.
+   *Corresponding author: xinchao@nus.edu.sg                     Code is provided to ensure reproducibility.
+
+
+
+                                                    26877

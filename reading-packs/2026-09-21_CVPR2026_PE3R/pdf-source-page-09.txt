@@ -1,0 +1,73 @@
+Acknowledgements.  This project is supported by the Na-      [13] Qiancheng Fu, Qingshan Xu, Yew Soon Ong, and Wenbing
+tional Research Foundation, Singapore, under its Medium           Tao. Geo-neus: Geometry-consistent neural implicit surfaces
+Sized Center for Advanced Robotics Technology Innova-            learning for multi-view reconstruction. Advances in Neural
+tion.                                                                   Information Processing Systems, 35:3403–3416, 2022. 2
+                                                                     [14] Andreas Geiger, Philip Lenz, Christoph Stiller, and Raquel
+References                                                          Urtasun. Vision meets robotics: The kitti dataset. The Inter-
+                                                                           national Journal of Robotics Research, 32(11):1231–1237,
+ [1] Henrik Aanæs, Rasmus Ramsbøl Jensen, George Vogiatzis,           2013. 1, 6
+     Engin Tola, and Anders Bjorholm Dahl. Large-scale data for
+                                                                     [15] Rahul Goel, Dhawal Sirikonda, Saurabh  Saini, and PJ
+     multiple-view stereopsis. International Journal of Computer
+                                                                    Narayanan.  Interactive segmentation of radiance ﬁelds. In
+      Vision, 120:153–168, 2016. 1, 6                                                                     Proceedings of the IEEE/CVF Conference on Computer Vi-
+ [2] Vladislav Ayzenberg and Marlene Behrmann. Development                                                                           sion and Pattern Recognition, pages 4201–4211, 2023. 1
+     of visual object recognition. Nature Reviews Psychology, 3
+                                                                     [16] Jianfei Guo, Nianchen Deng, Xinyang Li, Yeqi Bai, Bo-
+     (2):73–90, 2024. 1
+                                                                                   tian Shi, Chiyu Wang, Chenjing Ding, Dongliang Wang,
+ [3] Jonathan T Barron, Ben Mildenhall, Dor Verbin, Pratul P
+                                                                 and Yikang  Li.    Streetsurf:  Extending multi-view im-
+      Srinivasan, and Peter Hedman. Mip-nerf 360: Unbounded
+                                                                                           plicit surface reconstruction to street views. arXiv preprint
+      anti-aliased neural radiance  ﬁelds.    In Proceedings  of
+                                                                      arXiv:2306.04988, 2023. 2
+     the IEEE/CVF conference on computer vision and pattern
+      recognition, pages 5470–5479, 2022. 1, 6                        [17] Yansong Guo, Jie Hu, Yansong Qu, and Liujuan Cao. Wild-
+                                                                        seg3d: Segment any 3d objects in the wild from 2d images. [4] Yash Bhalgat, Iro Laina, Joao F Henriques, Andrew Zisser-
+                                                                           In Proceedings of the IEEE/CVF International Conference     man, and Andrea Vedaldi. Contrastive lift: 3d object instance
+                                                              on Computer Vision, pages 5166–5176, 2025. 1     segmentation by slow-fast contrastive fusion. arXiv preprint
+     arXiv:2306.04633, 2023. 2                                      [18] Xu Hu, Yuxi Wang, Lue Fan, Junsong Fan, Junran Peng,
+ [5] Jiazhong Cen, Zanwei Zhou, Jiemin Fang, Wei Shen, Lingxi         Zhen Lei, Qing Li, and Zhaoxiang Zhang. Semantic anything
+     Xie, Dongsheng Jiang, Xiaopeng Zhang, Qi Tian, et al. Seg-            in 3d gaussians. arXiv preprint arXiv:2401.17857, 2024. 1,
+    ment anything in 3d with nerfs. Advances in Neural Infor-         2
+     mation Processing Systems, 36:25971–25990, 2023. 1, 2         [19] Bernhard Kerbl, Georgios Kopanas, Thomas Leimk¨uhler,
+ [6] Jiazhong Cen, Jiemin Fang, Chen Yang, Lingxi Xie, Xi-          and George Drettakis.  3d gaussian splatting for real-time
+     aopeng Zhang, Wei Shen, and Qi Tian.  Segment any 3d           radiance ﬁeld rendering. ACM Trans. Graph., 42(4):139–1,
+     gaussians, 2024. 1, 2                                             2023. 1, 2
+ [7] Hanlin Chen, Chen Li, Mengqi Guo, Zhiwen Yan, and      [20] Justin  Kerr, Chung Min Kim, Ken Goldberg, Angjoo
+    Gim Hee Lee. Gnesf: Generalizable neural semantic ﬁelds.          Kanazawa, and Matthew Tancik. Lerf: Language embedded
+     Advances in Neural Information Processing Systems, 36:           radiance ﬁelds.  In Proceedings of the IEEE/CVF Interna-
+     36553–36565, 2023. 2                                                   tional Conference on Computer Vision, pages 19729–19739,
+ [8] Seokhun Choi, Hyeonseop Song, Jaechul Kim, Taehyeong           2023. 1, 4, 5, 6
+    Kim, and Hoseok Do. Click-gaussian: Interactive segmenta-                                                                     [21] Alexander Kirillov, Eric Mintun, Nikhila Ravi, Hanzi Mao,
+      tion to any 3d gaussians. arXiv preprint arXiv:2407.11793,                                                                 Chloe Rolland, Laura Gustafson, Tete Xiao, Spencer White-
+     2024. 2                                                                         head, Alexander C Berg, Wan-Yen Lo, et al. Segment any-
+ [9] Angela Dai, Angel X Chang, Manolis Savva, Maciej Hal-                                                                                 thing. In Proceedings of the IEEE/CVF International Con-
+      ber, Thomas Funkhouser, and Matthias Nießner.  Scannet:                                                                           ference on Computer Vision, pages 4015–4026, 2023. 2, 3,
+     Richly-annotated 3d reconstructions of indoor scenes.  In                                                              4
+     Proceedings of the IEEE conference on computer vision and
+                                                                     [22] Arno Knapitsch, Jaesik Park, Qian-Yi Zhou, and Vladlen
+     pattern recognition, pages 5828–5839, 2017. 1, 6
+                                                                         Koltun. Tanks and temples: Benchmarking large-scale scene
+[10] Bardienus Duisterhof, Lojze Zust, Philippe Weinzaepfel,
+                                                                              reconstruction. ACM Transactions on Graphics (ToG), 36
+     Vincent Leroy, Yohann Cabon, and Jerome Revaud. Mast3r-
+                                                                            (4):1–13, 2017. 1, 6
+     sfm: a fully-integrated solution for unconstrained structure-
+                                                                     [23] Sosuke Kobayashi, Eiichi Matsumoto, and Vincent Sitz-     from-motion. arXiv preprint arXiv:2409.19152, 2024. 2
+                                                               mann. Decomposing nerf for editing via feature ﬁeld distil-[11] Francis Engelmann, Fabian Manhardt, Michael Niemeyer,
+                                                                                      lation. Advances in Neural Information Processing Systems,     Keisuke Tateno, Marc Pollefeys, and Federico Tombari.
+                                                                  35:23311–23330, 2022. 1    OpenNeRF: Open Set 3D Neural Scene Segmentation with
+     Pixel-Wise Features and Rendered Novel Views. In Interna-      [24] Vincent Leroy, Yohann Cabon, and J´erˆome Revaud. Ground-
+      tional Conference on Learning Representations, 2024. 4               ing image matching in 3d with mast3r.   arXiv preprint
+[12] Zhiwen Fan,  Jian Zhang, Wenyan Cong, Peihao Wang,           arXiv:2406.09756, 2024. 1, 2, 6
+     Renjie Li, Kairun Wen,  Shijie Zhou, Achuta Kadambi,      [25] Shilong Liu, Zhaoyang Zeng, Tianhe Ren, Feng Li, Hao
+    Zhangyang Wang, Danfei Xu, et al.  Large spatial model:          Zhang, Jie Yang, Chunyuan Li, Jianwei Yang, Hang Su, Jun
+     End-to-end unposed images to semantic 3d.  Advances in          Zhu, and Lei Zhang. Grounding dino: Marrying dino with
+     Neural Information Processing Systems, 37:40212–40229,          grounded pre-training for open-set object detection.  arXiv
+     2024. 2, 4, 5, 6                                                        preprint arXiv:2303.05499, 2023. 3
+
+
+
+                                                    26885

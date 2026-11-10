@@ -1,0 +1,66 @@
+precisely localized, thereby facilitating real-time, language-            Dataset       Method       mIoU   mPA    mP
+grounded understanding and exploration of the scene.                       LERF [20]       0.2698   0.8183   0.6553
+                                                                       F-3DGS [62]      0.3889   0.8279   0.7085
+3.3. Pixel Embedding Disambiguation                            Mip.   GSLangSplatGrouping[33][56]   0.44100.5545   0.75860.8071   0.76110.8600
+                                                                      OpenNeRF [11]    0.5734   0.8345   0.8959
+Establishing a consistent semantic embedding space across                 LSM [12]       0.6254   0.8887   0.9192
+multiple views is foundational for robust 3D reconstruc-                   GOI [34]       0.8646   0.9569   0.9362
+                                                                          PE3R, ours      0.8951   0.9617   0.9726
+tion.  This process, however, is inherently challenged by
+                                                                   LERF [20]       0.2815   0.7071   0.6602
+two types of ambiguity:  (i) object-level ambiguity, where                   F-3DGS [62]      0.4480   0.7901   0.7310
+overlapping or nested structures (e.g., a cup on a table) cre-            Rep.   GS Grouping [56]   0.4170   0.7370   0.7276
+                                                                                        LangSplat [33]     0.4703   0.7694   0.7604
+ate uncertain semantic associations; and (ii) viewpoint-level                  OpenNeRF [11]    0.5014   0.7915   0.7831
+ambiguity, where occlusions or perspective changes lead to                 LSM [12]       0.5614   0.8113   0.7961
+                                                                      GOI [34]       0.6169   0.8367   0.8088
+inconsistent semantics across different viewpoints. To re-                    PE3R, ours      0.6531   0.8377   0.8444
+solve these issues, we construct dense per-pixel embeddings
+                                                                  Table 1. 2D-to-3D Open-Vocabulary Segmentation results on
+that are both discriminative at the object level and consistent
+                                                                       small-scale Mip-NeRF360 (Mip.) and Replica (Rep.) datasets.
+across all views. In our formulation, an “object” is deﬁned
+as a collection of hierarchically related masks with substan-
+tial spatial overlap. Speciﬁcally, a smaller mask is grouped                                                             Proposition 2. Semantic Guidance: If FA has a higher
+into a larger object if their Intersection over Union (IoU)                                                                    similarity to a reference semantic vector FC than FB does,
+exceeds a threshold of 0.9. This simple yet effective heuris-                                                            then ˆFB will also exhibit a higher similarity to FC than FB
+tic allows us to associate ﬁne-grained parts (e.g., chair legs)                                                              does. This steers the aggregated representation toward more
+with their corresponding whole-object regions, without re-                                                              semantically meaningful directions.
+quiring any external supervision or predeﬁned labels.                                                         These properties guarantee that our interpolation strategy
+Image Embedding Extraction.  Given n input images                                                                              is both geometrically sound and semantically informative.
+X1, . . . , Xn ∈ R3×H×W , we employ SAM [21] and                                                              Pixel Embedding Ensemble. To enhance semantic coher-
+SAM2 [36] to decompose each image into a hierarchy                                                              ence, we perform a two-stage ensemble that operates both
+of  object masks with  consistent  object  indices  across                                                             within and across views. (1) Within-view aggregation: For
+views.  This yields a collection of masked image regions                                                         each image, object masks are processed in descending or-
+M1, . . . , Mn ∈Rm×3×H×W , where m is the number of                                                             der of area. The embeddings of smaller masks (likely ob-
+masks per image. A vision-language encoder Fimg(·) is                                                                        ject parts) are iteratively aggregated via area-weighted in-
+used to extract each masked region into the semantic space:                                                                  terpolation with those of larger masks (likely whole ob-
+                                                                           jects), promoting semantic consistency across the hierarchi-
+   F1, F2, . . . , Fn = N(Fimg(M1, M2, . . . , Mn)),   (1)      cal part-whole structure within a single view.  (2) Cross-
+                                                      view aggregation: We seed the SAM2 tracker on the ﬁrst
+where Fi ∈Rm×d denotes the L2-normalized (N(·)) em-     view using SAM (segment-everything) masks; for each sub-
+bedding matrix for the i-th image.                            sequent view, SAM2 propagates tracked masks and SAM
+Area-Weighted Interpolation. To resolve semantic am-     proposes all masks again. Any SAM mask with IoU<0.1 to
+biguities and align features across both views and hierarchy      all current SAM2 masks is treated as newly discovered/re-
+levels, we introduce a geometry-aware aggregation strategy.     detected and inserted as a new tracking prompt (improv-
+Our intuition is that masks with larger visible areas typically     ing recall under tracking loss). When association is unre-
+provide more stable and reliable semantic features, and thus      liable, we skip cross-view fusion and fall back to within-
+should exert a greater inﬂuence on the aggregated represen-     view disambiguation. This two-level ensemble produces a
+tation. Given two unit embeddings FA and FB with cor-      set of stable and semantically coherent object embeddings
+responding areas areaA and areaB, we deﬁne the area ratio      that are consistent across both spatial hierarchies and mul-
+t = areaA+areaBareaB   and compute the aggregated embedding as:      tiple views. The ﬁnal object-level embeddings are then pro-
+                                                                 jected back into the pixel space, yielding dense per-pixel
+                                                          semantic maps E1, E2, . . . , En ∈RH×W ×d.
+                          sin((1 −t)θ)      sin(tθ)
+  ˆFB = aFA + bFB, a =                     , b =            ,  (2)
+                             sin(θ)          sin(θ)           3.4. Semantic Point Cloud Reconstruction
+
+where θ is the angle between FA and FB. This formulation     Building upon the disambiguated pixel embeddings, this
+possesses two key properties that underpin its effectiveness:     module focuses on reconstructing a high-quality 3D se-
+   Proposition 1. Vector Normalization: The interpolated     mantic point cloud. We leverage recent feed-forward 3D
+vector ˆFB preserves unit norm, ensuring it remains within     pointmap predictors, such as DUSt3R [52], to directly es-
+the original semantic embedding space.                        timate per-pixel 3D coordinates (or pointmaps) from the
+
+
+
+                                                     26880

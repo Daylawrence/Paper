@@ -1,0 +1,65 @@
+    Multi-Level Disam. Cross-View Disam. mIoU  mPA  mP                     Method          rel↓   τ ↑   Runtime   ∆
+
+         averaged           averaged      0.1994 0.6001 0.5985               w/o Semantic Recon.    4.9    64.4    10.40s         -
+         averaged            area-slerp     0.2158 0.6141 0.6015               PE3R (full)        4.5    68.0    11.19s    +0.79s
+         area-slerp          averaged      0.2058 0.6041 0.6003
+      conf-weighted      conf-weighted   0.1532 0.5723 0.5435          Table 7.  Ablation on Semantic Point Cloud Reconstruction.
+      conf-weighted         conf-slerp     0.1743 0.5842 0.5554
+         conf-slerp        conf-weighted   0.1721 0.5813 0.5493        Removing this module degrades geometric quality.
+         conf-slerp           conf-slerp     0.1998 0.5991 0.5918
+
+         area-slerp           area-slerp     0.2248 0.6542 0.6315
+
+Table 6.  Comparison of Feature Aggregation Strategies on
+ScanNet++.
+
+
+4.3. Ablation Studies
+
+To provide a comprehensive analysis of PE3R’s design, we
+present key ablation studies here, with additional experi-
+ments detailed in the supplementary material. All evalua-
+tions are conducted on both open-vocabulary segmentation
+and multi-view depth estimation to quantitatively assess the
+contribution of each component.
+Effect of Disambiguation Modules. We ﬁrst analyze the
+three core modules responsible for establishing a consis-
+                                                                                                                                     (a) w/o Semantic Field Reconstruction           (b) w/ Semantic Field Reconstruction
+tent semantic space: Multi-Level Disambiguation, Cross-
+                                                                  Figure 6. Effect of Semantic Point Cloud Reconstruction. Re-
+View Disambiguation, and Global Min-Max Normaliza-                                                         moving this module increases spatial noise and reduces object-
+tion. Quantitative results on ScanNet++ (Table 5) demon-                                                                            level coherence in the reconstructed point cloud, highlighting its
+strate that ablating any module causes a performance drop,      importance for both geometric and semantic ﬁdelity.
+with the most signiﬁcant degradation occurring when Multi-
+Level Disambiguation is removed. This underscores its crit-
+ical role in resolving hierarchical ambiguities and maintain-     Effect of Semantic Reconstruction Module. We further
+ing part-whole consistency. Qualitative results in Figs. 3–      ablate the Semantic Point Cloud Reconstruction module to
+5 offer further insight. As shown in Fig. 3, the absence      evaluate its impact on geometric accuracy. The results in
+of Multi-Level Disambiguation leads to fragmented seman-     Table 7 show that this module brings a noticeable improve-
+tics. While parts (e.g., “Drip tray”) may be detected, the     ment in depth estimation metrics with only a minimal com-
+model fails to associate them with the whole object (e.g.,      putational overhead. Qualitatively, Fig. 6 demonstrates that
+“Espresso machine”). Our module enables coherent hierar-     semantic-guided reﬁnement effectively suppresses spatial
+chical understanding. Fig. 4 illustrates that without Cross-      outliers caused by challenging conditions like reﬂections
+View Disambiguation, the same object (e.g., “Bicycle” or     and transparency, resulting in cleaner and more structurally
+“Chair”) is inconsistently labeled across viewpoints due to     coherent point clouds. This conﬁrms that semantic cues ac-
+occlusion or perspective changes.  Integrating this mod-      tively contribute to enhancing the underlying geometry, be-
+ule restores semantic coherence throughout the 3D scene.     yond merely providing labels.
+Fig. 5 reveals that removing Global Min-Max Normaliza-
+tion results in uncalibrated similarity scores across views,     5. Conclusion
+impairing retrieval reliability. This step ensures a consis-
+tent and interpretable similarity range, which is crucial for   We presented PE3R, a framework that establishes a new
+robust open-vocabulary localization. To validate our spe-     paradigm for efﬁcient and generalizable 3D semantic recon-
+ciﬁc design choice for feature aggregation, we compare our      struction from unposed images. By integrating pixel em-
+geometry-aware interpolation against naive uniform aver-     bedding disambiguation, semantic point cloud reconstruc-
+aging and conﬁdence-weighted baselines using DUSt3R’s      tion, and global view perception into a cohesive pipeline,
+per-point conﬁdence (conf-avg and conf-slerp). As shown    PE3R achieves robust zero-shot generalization across di-
+in Table 6, uniform averaging leads to consistently lower     verse scenes without any scene-speciﬁc ﬁne-tuning.  Ex-
+mIoU and less accurate retrieval, while our area-weighted      tensive evaluations across diverse benchmarks demonstrate
+slerp outperforms both conﬁdence-weighted variants on      that PE3R achieves state-of-the-art accuracy with good ef-
+ScanNet++. This conﬁrms that our area-weighted, spher-     ﬁciency. We believe PE3R paves the way for more scalable
+ical interpolation is essential for generating discriminative     and practical 3D vision systems, with promising applica-
+and reliable semantic embeddings.                               tions in robotics, AR/VR, and autonomous navigation.
+
+
+
+                                                     26884

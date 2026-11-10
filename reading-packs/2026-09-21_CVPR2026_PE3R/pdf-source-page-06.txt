@@ -1,0 +1,79 @@
+                                  KITTI         ScanNet       ETH3D       DTU        T&T            Ave.
+              Methods                                          rel↓     τ ↑     rel↓     τ ↑      rel↓     τ ↑     rel↓     τ ↑     rel↓     τ ↑     rel↓     τ ↑
+
+        COLMAP [37]           12.0    58.2    14.6     34.2     16.4    55.1     0.7     96.5     2.7     95.0     9.3     67.8
+        (a)        COLMAP Dense [38]    26.9    52.7    38.0     22.5     89.8    23.2    20.8    69.3    25.7    76.4    40.2    48.8
+
+          DUSt3R [52]              9.1     39.5     4.9     60.2      2.9     76.9     3.5     69.3     3.2     76.7     4.7     64.5
+            Fast3R [55]                    -          -       6.3     50.3      4.7     62.7     3.9     62.6     4.4     64.0        -          -
+        (b)
+          DUSt3R [52]†           11.0    33.2     4.8     60.3     3.1     74.5     2.7     75.7     2.9     78.5     4.9     64.4
+          MASt3R [24]†           36.9     5.4     22.0     9.6     27.9     9.9     13.6    13.7    22.1    14.6    24.5    10.6
+        VGGT [50]               9.4     41.3     4.4     65.0      1.8     86.3     1.1     94.3     2.1     85.2     3.8     74.4
+
+           PE3R, with DUSt3R      9.4     48.6     5.5     55.1      2.3     82.0     3.2     69.1     2.1     85.3     4.5     68.0
+        (c)           PE3R, with VGGT        9.2     43.8     4.3     65.8      1.7     86.6     1.1     94.4     2.0     85.4     3.7     75.2
+
+Table 4. Multi-view Depth Estimation on RobustMVD. Comparison under: (a) classical methods, (b) feed-forward methods, and (c)
+semantic reconstruction. PE3R achieves the best average performance, demonstrating that semantic guidance generally enhances geometric
+accuracy. † indicates our implementation. Metrics are indicated by relative error (rel ↓) and inlier ratio (τ ↑).
+
+
+4. Experiments                                                  tices in the ﬁeld.  For open-vocabulary segmentation, we
+                                                                 report the standard metrics of mean Intersection over Union
+4.1. Experimental Details                              (mIoU), mean Pixel Accuracy (mPA), and mean Precision
+                                                          (mP). The evaluation procedure is tailored to dataset charac-Datasets and Tasks. We evaluate PE3R on two core tasks
+                                                                           teristics to ensure optimal and fair benchmarking. On Mip-to comprehensively assess its capabilities: open-vocabulary
+                                               NeRF360 and Replica, we follow the protocol established2D-to-3D segmentation and multi-view depth estimation.
+                                                    by GOI [34]. We perform a holistic 3D semantic reconstruc-For open-vocabulary segmentation, we employ three bench-
+                                                                   tion of the entire scene. Open-vocabulary queries, labeledmarks: Mip-NeRF360 [3] and Replica [44] are used to
+                                                    by GOI, are then executed in this uniﬁed 3D space. Theevaluate performance in relatively compact, object-centric
+                                                                   resulting 3D segmentation is projected back onto the origi-scenes, using the open-vocabulary labels from GOI [34].
+                                                                nal 2D image planes for quantitative comparison against theScanNet++ [57] is adopted to test generalization in large-
+                                           2D ground-truth masks. On the larger ScanNet++ dataset,scale, complex indoor environments with diverse layouts
+                                             we process data in snippets of four consecutive frames toand object categories.  For multi-view depth estimation,
+                                                          reduce the computational load, a common practice for scal-we follow established benchmarks to assess geometric ac-
+                                                             ing 3D methods to large scenes. This approach effectivelycuracy across a wide range of scenarios.  The evaluated
+                                                                 highlights the beneﬁt of integrating semantic features intodatasets include KITTI [14] (outdoor driving), ScanNet [9]
+                                           3D reconstruction.  For a direct and fair comparison, we(indoor scenes), DTU [1] (controlled object-level scans),
+                                                                   integrate the semantic embeddings from baseline methods,ETH3D [39] (high-resolution scenes), and Tanks and Tem-
+                                          LERF [20], LSM [12], and GOI [34], directly into ourples (T&T) [22] (large-scale outdoor). This selection en-
+                                                                   pipeline. This is done by replacing only the pixel-level se-sures a comprehensive evaluation across both indoor and
+                                                         mantic embeddings while keeping the geometry backboneoutdoor environments.
+                                                      and the entire evaluation procedure identical. The ﬁnal eval-
+Implementation Details. PE3R is built upon several pow-
+                                                              uation is conducted by projecting the 3D segmentation re-
+erful, off-the-shelf models. We employ MobileSAMv2 [60]
+                                                                       sults back to 2D for comparison with ground-truth annota-
+for efﬁcient image segmentation, SAM2 [36] for obtaining
+                                                                       tions. This controlled setup ensures that performance differ-
+temporally consistent mask tracks, and DUSt3R [52] as our
+                                                          ences are attributable solely to the quality of the semantic
+core feed-forward 3D pointmap predictor. We use SAM for
+                                                        embeddings. We report the total pipeline processing time
+per-image “segment-everything” masks, and SAM2 for in-
+                                                              (preprocessing and inference) to assess computational ef-
+stance tracking. Concretely, we initialize SAM2 on the ﬁrst
+                                                              ﬁciency.  For multi-view depth estimation, we adhere to
+image by running SAM and using the resulting masks as
+                                                                the ofﬁcial protocol of the RobustMVD benchmark [40].
+prompts to seed the SAM2 tracker.  For each subsequent
+                                                         For each test sample, we use source views selected via the
+image, we (i) run SAM2 to propagate tracked masks, then
+                                                             quasi-optimal strategy. Performance is measured using Ab-
+(ii) run SAM to re-detect all objects; any SAM mask with
+                                                                 solute Relative Error (Rel) ↓and the Inlier Ratio (τ) ↑at a
+IoU<0.1 to all current SAM2 masks is treated as newly
+                                                               threshold of 1.03. Results are reported for each individual
+discovered/re-detected and added as a new instance to the
+                                                                 dataset as well as the overall average across all benchmarks.
+tracker, recovering missed/lost tracks under large viewpoint
+changes. All experiments were conducted on a single server
+                                                               4.2. Main Results
+equipped with an NVIDIA A100 GPU and an Intel i7 CPU.
+Evaluation Protocol. Our evaluation protocol is designed     2D-to-3D Open-Vocabulary Segmentation. We ﬁrst eval-
+to be fair, reproducible, and aligned with standard prac-     uate PE3R on the Mip-NeRF360 and Replica datasets,
+
+
+
+                                                     26882

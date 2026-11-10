@@ -1,0 +1,81 @@
+                      2D Images                       3D Perception                       2D Images                       3D Perception                       2D Images                       3D Perception
+
+
+
+
+
+                                                                                                 Shelf                  Bottle with blue logo                                                                     Blue mailbox                 Signage                                                                            Big Ben             Houses of Parliament
+
+
+
+
+
+                                                                                      Eyeglasses                Desk lamp                                                                           Black seat                 White cars                                                                          Westminster Hall             Christmas tree
+
+
+
+
+
+                                                                                              Scissors                  Frying pan                                                                         Table with white legs             White sofa                                                                    Sydney opera house               Bay
+
+
+
+
+
+                                                                                Counting cup            Washing machine                                                                               Bicycle                    Blue box                                                                                Ship                     Skyscrapers
+
+
+
+
+
+                                                                                    Nespresso                 Android doll                                                                         Flowers                      Statue                                                                         Leaning Tower          Dome Baptistery
+
+
+
+
+
+                                                                             Paper box                  Telephone                                                                                   Trees                    Bench                                                                              Cathedral                 Glass lawns
+                                    (a) Indoor Scenes                                              (b) Outdoor Scenes                                                 (c) Wild Scenes
+Figure 1. Examples of Perception-Efﬁcient 3D Reconstruction. Our framework reconstructs 3D semantic scenes from unposed RGB
+images and supports open-vocabulary interaction, without any training or per-scene optimization. It is efﬁcient in two critical ways: (1) In-
+put efﬁciency: no depth maps or camera parameters are needed; (2) Inference efﬁciency: signiﬁcant speed gains on semantic reconstruction
+compared to prior pipelines. These properties make PE3R practical for real-world deployment in large-scale and time-sensitive scenarios.
+
+
+2. Related Work                                     ded 2D masks into NeRF representations to enable 3D-
+                                                       aware segmentation with 2D supervision. Subsequent ef-
+2D-to-3D Reconstruction. Signiﬁcant progress has been      forts extended NeRF to support 3D instance segmentation,
+made in reconstructing 3D scenes from 2D images, with     using either supervised [4, 26, 42] or unsupervised [30, 58]
+many methods achieving high surface ﬁdelity and geomet-      learning paradigms.  The introduction of the Segment
+ric coherence. A number of approaches leverage signed     Anything Model (SAM) [21] inspired a range of SAM-
+distance functions (SDFs) combined with volume render-     guided 3D lifting pipelines, including SA3D [5] and Fea-
+ing for accurate mesh extraction [13, 16, 28, 51, 53]. Neu-    ture3DGS [62], which incorporate prompt-driven segmen-
+ral Radiance Fields (NeRF) [29] popularized the use of im-      tation into 3D scene representations.  Several other meth-
+plicit neural representations for view synthesis, while 3D     ods directly project SAM masks into 3D space, such as
+Gaussian Splatting (3DGS) [19] later introduced an explicit,   SAGA [6], Gaussian Grouping [56], SAGS [18], Click-
+point-based alternative that enables highly efﬁcient render-     Gaussian [8], and FlashSplat [41]. The advent of vision-
+ing. To overcome the dependency on known camera pa-     language models has further enabled open-vocabulary 3D
+rameters, several recent works operate directly on unposed     segmentation.  For example, LangSplat [33] aligns CLIP
+images. Among them, DUSt3R [52] predicts 3D struc-     embeddings with 3D Gaussians, while GOI [34] enforces
+ture from image sets. MASt3R [24] extends this direction     multi-view consistency through text-image alignment. The
+by incorporating keypoint correspondences, and MASt3R-     Large Spatial Model (LSM) [12] performs open-vocabulary
+SfM [10] further uniﬁes structure-from-motion and multi-     semantic segmentation by lifting features from a pre-trained
+view stereo within a transformer framework. Hybrid tech-    2D model (LSeg) and aggregating them into a uniﬁed 3D
+niques such as Vggsfm [49] combine traditional geometry      representation. A fundamental limitation shared by most of
+with learned features to improve robustness. Scalable sys-     these methods is their reliance on scene-speciﬁc training, it-
+tems like Spann3R [48], FASt3R [55], and VGGT [50] in-      erative semantic optimization, or manual heuristics, which
+tegrate attention mechanisms or visibility reasoning to en-      constrains their generalization and practical efﬁciency. In
+hance multi-view consistency and computational efﬁciency.      contrast, PE3R supports scalable, zero-shot 3D semantic re-
+While these methods achieve impressive geometric results,     construction through a cohesive feed-forward pipeline that
+they typically lack integrated semantic understanding or re-      jointly optimizes geometry and semantics, eliminating the
+quire task-speciﬁc adaptation. PE3R builds upon these ge-     need for 3D supervision or per-scene training.
+ometric foundations but moves beyond them by incorpo-    2D Foundational Models. The advancement of large-scale
+rating semantic priors, enabling efﬁcient and context-aware      pre-trained models has been pivotal for generalizable vi-
+3D scene understanding without per-scene training.             sual perception.  CLIP [35] established a shared image-
+2D-to-3D Perception. A parallel line of research seeks      text embedding space through contrastive learning, with
+to  lift 2D semantic information into 3D reconstructions.     SigLIP [59] offering a more efﬁcient variant. SAM [21]
+Early works such as GNeRF [7] and InPlace [61] embed-     enables promptable segmentation of arbitrary image re-
+
+
+
+                                                     26878

@@ -1,0 +1,61 @@
+         Method         Preprocess    Training      Total              ting), we propose an efﬁcient image-space smoothing strat-
+       LERF [20]         3mins      40mins     43mins          egy that tackles the problem at its root. For each detected
+      F-3DGS                 [62]                         25mins                                     623mins                                               648mins
+                         27mins                                     138mins                                               165mins          anomaly, we adjust its RGB value y by blending it with the    GS         Grouping                    [56]
+       LangSplat [33]       50mins      99mins    149mins          average color x of its surrounding semantic region:
+       GOI [34]          8mins      37mins     45mins
+       PE3R, ours        5mins             -        5mins
+                                                                                                                    ˆy = α · x + (1 −α) · y.               (5)
+Table 2. Runtime Comparison for 3D Semantic Reconstruction
+on Mipnerf360.                                              Here, the blending factor α ∈[0, 1] controls the strength of
+                                                          semantic smoothing, effectively suppressing textural noise
+            Method          mIoU    mPA    mP              that misleads the geometric predictor while preserving gen-
+     LERF [20] Embedding     0.1824    0.6024    0.5873           uine structural edges. The smoothed image is then fed back
+      GOI [34] Embedding      0.2101    0.6216    0.6013            into the pointmap predictor Fpts, yielding a reﬁned 3D es-
+     LSM [12] Embedding      0.2124    0.6346    0.6114
+    PE3R Embedding (ours)    0.2248    0.6542    0.6315           timate that is more spatially coherent and better aligned
+                                                          with the semantic structure of the scene. Finally, a global
+Table 3. 2D-to-3D Open-Vocabulary Segmentation results on                                                          alignment step synchronizes all reﬁned pointmaps ˆPi into a
+the large-scale ScanNet++ dataset.
+                                                        uniﬁed coordinate frame, ensuring multi-view consistency.
+                                                  The output is a fused semantic point cloud where each
+                                                               point is associated with a 3D coordinate and its correspond-multi-view images:
+                                                             ing semantic embedding, forming a robust foundation for
+       P1, P2, . . . , Pn = Fpts(X1, X2, ..., Xn),      (3)     language-grounded interaction.
+                    ×3                                   3.5. Global View Perceptionwhere each Pi ∈RH×W    represents the 3D coordinates
+(x, y, z) for every pixel in the i-th view. While this feed-    The ﬁnal stage of PE3R leverages the uniﬁed semantic point
+forward paradigm is fast, the initial pointmaps are often     cloud to enable intuitive, open-vocabulary interaction with
+contaminated by spatial noise due to visual artifacts like oc-      the reconstructed 3D semantic scene. Given a user-provided
+clusions, reﬂections, and transparent surfaces. To overcome      text query, we ﬁrst encode it into a semantic embedding us-
+this inherent limitation, we introduce a semantic-guided re-     ing a language encoder Ftxt(·) (e.g., CLIP [35]):
+ﬁnement process that utilizes the consistent embeddings to
+                                           T = Ftxt(text),                   (6)enforce both geometric and semantic coherence.
+Anomaly Point Detection. The core premise of our de-                                                     where T ∈Rd resides in the shared image-language em-
+tection strategy is that pixels belonging to the semantic re-                                                        bedding space. To identify corresponding regions in 3D,
+gion should form a spatially coherent cluster in 3D. We                                             we compute the cosine similarity between the query em-
+thus identify outliers by evaluating the local 3D consistency                                                        bedding T and the dense per-pixel semantic embeddings
+within semantically homogeneous areas.  For each pixel     E1, E2, . . . , En from all input views:
+Pi,j, we compute its average Euclidean distance to neigh-
+boring pixels within a k × k window that share the same             [S1, S2, . . . , Sn] = D(T, [E1, E2, . . . , En]),    (7)
+semantic label:
+   P                                             where D(·) denotes the cosine similarity function. To en-
+           dx,dy I(Mi,j, Mi+dx,j+dy) · D(Pi,j, Pi+dx,j+dy)     sure consistency in retrieval scores across different view-Li,j =     P                                                        ,
+                      dx,dy I(Mi,j, Mi+dx,j+dy)                 points, we apply a global min–max normalization to all
+                                                          (4)      similarity values.  Speciﬁcally, we concatenate the simi-
+where dx, dy ∈[−⌊k/2⌋, ⌊k/2⌋], I(·, ·) is an indicator      larity scores from every view and scale them globally into
+function that evaluates to 1 if two pixels share the same      the range [0, 1]. This provides a uniﬁed and interpretable
+instance-track index, and D(·, ·) denotes the Euclidean dis-      similarity measure that is invariant to view-speciﬁc varia-
+tance in 3D space. This operation yields a semantic-aware      tions. A predeﬁned threshold is then applied to the normal-
+distance map Li ∈RH×W for each view. Pixels associated     ized scores to select the most relevant 3D points from the
+with distance values exceeding a predeﬁned threshold after     corresponding reﬁned pointmaps P1, P2, . . . , Pn.  Points
+normalization are ﬂagged as spatial anomalies and subse-    whose normalized similarity scores exceed this threshold
+quently excluded, resulting in a signiﬁcantly cleaner inter-      are considered semantically aligned with the text query and
+mediate point cloud.                                            are retained for 3D localization.  This approach enables
+Semantic-Guided Reﬁnement. Merely ﬁltering outliers,      natural language-based interaction with the reconstructed
+however, does not actively correct the underlying erroneous    3D scene, supporting ﬂexible object retrieval and semantic
+estimates.  Instead of applying computationally expensive     scene understanding without the need for predeﬁned cate-
+post-hoc geometric regularization (e.g., least-squares ﬁt-     gory labels or model retraining.
+
+
+
+                                                     26881

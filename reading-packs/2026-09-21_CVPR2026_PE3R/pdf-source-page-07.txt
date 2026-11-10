@@ -1,0 +1,84 @@
+             Method          mIoU   mPA    mP
+
+       w/o Multi-Level Disam.     0.1624    0.5892    0.5623
+       w/o Cross-View Disam.     0.1895    0.6012    0.5923
+     w/o Global MinMax Norm.    0.2035    0.6253    0.6186
+         PE3R (full)          0.2248    0.6542    0.6315
+
+Table 5. Effect of Disambiguation Modules for 2D-to-3D open-
+vocabulary segmentation on ScanNet++.                                                                                                                            Bicycle                                                                     Chair
+                                                                                                                                                                          (a) w/o Cross-View Disambiguation
+
+                                (a)
+
+
+
+
+                                                    Flowerpot on table                        Pink flower                           Basin on table                                                                            Bicycle                                                                     Chair
+                                                                                                                                                                  (b) w/ Cross-View Disambiguation
+                              (b)
+                                                                  Figure 4. Effect of Cross-View Disambiguation. In the absence
+                                                                     of cross-view alignment, the same object is inconsistently labeled
+                                                    Flowerpot on table                        Pink flower                           Basin on table             across viewpoints.
+                                (a)
+
+                                                                                                                                      Remote control                        Table                             Sofa                      Black box
+
+
+
+
+
+                                                      Espresso machine                      Brew head                            Drip tray
+
+                              (b)
+
+
+                                                                                                                              (a) w/o Global Min-Max Normalization
+
+                                                      Espresso machine                      Brew head                            Drip tray                                  Remote control                        Table                             Sofa                      Black box
+
+                                (a)
+
+
+
+
+
+                                        A box of donuts                        Paper boxes                         Chocolate donut
+
+                              (b)
+                                                                                                                         (b) w/ Global Min-Max Normalization
+
+                                                                  Figure 5. Effect of Global Min-Max Normalization. Without
+                                        A box of donuts                        Paper boxes                         Chocolate donut            global normalization, similarity scores become uncalibrated across
+           (a) w/o Multi-Level Disambiguation                 (b) w/ Multi-Level Disambiguation            views, impairing retrieval reliability.
+Figure 3. Effect of Multi-Level Disambiguation. Without this
+module, the model fails to associate object parts with the whole,
+leading to fragmented semantics.
+                                                            ometric ﬁdelity of PE3R on the task of multi-view depth es-
+                                                                 timation. For a comprehensive analysis, Table 4 organizes
+which provide a standard benchmark for comparing with     methods into three categories: (a) classical 3D reconstruc-
+state-of-the-art NeRF- and 3DGS-based methods. As sum-      tion approaches, (b) modern feed-forward methods, and (c)
+marized in Table 1, PE3R consistently surpasses all previ-     our full PE3R framework with semantic-guided reconstruc-
+ous approaches, establishing a new state-of-the-art across      tion. PE3R demonstrates highly competitive performance
+all metrics (mIoU, mPA, mP). A pivotal advantage of our     across a wide spectrum of datasets, achieving the best over-
+framework is its exceptional computational efﬁciency. As       all average on standard metrics (Rel and τ).  This indi-
+evidenced by Table 2, PE3R completes the full semantic re-      cates that the integration of semantic priors generally en-
+construction pipeline in merely 5 minutes. This represents     hances the robustness of the geometric reconstruction. An
+up to a 9× speedup over optimization-based methods. To     in-depth analysis reveals that the beneﬁts of semantic guid-
+assess generalization, we evaluate PE3R on the large-scale     ance are scene-dependent. While PE3R shows notable im-
+and complex ScanNet++ benchmark. Given the scalabil-     provements on most benchmarks, its performance on Scan-
+ity constraints of methods requiring per-scene optimization,     Net and DTU is marginally behind the DUSt3R baseline.
+we conduct a direct and fair comparison by integrating the   We attribute this to the characteristic challenges of these
+2D semantic features from LERF, LSM, and GOI into our      datasets, such as low semantic diversity, repetitive textures,
+pipeline under identical settings. As reported in Table 3,     and limited viewpoint coverage, where semantic cues can
+PE3R achieves superior segmentation accuracy, conﬁrming     introduce ambiguity rather than resolve it.  This nuanced
+its ability to maintain high performance while scaling effec-     performance proﬁle highlights a key insight: semantic guid-
+tively to challenging, large-scale environments. Qualitative     ance is most beneﬁcial in semantically rich and visually dis-
+results in Fig. 1 further corroborate these ﬁndings, showcas-      tinct environments. Nevertheless, the improvement in the
+ing robust and precise segmentation across diverse indoor,      overall benchmark average strongly validates that our se-
+outdoor, and in-the-wild scenes.                             mantic augmentation strategy provides a net positive effect
+Multi-view Depth Estimation. We further evaluate the ge-     on reconstruction quality.
+
+
+
+                                                    26883

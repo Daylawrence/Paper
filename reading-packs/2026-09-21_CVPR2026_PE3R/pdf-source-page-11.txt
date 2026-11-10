@@ -1,0 +1,61 @@
+     Visual geometry grounded transformer.   arXiv preprint
+     arXiv:2503.11651, 2025. 1, 2, 6
+[51] Peng Wang, Lingjie Liu, Yuan Liu, Christian Theobalt, Taku
+    Komura, and Wenping Wang. Neus: Learning neural implicit
+     surfaces by volume rendering for multi-view reconstruction.
+     arXiv preprint arXiv:2106.10689, 2021. 2
+[52] Shuzhe Wang,  Vincent  Leroy,  Yohann  Cabon,  Boris
+     Chidlovskii, and Jerome Revaud. Dust3r: Geometric 3d vi-
+     sion made easy. In Proceedings of the IEEE/CVF Conference
+    on Computer Vision and Pattern Recognition, pages 20697–
+     20709, 2024. 1, 2, 3, 4, 6
+[53] Yiqun Wang, Ivan Skorokhodov, and Peter Wonka. Hf-neus:
+     Improved surface reconstruction using high-frequency de-
+       tails. Advances in Neural Information Processing Systems,
+     35:1966–1978, 2022. 2
+[54] Andrew E Welchman, Arne Deubelius, Verena Conrad,
+     Heinrich H B¨ulthoff, and Zoe Kourtzi. 3d shape perception
+     from combined depth cues in human visual cortex. Nature
+     neuroscience, 8(6):820–827, 2005. 1
+[55] Jianing Yang, Alexander Sax, Kevin J. Liang, Mikael Henaff,
+    Hao Tang, Ang Cao, Joyce Chai, Franziska Meier, and Matt
+      Feiszli.  Fast3r: Towards 3d reconstruction of 1000+ im-
+     ages in one forward pass. In Proceedings of the IEEE/CVF
+     Conference on Computer Vision and Pattern Recognition
+     (CVPR), 2025. 2, 6
+[56] Mingqiao Ye, Martin Danelljan, Fisher Yu, and Lei Ke.
+     Gaussian grouping: Segment and edit anything in 3d scenes.
+     arXiv preprint arXiv:2312.00732, 2023. 1, 2, 4, 5
+[57] Chandan Yeshwanth, Yueh-Cheng Liu, Matthias Nießner,
+     and Angela Dai. Scannet++: A high-ﬁdelity dataset of 3d in-
+     door scenes. In Proceedings of the IEEE/CVF International
+     Conference on Computer Vision, pages 12–22, 2023. 1, 6
+[58] Hong-Xing Yu, Leonidas J Guibas, and Jiajun Wu. Unsu-
+     pervised discovery of object radiance ﬁelds. arXiv preprint
+     arXiv:2107.07905, 2021. 2
+[59] Xiaohua Zhai, Basil Mustafa, Alexander Kolesnikov, and
+     Lucas Beyer. Sigmoid loss for language image pre-training.
+     In Proceedings of the IEEE/CVF International Conference
+    on Computer Vision, pages 11975–11986, 2023. 2
+[60] Chaoning Zhang, Dongshen Han, Sheng Zheng, Jinwoo
+     Choi, Tae-Ho Kim, and Choong Seon Hong. Mobilesamv2:
+     Faster segment anything to everything.   arXiv preprint
+     arXiv:2312.09579, 2023. 6
+[61] Shuaifeng Zhi, Tristan Laidlow, Stefan Leutenegger, and An-
+     drew J Davison. In-place scene labelling and understanding
+     with implicit scene representation.  In Proceedings of the
+    IEEE/CVF International Conference on Computer Vision,
+     pages 15838–15847, 2021. 2
+[62] Shijie Zhou, Haoran Chang, Sicheng Jiang, Zhiwen Fan, Ze-
+     hao Zhu, Dejia Xu, Pradyumna Chari, Suya You, Zhangyang
+    Wang, and Achuta Kadambi. Feature 3dgs: Supercharging
+    3d gaussian splatting to enable distilled feature ﬁelds. In Pro-
+     ceedings of the IEEE/CVF Conference on Computer Vision
+    and Pattern Recognition, pages 21676–21685, 2024. 1, 2, 4,
+    5
+
+
+
+
+
+                                                    26887
