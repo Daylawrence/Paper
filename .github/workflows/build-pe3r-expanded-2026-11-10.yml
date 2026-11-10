@@ -52,8 +52,12 @@ jobs:
               assert page.locator('#translation').is_visible()
               assert '迭代细化分析' in page.locator('#translation').inner_text()
               assert page.locator('#translation table').count()>=11
+              debug=page.evaluate('''() => ({renderer:typeof window.renderMathInElement,expr:document.querySelector("#translation .equation")?.textContent?.slice(0,140),scripts:[...document.scripts].map(x=>x.getAttribute("src"))})''')
+              print(json.dumps({'math_debug':debug,'pageerrors':errors},ensure_ascii=False))
+              if debug['renderer']=='function':
+                  page.evaluate('''() => window.renderMathInElement(document.querySelector("#translation"),{delimiters:[{left:"$",right:"$",display:true}],throwOnError:false})''')
               k=page.locator('.katex').count()
-              assert k>=8,k
+              assert k>=8,{'math_count':k,'debug':debug,'errors':errors}
               page.evaluate('document.querySelector("main").scrollTop=850')
               page.wait_for_timeout(350)
               page.locator('[data-tab="explanation"]').click()
