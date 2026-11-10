@@ -1,0 +1,280 @@
+COLUMN AWARE (CHECK FORMULA/TABLE ORDER AGAINST PDF)
+6. Proof of Interpolation Properties
+
+
+This section provides the complete proofs for the two
+key properties of our area-weighted interpolation strategy,
+which underpin the effectiveness of the Pixel Embedding
+Disambiguation described in Sec. 3.3 of the main text.
+Proposition 1. Vector Normalization: The interpolated vec-
+tor ˆFB preserves unit norm, ensuring it remains within the
+original semantic embedding space.
+Proof. The norm of ˆFB is given by:
+
+
+→ˆFB→2 = →aFA + bFB→2 .
+(8)
+
+
+Expanding this expression:
+
+
+→ˆFB→2 = (aFA + bFB) · (aFA + bFB)
+
+
+(9)
+
+
+= a2→FA→2 + 2abFA · FB + b2→FB→2.
+
+
+Since FA and FB are unit vectors:
+
+
+→FA→= 1, →FB→= 1, FA · FB = cos(ω).
+(10)
+
+
+Substituting these values, we get:
+
+
+→ˆFB→2 =
+1
+sin2(ω)(sin2((1 ↑t)ω) + sin2(tω)
+
+
+(11)
+
+
++ 2 sin((1 ↑t)ω) sin(tω) cos(ω)).
+
+
+Using trigonometric identities:
+
+
+sin2(ω) = sin2((1 ↑t)ω) + sin2(tω)
+
+
++ 2 sin((1 ↑t)ω) sin(tω) cos(ω),
+(12)
+
+
+we ﬁnd that:
+
+
+→ˆFB→2 = sin2(ω)/ sin2(ω) = 1.
+(13)
+
+
+Thus, ˆFB is conﬁrmed to be a unit vector. ↭
+Proposition 2. Semantic Guidance: If FA has a higher
+similarity to a reference semantic vector FC than FB does,
+then ˆFB will also exhibit a higher similarity to FC than FB
+does. This steers the aggregated representation toward more
+semantically meaningful directions.
+Proof. The cosine similarity between ˆFB and FC is:
+
+
+ˆFB · FC = a(FA · FC) + b(FB · FC).
+(14)
+
+
+Since FA · FC > FB · FC, we have:
+
+
+a(FA · FC) + b(FB · FC) > (a + b)(FB · FC).
+(15)
+
+
+PE3R: Perception-Efﬁcient 3D Reconstruction
+
+
+Supplementary Material
+
+
+Threshold rel→
+ω ↑
+
+
+0.001
+6.1
+49.3
+0.002
+5.9
+50.3
+0.003
+5.5
+55.1
+0.004
+5.6
+53.6
+0.005
+5.8
+52.8
+
+
+Table 8. Anomaly point selection with varying thresholds on Scan-
+Net. The optimal value of 0.003 is used as the default in all main
+experiments.
+
+
+Using trigonometric properties:
+
+
+a + b = sin((1 ↑t)ω)
+
+
+sin(ω)
++ sin(tω)
+
+
+sin(ω) = 1,
+(16)
+
+
+we conclude:
+
+
+ˆFB · FC = a(FA · FC) + b(FB · FC) > FB · FC. (17)
+
+
+This conﬁrms that ˆFB semantically integrates information
+from both FA and FB, steering the aggregated representa-
+tion toward more meaningful directions. ↭
+
+
+7. Extended Ablation Studies
+
+
+This section provides extended ablation studies that com-
+plement the analysis in Sec. 4.3 of the main paper, offering
+further insights into the design choices and parameter sen-
+sitivity of PE3R.
+
+
+7.1. Anomaly Point Selection
+
+
+The accuracy of our anomaly point detection mechanism is
+validated through both empirical and theoretical analysis.
+Empirical Validation. We determine the anomaly thresh-
+old by statistically analyzing the mean 3D distance between
+spatially consistent points across semantic regions.
+This
+threshold effectively separates normal points from anoma-
+lies.
+Table 8 presents results under different thresholds
+on ScanNet, with the optimal performance observed at a
+threshold of 0.003.
+Theoretical Validation. While anomaly detection could
+theoretically be approached through parametric modeling of
+intra-object distributions (e.g., using Gaussian estimation or
+least-squares ﬁtting), such methods become computation-
+ally prohibitive in complex, large-scale scenes. Our empir-
+ical thresholding strategy provides a practical and scalable
+alternative that maintains high performance without intro-
+ducing signiﬁcant computational overhead.
+
+
+NATIVE PAGE TEXT
+PE3R: Perception-Efﬁcient 3D Reconstruction
+Supplementary Material
+6. Proof of Interpolation Properties
+This section provides the complete proofs for the two
+key properties of our area-weighted interpolation strategy,
+which underpin the effectiveness of the Pixel Embedding
+Disambiguation described in Sec. 3.3 of the main text.
+Proposition 1. Vector Normalization: The interpolated vec-
+tor ˆFB preserves unit norm, ensuring it remains within the
+original semantic embedding space.
+Proof. The norm of ˆFB is given by:
+→ˆFB→2 = →aFA + bFB→2 .
+(8)
+Expanding this expression:
+→ˆFB→2 = (aFA + bFB) · (aFA + bFB)
+= a2→FA→2 + 2abFA · FB + b2→FB→2.
+(9)
+Since FA and FB are unit vectors:
+→FA→= 1, →FB→= 1, FA · FB = cos(ω).
+(10)
+Substituting these values, we get:
+→ˆFB→2 =
+1
+sin2(ω)(sin2((1 ↑t)ω) + sin2(tω)
++ 2 sin((1 ↑t)ω) sin(tω) cos(ω)).
+(11)
+Using trigonometric identities:
+sin2(ω) = sin2((1 ↑t)ω) + sin2(tω)
++ 2 sin((1 ↑t)ω) sin(tω) cos(ω),
+(12)
+we ﬁnd that:
+→ˆFB→2 = sin2(ω)/ sin2(ω) = 1.
+(13)
+Thus, ˆFB is conﬁrmed to be a unit vector. ↭
+Proposition 2. Semantic Guidance: If FA has a higher
+similarity to a reference semantic vector FC than FB does,
+then ˆFB will also exhibit a higher similarity to FC than FB
+does. This steers the aggregated representation toward more
+semantically meaningful directions.
+Proof. The cosine similarity between ˆFB and FC is:
+ˆFB · FC = a(FA · FC) + b(FB · FC).
+(14)
+Since FA · FC > FB · FC, we have:
+a(FA · FC) + b(FB · FC) > (a + b)(FB · FC).
+(15)
+Threshold rel→
+ω ↑
+0.001
+6.1
+49.3
+0.002
+5.9
+50.3
+0.003
+5.5
+55.1
+0.004
+5.6
+53.6
+0.005
+5.8
+52.8
+Table 8. Anomaly point selection with varying thresholds on Scan-
+Net. The optimal value of 0.003 is used as the default in all main
+experiments.
+Using trigonometric properties:
+a + b = sin((1 ↑t)ω)
+sin(ω)
++ sin(tω)
+sin(ω) = 1,
+(16)
+we conclude:
+ˆFB · FC = a(FA · FC) + b(FB · FC) > FB · FC. (17)
+This conﬁrms that ˆFB semantically integrates information
+from both FA and FB, steering the aggregated representa-
+tion toward more meaningful directions. ↭
+7. Extended Ablation Studies
+This section provides extended ablation studies that com-
+plement the analysis in Sec. 4.3 of the main paper, offering
+further insights into the design choices and parameter sen-
+sitivity of PE3R.
+7.1. Anomaly Point Selection
+The accuracy of our anomaly point detection mechanism is
+validated through both empirical and theoretical analysis.
+Empirical Validation. We determine the anomaly thresh-
+old by statistically analyzing the mean 3D distance between
+spatially consistent points across semantic regions.
+This
+threshold effectively separates normal points from anoma-
+lies.
+Table 8 presents results under different thresholds
+on ScanNet, with the optimal performance observed at a
+threshold of 0.003.
+Theoretical Validation. While anomaly detection could
+theoretically be approached through parametric modeling of
+intra-object distributions (e.g., using Gaussian estimation or
+least-squares ﬁtting), such methods become computation-
+ally prohibitive in complex, large-scale scenes. Our empir-
+ical thresholding strategy provides a practical and scalable
+alternative that maintains high performance without intro-
+ducing signiﬁcant computational overhead.

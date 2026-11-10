@@ -1,0 +1,216 @@
+COLUMN AWARE (CHECK FORMULA/TABLE ORDER AGAINST PDF)
+Window Size avg. rel→avg. ω ↑
+
+
+3 ↓3
+4.9
+65.5
+5 ↓5
+4.5
+68.0
+7 ↓7
+4.8
+66.1
+
+
+Table 9. Effect of sliding window size on anomaly detection per-
+formance across all depth estimation benchmarks.
+
+
+a
+b
+avg. rel→avg. ω ↑
+
+
+0.00 1.00
+5.3
+60.2
+0.10 0.90
+4.5
+68.0
+0.20 0.80
+4.7
+62.3
+0.50 0.50
+4.9
+61.6
+0.80 0.20
+6.1
+59.4
+0.90 0.10
+6.5
+57.5
+1.00 0.00
+10.2
+50.2
+
+
+Table 10. Effect of semantic-aware smoothing parameter ω on
+reconstruction performance.
+Moderate smoothing (ω = 0.1)
+achieves the best results.
+
+
+7.2. Sliding Window Size Analysis
+
+
+The size of the sliding window used for local semantic-
+aware distance computation signiﬁcantly impacts both re-
+construction quality and computational efﬁciency.
+As
+demonstrated in Table 9, we evaluate three window sizes
+on the multi-view depth estimation task.
+A 5 ↓5 win-
+dow achieves the optimal trade-off, capturing sufﬁcient lo-
+cal context for robust anomaly detection without introduc-
+ing excessive computational cost or over-smoothing ﬁne ge-
+ometric details.
+
+
+7.3. RGB Image Smoothing Analysis
+
+
+To enhance robustness in challenging regions characterized
+by reﬂections, transparency, or complex textures, we ap-
+ply semantic-aware smoothing to the input images prior to
+pointmap estimation. The smoothing operation is deﬁned
+as ˆy = ε · x + (1 ↑ε) · y, where x is the mean RGB value
+of the semantic region, y is the original pixel value, and ε
+controls the smoothing strength.
+
+
+As shown in Table 10, moderate smoothing (ε = 0.1)
+provides the optimal balance between noise suppression and
+detail preservation. Lower values (ε ↔0.1) insufﬁciently
+address visual artifacts, while higher values (ε ↗0.2) over-
+smooth genuine structural details, ultimately degrading ge-
+ometric accuracy.
+
+
+7.4. Iterative Reﬁnement Analysis
+
+
+We further investigate the effect of repeated reﬁnement it-
+erations in the semantic point cloud reconstruction module.
+As shown in Table 11, while a single iteration provides sub-
+stantial improvement, additional iterations yield diminish-
+ing returns with increased computational cost. This sug-
+gests that our method achieves effective reﬁnement in a sin-
+
+
+Iterations
+1
+2
+3
+4
+
+
+avg. rel→
+4.5
+4.6
+4.6
+4.6
+avg. ω ↑
+68.0 67.9 67.9 67.9
+
+
+Table 11. Effect of iterative reﬁnement cycles on reconstruction
+performance (Mip-NeRF360). A single iteration achieves optimal
+performance.
+
+
+gle pass, maintaining the efﬁciency advantages of the over-
+all feed-forward pipeline.
+
+
+NATIVE PAGE TEXT
+Window Size avg. rel→avg. ω ↑
+3 ↓3
+4.9
+65.5
+5 ↓5
+4.5
+68.0
+7 ↓7
+4.8
+66.1
+Table 9. Effect of sliding window size on anomaly detection per-
+formance across all depth estimation benchmarks.
+a
+b
+avg. rel→avg. ω ↑
+0.00 1.00
+5.3
+60.2
+0.10 0.90
+4.5
+68.0
+0.20 0.80
+4.7
+62.3
+0.50 0.50
+4.9
+61.6
+0.80 0.20
+6.1
+59.4
+0.90 0.10
+6.5
+57.5
+1.00 0.00
+10.2
+50.2
+Table 10. Effect of semantic-aware smoothing parameter ω on
+reconstruction performance.
+Moderate smoothing (ω = 0.1)
+achieves the best results.
+7.2. Sliding Window Size Analysis
+The size of the sliding window used for local semantic-
+aware distance computation signiﬁcantly impacts both re-
+construction quality and computational efﬁciency.
+As
+demonstrated in Table 9, we evaluate three window sizes
+on the multi-view depth estimation task.
+A 5 ↓5 win-
+dow achieves the optimal trade-off, capturing sufﬁcient lo-
+cal context for robust anomaly detection without introduc-
+ing excessive computational cost or over-smoothing ﬁne ge-
+ometric details.
+7.3. RGB Image Smoothing Analysis
+To enhance robustness in challenging regions characterized
+by reﬂections, transparency, or complex textures, we ap-
+ply semantic-aware smoothing to the input images prior to
+pointmap estimation. The smoothing operation is deﬁned
+as ˆy = ε · x + (1 ↑ε) · y, where x is the mean RGB value
+of the semantic region, y is the original pixel value, and ε
+controls the smoothing strength.
+As shown in Table 10, moderate smoothing (ε = 0.1)
+provides the optimal balance between noise suppression and
+detail preservation. Lower values (ε ↔0.1) insufﬁciently
+address visual artifacts, while higher values (ε ↗0.2) over-
+smooth genuine structural details, ultimately degrading ge-
+ometric accuracy.
+7.4. Iterative Reﬁnement Analysis
+We further investigate the effect of repeated reﬁnement it-
+erations in the semantic point cloud reconstruction module.
+As shown in Table 11, while a single iteration provides sub-
+stantial improvement, additional iterations yield diminish-
+ing returns with increased computational cost. This sug-
+gests that our method achieves effective reﬁnement in a sin-
+Iterations
+1
+2
+3
+4
+avg. rel→
+4.5
+4.6
+4.6
+4.6
+avg. ω ↑
+68.0 67.9 67.9 67.9
+Table 11. Effect of iterative reﬁnement cycles on reconstruction
+performance (Mip-NeRF360). A single iteration achieves optimal
+performance.
+gle pass, maintaining the efﬁciency advantages of the over-
+all feed-forward pipeline.
