@@ -1,8 +1,4 @@
-PE3R 历史论文按新提示词重制版
-
-1. 先完整解压ZIP。
-2. 双击index.html。
-3. 顶部仅有“原文 / 译文 / 关键解释”。
-4. 左侧目录、顶部选项固定，右侧正文独立滚动；切换会保存各自位置。
-5. 断网可查看正式论文逐页图、完整中文译文、公式与算法解释；外部论文/源码链接需网络。
-6. paper.pdf为CVPR 2026正式版的内容等价压缩副本，共11页。
+PE3R 历史论文阅读包（2026-11-10 修复）。
+从 GitHub 直接查看 translation.md、algorithms.md、paper.pdf、supplement.pdf；克隆仓库后双击 index.html 离线阅读原文、完整中文译文和关键解释。
+原文 11 页 + 官方补充材料 2 页；参考文献不翻译。无需 ZIP，不运行 HTML 外部 fetch。
+文件已采用 DriveVLA-W0 实际 CSS/JS/布局。若浏览器禁用 file:// localStorage，界面自动退回内存状态。

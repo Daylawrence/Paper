@@ -1,0 +1,9 @@
+{
+  "tested": "2026-11-10",
+  "offline_chromium": "passed",
+  "source_pages": 13,
+  "katex_count": 10,
+  "scroll_restoration": 822,
+  "narrow_screen_sidebar": true,
+  "console_pageerrors": []
+}
