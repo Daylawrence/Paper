@@ -57,7 +57,7 @@ jobs:
               if debug['renderer']=='function':
                   page.evaluate('''() => window.renderMathInElement(document.querySelector("#translation"),{delimiters:[{left:"$",right:"$",display:true}],throwOnError:false})''')
               k=page.locator('.katex').count()
-              assert k>=8,{'math_count':k,'debug':debug,'errors':errors}
+              assert k>=8,{'math_count':k,'debug':debug,'errors':errors,'math_errors':page.evaluate('''() => [...document.querySelectorAll(".katex-error")].slice(0,5).map(e=>({title:e.title,html:e.outerHTML.slice(0,500)}))'''),'eq_html':page.evaluate('''() => document.querySelector("#translation .equation")?.innerHTML.slice(0,750)''')}
               page.evaluate('document.querySelector("main").scrollTop=850')
               page.wait_for_timeout(350)
               page.locator('[data-tab="explanation"]').click()
