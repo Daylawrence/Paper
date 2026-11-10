@@ -1,0 +1,91 @@
+name: Expand and inventory historical PE3R archive
+on:
+  push:
+    branches: [main]
+    paths: ['.github/workflows/expand-pe3r-2026-11-10.yml']
+  workflow_dispatch:
+permissions:
+  contents: write
+concurrency:
+  group: pe3r-20261110-expansion
+  cancel-in-progress: false
+jobs:
+  expand:
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    steps:
+      - uses: actions/checkout@v4
+        with: {fetch-depth: 0}
+      - uses: actions/setup-python@v5
+        with: {python-version: '3.11'}
+      - run: python -m pip install -q pymupdf
+      - name: Safely expand legacy PE3R ZIP, retain original, inventory PDF sources and pages
+        shell: bash
+        run: |
+          set -euo pipefail
+          python - <<'PY'
+          import pathlib,zipfile,hashlib,stat,json,fitz,re
+          d=pathlib.Path('reading-packs/2026-09-21_CVPR2026_PE3R')
+          z=d/'2026-09-21_CVPR2026_PE3R_阅读包.zip'
+          assert z.exists(), 'Existing PE3R source archive missing'
+          raw=z.read_bytes()
+          expected='81103e46f6c65da8da351013359253a406ab4ceccbf05a79730fc27d62ded5c4'
+          assert hashlib.sha256(raw).hexdigest()==expected, 'Legacy PE3R ZIP does not match catalog SHA256'
+          report={'paper':'PE3R','original_date':'2026-09-21','repair_date':'2026-11-10','stage':'source_restoration_not_full_translation_acceptance','zip_sha256':expected,'entries':[],'existing_conflicts':[]}
+          with zipfile.ZipFile(z) as f:
+              assert f.testzip() is None, 'CRC error'
+              records=[x for x in f.infolist() if not x.is_dir()]
+              top=pathlib.PurePosixPath(records[0].filename.replace('\\','/')).parts[0]
+              for info in records:
+                  parts=pathlib.PurePosixPath(info.filename.replace('\\','/')).parts
+                  if len(parts)<2: continue
+                  assert parts[0]==top and '..' not in parts and not stat.S_ISLNK(info.external_attr>>16),info.filename
+                  sub=pathlib.PurePosixPath(*parts[1:])
+                  if sub.suffix.lower()=='.zip':continue
+                  if info.file_size>25000000: raise ValueError((info.filename,info.file_size))
+                  p=d.joinpath(*sub.parts)
+                  data=f.read(info)
+                  p.parent.mkdir(parents=True,exist_ok=True)
+                  if p.exists() and p.read_bytes()!=data:
+                      report['existing_conflicts'].append(str(sub))
+                      continue
+                  p.write_bytes(data)
+                  report['entries'].append({'name':str(sub),'bytes':len(data),'sha256':hashlib.sha256(data).hexdigest()})
+          # Keep source before unlinking the only archive, even if it is incomplete or very small
+          pdfs=list(d.rglob('*.pdf'))
+          report['pdfs']=[]
+          for p in sorted(pdfs):
+              try:
+                  src=fitz.open(p)
+                  report['pdfs'].append({'file':str(p.relative_to(d)),'pages':len(src),'bytes':p.stat().st_size})
+              except Exception as e:
+                  report['pdfs'].append({'file':str(p.relative_to(d)),'pdf_error':str(e)})
+          # Copy the original full paper source, if present; do not mislabel a short brief as the paper
+          choices=[p for p in pdfs if p.name.lower() not in ('paper.pdf','supplement.pdf') and len(fitz.open(p))>=8]
+          if not (d/'paper.pdf').exists() and choices:
+              (d/'paper.pdf').write_bytes(max(choices,key=lambda p:len(fitz.open(p))).read_bytes())
+          if (d/'paper.pdf').exists():
+              src=fitz.open(d/'paper.pdf')
+              pages_dir=d/'pages'
+              pages_dir.mkdir(exist_ok=True)
+              for i,page in enumerate(src,1):
+                  pic=pages_dir/f'page-{i:02d}.jpg'
+                  if not pic.exists(): page.get_pixmap(matrix=fitz.Matrix(1.35,1.35),alpha=False).pil_save(pic,format='JPEG',quality=76)
+                  text=page.get_text(sort=True)
+                  (d/f'pdf-source-page-{i:02d}.txt').write_text(text,'utf-8')
+              report['paper_pages']=len(src)
+          (d/'source-expansion-2026-11-10.json').write_text(json.dumps(report,ensure_ascii=False,indent=2)+'\n','utf-8')
+          print(json.dumps({'expanded':len(report['entries']),'conflicts':report['existing_conflicts'],'pdfs':report['pdfs'],'paper_pages':report.get('paper_pages')},ensure_ascii=False))
+          PY
+      - name: Commit restored original archive files (not completed)
+        shell: bash
+        run: |
+          set -euo pipefail
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add -A reading-packs/2026-09-21_CVPR2026_PE3R
+          if git diff --cached --quiet; then exit 0; fi
+          git commit -m "Restore PE3R expanded source and PDF-page inventory for full translation [skip ci]"
+          git fetch origin main
+          git rebase origin/main
+          git push origin HEAD:main
